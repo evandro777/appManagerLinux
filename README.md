@@ -1,6 +1,7 @@
 # appManagerLinux
 
 [![made-with-bash](https://img.shields.io/badge/Bash-1f425f?logo=gnubash)](https://www.gnu.org/software/bash/)
+[![made-for-linux-mint](https://img.shields.io/badge/Linux Mint-1f425f?logo=linuxmint)](https://linuxmint.com/)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange)](https://opensource.org/licenses/GPL-3.0)
 
 Terminal Application / System Manager for Linux Mint Cinnamon
