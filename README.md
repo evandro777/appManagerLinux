@@ -1,4 +1,5 @@
 # appManagerLinux
+
 Terminal Application / System Manager for Linux Mint Cinnamon
 
 Script i created for easy installing applications through terminal, some using official thirdparty PPA to get most recent versions
@@ -6,6 +7,10 @@ Script i created for easy installing applications through terminal, some using o
 The main idea is to use it on fresh install, eliminating a lot of manual effort
 
 The script is tested on Linux Mint 20.2 Cinnamon. Some routines are only executed if is using Cinnamon, but the script should run fine on Mate as well.
+
+## Disclaimer
+
+**WARNING:** I do **NOT** take responsibility for what may happen to your system! Run scripts at your own risk!
 
 ## Option 1: Clone repository
 	git clone https://github.com/evandro777/appManagerLinux.git
