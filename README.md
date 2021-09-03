@@ -1,5 +1,8 @@
 # appManagerLinux
 
+[![made-with-bash](https://img.shields.io/badge/Bash-1f425f?logo=gnubash)](https://www.gnu.org/software/bash/)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange)](https://opensource.org/licenses/GPL-3.0)
+
 Terminal Application / System Manager for Linux Mint Cinnamon
 
 Script i created for easy installing applications through terminal, some using official thirdparty PPA to get most recent versions
