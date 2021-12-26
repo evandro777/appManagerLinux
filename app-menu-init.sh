@@ -110,6 +110,7 @@ installZshOhMyZshPowerlevel10k="N"
 installVsCode="N"
 installHeidiSql="N"
 installDbeaver="N"
+installHttpie="N"
 
 #Games
 installSteam="N"
@@ -189,6 +190,7 @@ MainMenu() {
 		echo -e "72: ${ORANGE}Install${NC} VS Code (official PPA)?: $installVsCode"
 		echo -e "73: ${ORANGE}Install${NC} HeidiSQL (Custom download)?: $installHeidiSql"
 		echo -e "74: ${ORANGE}Install${NC} DBeaver (official PPA)?: $installDbeaver"
+		echo -e "75: ${ORANGE}Install${NC} HTTPie (RESTful calls) (distro PPA)?: $installHttpie"
 		
 		echo -e ""
 		echo -e "+++++++++"
@@ -341,6 +343,10 @@ MainMenu() {
 				
 			"74")
 				installDbeaver=$(SwitchYN $installDbeaver)
+				break;;
+				
+			"75")
+				installHttpie=$(SwitchYN $installHttpie)
 				break;;
 				
 			#Games
@@ -530,6 +536,10 @@ Actions() {
 	if [[ "$installDbeaver" == [yY] ]]; then
 		./apps/dbeaver.sh
 	fi
+
+	if [[ "$installHttpie" == [yY] ]]; then
+		./apps/httpie.sh
+	fi	
 	
 	#Games
 	if [[ "$installSteam" == [yY] ]]; then
