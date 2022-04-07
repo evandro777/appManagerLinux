@@ -16,7 +16,8 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 #$1: profile_hash
 function ProfileExists(){
 	local profileName="$1"
-	listProfile="$(dconf list /org/gnome/terminal/legacy/profiles:/:${profileName}/)"
+	#listProfile="$(dconf list /org/gnome/terminal/legacy/profiles:/:${profileName}/)"
+	listProfile="$(dconf read /org/gnome/terminal/legacy/profiles:/list | grep ${profileName} )"
 	#return $([ "$listProfile" ] && true || false)
 	echo "$listProfile"
 }
@@ -29,6 +30,7 @@ function SaveProfile(){
 	local profileName="$2"
 	#Check if profile doesn't exists and create a new one
 	#if ! ProfileExists $newProfileHash ; then
+	echo $(ProfileExists $newProfileHash)
 	if [ -z "$(ProfileExists $newProfileHash)" ]; then
 		local setList=$(dconf read /org/gnome/terminal/legacy/profiles:/list | sed -r "s/']/', '${newProfileHash}']/g")
 		dconf write /org/gnome/terminal/legacy/profiles:/list "${setList}"

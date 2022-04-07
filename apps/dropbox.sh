@@ -9,7 +9,7 @@ fi
 
 sudo apt install -y dropbox
 
-if $DESKTOP_SESSION = "cinnamon"; then
+if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
     sudo apt install -y nemo-dropbox
 	
 	#ADD SHORTCUT (BOOKMARKS) TO NEMO

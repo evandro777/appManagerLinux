@@ -19,7 +19,7 @@ echo "Options for XED"
 gsettings set org.x.editor.preferences.editor highlight-current-line true
 gsettings set org.x.editor.preferences.editor display-line-numbers true
 gsettings set org.x.editor.preferences.editor bracket-matching true
-gsettings set org.x.editor.preferences.editor insert-spaces false
+#gsettings set org.x.editor.preferences.editor insert-spaces false
 gsettings set org.x.editor.preferences.editor auto-indent true
 gsettings set org.x.editor.preferences.editor prefer-dark-theme true
 gsettings set org.x.editor.preferences.editor scheme "dracula"

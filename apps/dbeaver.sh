@@ -31,5 +31,3 @@ sudo apt install -y dbeaver-ce
 #		* ) break;;
 #	esac
 #done
-
-read -p "Press [Enter] to continue."

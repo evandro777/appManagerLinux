@@ -91,7 +91,7 @@ done
 ##########################
 ##### APPS > INSTALL #####
 ##########################
-if [[ "$vlc_install" == [yY] ]]; then
+if [[ "$dropbox_install" == [yY] ]]; then
 	sudo ./dropbox.sh
 fi
 
@@ -197,7 +197,7 @@ gsettings set org.cinnamon.desktop.privacy remember-recent-files false
 	#THEME > MINT-Y
 	gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
 	gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Dark"
-	gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y-Dark"
+	gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y"
 	gsettings set org.cinnamon.theme name "Mint-Y-Dark"
 
 #DISABLE LOCK ON MONITOR OFF
