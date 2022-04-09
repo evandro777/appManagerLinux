@@ -16,11 +16,48 @@ function StartupAppSetting(){
 	SetProperty "${1}" "${2}" "${3}"
 }
 
-#Disabel autostart
+#Disable autostart
 #$3: filename
 function DisableAutoStart(){
 	cp "/etc/xdg/autostart/${1}.desktop" "${HOME}/.config/autostart/"
 	StartupAppSetting "X-GNOME-Autostart-enabled" false "${HOME}/.config/autostart/${1}.desktop"
+}
+
+# Get Last Id From Keybinding
+function GetKeybindingLastId(){
+    local listId=$(dconf read /org/cinnamon/desktop/keybindings/custom-list)
+    if [ "$listId" == "" ]; then
+        listId="[]"
+    fi
+    
+    # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
+    # Get first sequence
+    firstId=${listId:2:10} # Get 10 first chars (except first 2)
+    firstId=$(echo "${firstId}" | sed 's/[^0-9]*//g') # Remove all except numbers
+    
+    # Get last sequence
+    lastId=${listId::-2} # Remove 2 last chars
+    lastId=${listId: -7} # Get 7 last chars
+    lastId=$(echo "${lastId}" | sed 's/[^0-9]*//g') # Remove all except numbers
+
+    if (( $firstId > $lastId )); then
+        id=$firstId
+    else
+        id=$lastId
+    fi
+    
+    if [ "$id" == "" ]; then
+        id="-1" # Force -1 (doesn't exist the id). So the next id will be 0
+    fi
+    echo "$id"
+}
+
+# Return string if keybiding is found
+#$1: keybinding (example: <Super>Print)
+function KeybindingExists(){
+    local keyBinding="$1"
+    local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${keyBinding}")
+    echo "$return"
 }
 
 ####################
@@ -155,22 +192,22 @@ if [[ "$update_manager_disable" == [yY] ]]; then
 	DisableAutoStart "mintupdate"
 fi
 
-#AUTOSTART > DISABLE > MINT WELCOME
+echo "Auto start > Disable > Mint Welcome"
 DisableAutoStart "mintwelcome"
 
-#AUTOSTART > DISABLE > BLUEBERRY
+echo "Auto start > Disable > Blueberry"
 DisableAutoStart "blueberry-tray"
 
-#AUTOSTART > DISABLE > ORCA SCREEN READER
+echo "Auto start > Disable > Orca Screen Reader"
 DisableAutoStart "orca-autostart"
 
-#AUTOSTART > DISABLE > CARIBOU (ON SCREEN KEYBOARD)
+echo "Auto start > Disable > Caribou (on screen keyboard)"
 DisableAutoStart "caribou-autostart"
 
-#AUTOSTART > DISABLE > RENAME FOLDERS BASED ON LANGUAGE
+echo "Auto start > Disable > Rename folders based on language"
 DisableAutoStart "user-dirs-update-gtk"
 
-#AUTOSTART > DISABLE > AT SPI D-Bus Bus AT SPI stands for Assistive Technology Service Provider Interface: unwanted until you need the accessibility features
+echo "Auto start > Disable > AT SPI D-Bus Bus AT SPI stands for Assistive Technology Service Provider Interface: unwanted until you need the accessibility features"
 DisableAutoStart "at-spi-dbus-bus"
 
 #AUTOSTART > DISABLE > VNC SERVER > DOESN'T HAVE ON MINT 19
@@ -179,10 +216,10 @@ DisableAutoStart "at-spi-dbus-bus"
 #FIX PERMISSIONS OF COPIED FILES
 #sudo chown --recursive $SUDO_USER:$SUDO_USER ~/.config/autostart/
 
-#COMPRESSION LEVEL > MAXIMUM COMPRESSION FOR FILE-ROLLER (POSSIBLE VALUES: fast, normal, maximum)
-gsettings set org.gnome.FileRoller.General compression-level "maximum"
+echo "Setting maximum compression for file-roller"
+gsettings set org.gnome.FileRoller.General compression-level "maximum" # POSSIBLE VALUES: fast, normal, maximum
 
-#COMPRESSION LEVEL > MAXIMUM COMPRESSION FOR FILE-ROLLER (POSSIBLE VALUES: fast, normal, maximum)
+echo "Setting privacy > disable remembering recent files"
 gsettings set org.cinnamon.desktop.privacy remember-recent-files false
 
 #CALENDAR WIDGET > INSERT DATE
@@ -190,15 +227,17 @@ gsettings set org.cinnamon.desktop.privacy remember-recent-files false
 #jq '.["use-custom-format"]["value"] = true' ~/.cinnamon/configs/calendar@cinnamon.org/13.json > ~/.cinnamon/configs/calendar@cinnamon.org/13.json.$$ && mv ~/.cinnamon/configs/calendar@cinnamon.org/13.json.$$ ~/.cinnamon/configs/calendar@cinnamon.org/13.json
 #jq '.["custom-format"]["value"] = "%d/%m/%Y %H:%M"' ~/.cinnamon/configs/calendar@cinnamon.org/13.json > ~/.cinnamon/configs/calendar@cinnamon.org/13.json.$$ && mv ~/.cinnamon/configs/calendar@cinnamon.org/13.json.$$ ~/.cinnamon/configs/calendar@cinnamon.org/13.json
 
-#DESKTOP
-	#DESKTOP > Show the Trash
-	gsettings set org.nemo.desktop trash-icon-visible true
+## DESKTOP
 
-	#THEME > MINT-Y
-	gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
-	gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Dark"
-	gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y"
-	gsettings set org.cinnamon.theme name "Mint-Y-Dark"
+echo "Enable desktop trash icon"
+gsettings set org.nemo.desktop trash-icon-visible true
+
+## THEME > MINT-Y
+echo "Apply Mint-Y-Dark theme"
+gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
+gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Dark"
+gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y"
+gsettings set org.cinnamon.theme name "Mint-Y-Dark"
 
 #DISABLE LOCK ON MONITOR OFF
 #gsettings set org.cinnamon.desktop.screensaver lock-enabled false
@@ -209,67 +248,91 @@ gsettings set org.cinnamon.desktop.privacy remember-recent-files false
 #DISABLE LOCK ON IDLE TIME
 #gsettings set org.cinnamon.desktop.session idle-delay 'uint32 0'
 
-#NOTEBOOK
-	#DISABLE REVERSE ROLLING
-	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad natural-scroll false
+## NOTEBOOK
 
-	#ON BATTERY POWER: TURN OFF SCREEN WHEN INACTIVE FOR 5 MINUTES
-	gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-battery 300
+echo "Notebook > Disable reverse rolling"
+gsettings set org.cinnamon.settings-daemon.peripherals.touchpad natural-scroll false
 
-	#ON BATTERY POWER: WHEN THE LID IS CLOSED > DO NOTHING
-	gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-battery-action "nothing"
+echo "Notebook > On battery power > Turn off screen when inactive for 5 minutes"
+gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-battery 300
 
-	#ON A/C POWER: WHEN THE LID IS CLOSED > DO NOTHING
-	gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-ac-action "nothing"
+echo "Notebook > On battery power > When lid is closed, do nothing"
+gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-battery-action "nothing"
 
-#NEMO
-	#NEMO > IGNORE PER-FOLDER VIEW PREFERENCES
-	gsettings set org.nemo.preferences ignore-view-metadata true
+echo "Notebook > On A/C power > When lid is closed, do nothing"
+gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-ac-action "nothing"
 
-	#NEMO > Show tooltips in icon and compact views
-	gsettings set org.nemo.preferences tooltips-in-icon-view true
+## NEMO
 
-	#NEMO > Detailed file type
-	gsettings set org.nemo.preferences tooltips-show-file-type true
+echo "Nemo > ignore per-folder view preferences"
+gsettings set org.nemo.preferences ignore-view-metadata true
 
-	#NEMO > Plugins (Disable "ChangeColorFolder" for performance on navigate folders)
-	gsettings set org.nemo.plugins disabled-extensions '["EmblemPropertyPage+NemoPython", "PastebinitExtension+NemoPython", "NemoFilenameRepairer", "ChangeColorFolder+NemoPython"]'
+echo "Nemo > Show tooltips in icon and compact views"
+gsettings set org.nemo.preferences tooltips-in-icon-view true
 
-#SHORTCUTS
-	#SHORTCUTS > RUN
-	echo "Applying new shorctus"
-	gsettings set org.cinnamon.desktop.keybindings.wm panel-run-dialog '["<Alt>F2", "<Super>r"]'
+echo "Nemo > Detailed file type"
+gsettings set org.nemo.preferences tooltips-show-file-type true
 
-	#SHORTCUTS > SYSTEM MONITOR
-	#su $SUDO_USER -c 'gsettings set org.cinnamon.desktop.keybindings custom-list '"'"'["custom0"]'"'"
-	gsettings set org.cinnamon.desktop.keybindings custom-list '["custom0"]'
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ name "System Monitor"
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ command "gnome-system-monitor"
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ binding '["<Primary><Shift>Escape"]'
+echo "Nemo > Plugins (Disable 'ChangeColorFolder' for performance on navigate folders)"
+gsettings set org.nemo.plugins disabled-extensions '["EmblemPropertyPage+NemoPython", "PastebinitExtension+NemoPython", "NemoFilenameRepairer", "ChangeColorFolder+NemoPython"]'
 
-	#SHORTCUTS > xkill
-	gsettings set org.cinnamon.desktop.keybindings custom-list '["custom1", "custom0"]'
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ name "xkill"
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ command "xkill"
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ binding '["<Primary><Alt>x"]'
+## SHORTCUTS
 
-	#SHORTCUTS > System Info
-	gsettings set org.cinnamon.desktop.keybindings custom-list '["custom2", "custom1", "custom0"]'
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/ name "System Info"
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/ command "cinnamon-settings info"
-	gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/ binding '["<Super>Pause"]'
+echo -e "${ORANGE}Applying shortcut for run command: Super + r${NC}"
+gsettings set org.cinnamon.desktop.keybindings.wm panel-run-dialog '["<Alt>F2", "<Super>r"]'
 
-	#SHORTCUTS > Media > Volume Down
-	gsettings set org.cinnamon.desktop.keybindings.media-keys volume-down '["XF86AudioLowerVolume", "<Alt><Super>KP_Subtract"]'
+lastId=$(GetKeybindingLastId)
 
-	#SHORTCUTS > Media > Volume Up
-	gsettings set org.cinnamon.desktop.keybindings.media-keys volume-up '["XF86AudioRaiseVolume", "<Alt><Super>KP_Add"]'
+#SHORTCUTS > SYSTEM MONITOR
+echo -e "${ORANGE}Applying shortcut for System Monitor: CTRL + SHIFT + ESC${NC}"
+newId=$(($lastId + 1))
+newCustomId="custom${newId}"
+#su $SUDO_USER -c 'gsettings set org.cinnamon.desktop.keybindings custom-list '"'"'["custom0"]'"'"
+if [ -z "$(KeybindingExists "<Primary><Shift>Escape")" ]; then
+    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "System Monitor"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "gnome-system-monitor"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Shift>Escape"]'
+else
 	
-	#SHORTCUTS > Media > Play/Pause
-	gsettings set org.cinnamon.desktop.keybindings.media-keys play '["XF86AudioPlay", "<Alt><Super>KP_5", "<Alt><Super>i"]'
+echo -e "${ORANGE}Applying shortcut for xkill: CTRL + ALT + X${NC}"
+newId=$(($newId + 1))
+newCustomId="custom${newId}"
+if [ -z "$(KeybindingExists "<Primary><Alt>x")" ]; then
+    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "xkill"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "xkill"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Alt>x"]'
+else
 	
-	#SHORTCUTS > Media > Next
-	gsettings set org.cinnamon.desktop.keybindings.media-keys next '["XF86AudioNext", "<Alt><Super>KP_6", "<Alt><Super>o"]'
+echo -e "${ORANGE}Applying shortcut for System Info: SUPER + Pause${NC}"
+newId=$(($newId + 1))
+newCustomId="custom${newId}"
+if [ -z "$(KeybindingExists "<Super>Pause")" ]; then
+    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "System Info"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "cinnamon-settings info"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Super>Pause"]'
+else
+
 	
-	#SHORTCUTS > Media > Previous
-	gsettings set org.cinnamon.desktop.keybindings.media-keys previous '["XF86AudioPrev", "<Alt><Super>KP_4", "<Alt><Super>u"]'
+echo -e "${ORANGE}Applying shortcut for Media > Volume Down: ALT + SUPER + -${NC}"
+gsettings set org.cinnamon.desktop.keybindings.media-keys volume-down '["XF86AudioLowerVolume", "<Alt><Super>KP_Subtract"]'
+
+echo -e "${ORANGE}Applying shortcut for Media > Volume Up: ALT + SUPER + +${NC}"
+gsettings set org.cinnamon.desktop.keybindings.media-keys volume-up '["XF86AudioRaiseVolume", "<Alt><Super>KP_Add"]'
+
+echo -e "${ORANGE}Applying shortcut for Media > Play/Pause: ALT + SUPER + 5${NC}"
+echo -e "${ORANGE}Applying shortcut for Media > Play/Pause: ALT + SUPER + i${NC}"
+gsettings set org.cinnamon.desktop.keybindings.media-keys play '["XF86AudioPlay", "<Alt><Super>KP_5", "<Alt><Super>i"]'
+
+echo -e "${ORANGE}Applying shortcut for Media > Next: ALT + SUPER + 6${NC}"
+echo -e "${ORANGE}Applying shortcut for Media > Next: ALT + SUPER + o${NC}"
+gsettings set org.cinnamon.desktop.keybindings.media-keys next '["XF86AudioNext", "<Alt><Super>KP_6", "<Alt><Super>o"]'
+
+echo -e "${ORANGE}Applying shortcut for Media > Previous: ALT + SUPER + 4${NC}"
+echo -e "${ORANGE}Applying shortcut for Media > Previous: ALT + SUPER + u${NC}"
+gsettings set org.cinnamon.desktop.keybindings.media-keys previous '["XF86AudioPrev", "<Alt><Super>KP_4", "<Alt><Super>u"]'
