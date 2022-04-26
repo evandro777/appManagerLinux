@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #COLORS
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color

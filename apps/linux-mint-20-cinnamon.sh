@@ -232,6 +232,9 @@ gsettings set org.cinnamon.desktop.privacy remember-recent-files false
 echo "Enable desktop trash icon"
 gsettings set org.nemo.desktop trash-icon-visible true
 
+echo "Notifications on the bottom side of the screen"
+gsettings set org.cinnamon.desktop.notifications.bottom-notifications true
+
 ## THEME > MINT-Y
 echo "Apply Mint-Y-Dark theme"
 gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"

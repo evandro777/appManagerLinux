@@ -61,7 +61,7 @@ echo "$firefoxConfigFile"
 #sed -i 's/export MOZ_APP_LAUNCHER/GTK_THEME=Adwaita:light\nexport GTK_THEME\nexport MOZ_APP_LAUNCHER/g' /usr/lib/firefox/firefox.sh
 
 process="firefox"
-while pidof firefox "$process" >/dev/null; do
+while pidof "$process" >/dev/null; do
 	while true; do
 		echo -e "${ORANGE}Firefox${NC} is running! Close manually and press any key to continue: "
 		read -p "" firefoxClose
