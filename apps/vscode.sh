@@ -38,38 +38,38 @@ printf '{
 }' | tee -a ~/.config/Code/User/settings.json > /dev/null
 
 #Plugins
-#highlight .htaccess
-#sudo -u $SUDO_USER -H code --install-extension mrmlnc.vscode-apache
-
 #highlight .env
-#sudo -u $SUDO_USER -H code --install-extension mikestead.dotenv
-
-#Highlight TODO:, FIXME:
-#sudo -u $SUDO_USER -H code --install-extension wayou.vscode-todo-highlight
+sudo -u $SUDO_USER -H code --install-extension mikestead.dotenv
 
 #PHPDoc
-#sudo -u $SUDO_USER -H code --install-extension neilbrayfield.php-docblocker
+sudo -u $SUDO_USER -H code --install-extension neilbrayfield.php-docblocker
 
 #PHP INTELEPHENSE
-#sudo -u $SUDO_USER -H code --install-extension bmewburn.vscode-intelephense-client
-
-#VUE
-#sudo -u $SUDO_USER -H code --install-extension octref.vetur
+sudo -u $SUDO_USER -H code --install-extension bmewburn.vscode-intelephense-client
 
 #Code Runner
-#sudo -u $SUDO_USER -H code --install-extension formulahendry.code-runner
-
-#Class import checker (if not using an import)
-#sudo -u $SUDO_USER -H code --install-extension marabesi.php-import-checker
+sudo -u $SUDO_USER -H code --install-extension formulahendry.code-runner
 
 #Markdown (.md) lint
-#sudo -u $SUDO_USER -H code --install-extension davidanson.vscode-markdownlint
+sudo -u $SUDO_USER -H code --install-extension davidanson.vscode-markdownlint
 
 #Markdown table formater (beautify)
 #sudo -u $SUDO_USER -H code --install-extension shuworks.vscode-table-formatter
 
 #Local history
 #sudo -u $SUDO_USER -H code --install-extension xyz.local-history
+
+#Class import checker (if not using an import)
+#sudo -u $SUDO_USER -H code --install-extension marabesi.php-import-checker
+
+#Highlight TODO:, FIXME:
+#sudo -u $SUDO_USER -H code --install-extension wayou.vscode-todo-highlight
+
+#highlight .htaccess
+#sudo -u $SUDO_USER -H code --install-extension mrmlnc.vscode-apache
+
+#VUE
+#sudo -u $SUDO_USER -H code --install-extension octref.vetur
 
 #Settings:
 printf '// Place your key bindings in this file to overwrite the defaults

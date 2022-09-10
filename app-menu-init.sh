@@ -111,6 +111,7 @@ installVsCode="N"
 installHeidiSql="N"
 installDbeaver="N"
 installHttpie="N"
+installMeld="N"
 
 #Games
 installSteam="N"
@@ -191,6 +192,7 @@ MainMenu() {
 		echo -e "73: ${ORANGE}Install${NC} HeidiSQL (Custom download)?: $installHeidiSql"
 		echo -e "74: ${ORANGE}Install${NC} DBeaver (official PPA)?: $installDbeaver"
 		echo -e "75: ${ORANGE}Install${NC} HTTPie (RESTful calls) (distro PPA)?: $installHttpie"
+		echo -e "76: ${ORANGE}Install${NC} Meld (Compare files) (distro PPA)?: $installMeld"
 		
 		echo -e ""
 		echo -e "+++++++++"
@@ -349,6 +351,10 @@ MainMenu() {
 				installHttpie=$(SwitchYN $installHttpie)
 				break;;
 				
+			"76")
+				installMeld=$(SwitchYN $installMeld)
+				break;;
+
 			#Games
 			"80")
 				installSteam=$(SwitchYN $installSteam)
@@ -539,7 +545,11 @@ Actions() {
 
 	if [[ "$installHttpie" == [yY] ]]; then
 		./apps/httpie.sh
-	fi	
+	fi
+
+	if [[ "$installMeld" == [yY] ]]; then
+		./apps/meld.sh
+	fi
 	
 	#Games
 	if [[ "$installSteam" == [yY] ]]; then

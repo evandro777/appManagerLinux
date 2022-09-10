@@ -22,7 +22,9 @@
 
 #DO NOT USE ROOT!
 #USING NVM
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+latestNVMVersion="$(curl -sL https://api.github.com/repos/nvm-sh/nvm/releases/latest | jq -r '.tag_name')"
+
+wget -qO- "https://raw.githubusercontent.com/nvm-sh/nvm/$latestNVMVersion/install.sh" | bash
 
 # UPDATE ZSH
 FILE="$HOME"/.zshrc
@@ -35,8 +37,11 @@ if test -f "$FILE"; then
 	source $FILE
 fi
 
-#Install latest version of node
+echo 'Installing the latest lts node'
+
 nvm install --lts
+
+echo '*Restart terminal to execute nvm or node!*'
 
 # SET DEFAULT SHELL LATEST NODE VERSION 
 #nvm alias default node

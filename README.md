@@ -19,7 +19,7 @@ The script is tested on Linux Mint 20.3 Cinnamon. Some routines are only execute
 ## Option 1: Clone repository
 
 ```bash
-git clone https://github.com/evandro777/appManagerLinux.git
+git clone --depth=1 https://github.com/evandro777/appManagerLinux.git
 cd appManagerLinux
 ```
 
