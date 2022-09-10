@@ -83,6 +83,7 @@ installDrivers="N"
 installWine="N"
 installVariety="N"
 installSevenConky="N"
+installCpux="N"
 settingShowAllStartupApps="N"
 settingXed="N"
 settingGnomeTerminal="N"
@@ -112,6 +113,7 @@ installHeidiSql="N"
 installDbeaver="N"
 installHttpie="N"
 installMeld="N"
+installDocker="N"
 
 #Games
 installSteam="N"
@@ -148,11 +150,12 @@ MainMenu() {
 		echo -e "21: ${ORANGE}Install${NC} Wine [Ubuntu: 20.04 - focal] (official PPA)?: $installWine"
 		echo -e "22: ${ORANGE}Install${NC} Variety Wallpaper (official PPA)?: $installVariety"
 		echo -e "23: ${ORANGE}Install${NC} seven-conky with autostart (official git repository)?: $installSevenConky"
+		echo -e "24: ${ORANGE}Install${NC} cpu-x (distro)?: $installCpux"
 		
-		echo -e "24: ${RED}Setting${NC} Show all hidden startup applications?: $settingShowAllStartupApps"
-		echo -e "25: ${RED}Setting${NC} Xed > tweaking?: $settingXed"
-		echo -e "26: ${RED}Setting${NC} Gnome terminal > tweaking?: $settingGnomeTerminal"
-		echo -e "27: ${RED}Setting${NC} Samba (network share) > less restrictions (caution). Tip: Share public folder and create symlinks: $settingSamba"
+		echo -e "25: ${RED}Setting${NC} Show all hidden startup applications?: $settingShowAllStartupApps"
+		echo -e "26: ${RED}Setting${NC} Xed > tweaking?: $settingXed"
+		echo -e "27: ${RED}Setting${NC} Gnome terminal > tweaking?: $settingGnomeTerminal"
+		echo -e "28: ${RED}Setting${NC} Samba (network share) > less restrictions (caution). Tip: Share public folder and create symlinks: $settingSamba"
 
 		echo -e ""
 		echo -e "+++++++++++++++++++++++++"
@@ -189,10 +192,11 @@ MainMenu() {
 		echo -e "70: ${ORANGE}Install${NC} Git (distro PPA)?: $installGit"
 		echo -e "71: ${ORANGE}Install${NC} ZSH With OhMyZsh PowerLevel10k (distro PPA)?: $installZshOhMyZshPowerlevel10k"
 		echo -e "72: ${ORANGE}Install${NC} VS Code (official PPA)?: $installVsCode"
-		echo -e "73: ${ORANGE}Install${NC} HeidiSQL (Custom download)?: $installHeidiSql"
+		echo -e "73: ${ORANGE}Install${NC} HeidiSQL [Requires Wine] (Custom download)?: $installHeidiSql"
 		echo -e "74: ${ORANGE}Install${NC} DBeaver (official PPA)?: $installDbeaver"
 		echo -e "75: ${ORANGE}Install${NC} HTTPie (RESTful calls) (distro PPA)?: $installHttpie"
 		echo -e "76: ${ORANGE}Install${NC} Meld (Compare files) (distro PPA)?: $installMeld"
+		echo -e "77: ${ORANGE}Install${NC} Docker & docker-compose (official PPA)?: $installDocker"
 		
 		echo -e ""
 		echo -e "+++++++++"
@@ -273,20 +277,24 @@ MainMenu() {
 			"23")
 				installSevenConky=$(SwitchYN $installSevenConky)
 				break;;
-				
+
 			"24")
-				settingShowAllStartupApps=$(SwitchYN $settingShowAllStartupApps)
+				installCpux=$(SwitchYN $installCpux)
 				break;;
 				
 			"25")
-				settingXed=$(SwitchYN $settingXed)
+				settingShowAllStartupApps=$(SwitchYN $settingShowAllStartupApps)
 				break;;
 				
 			"26")
-				settingGnomeTerminal=$(SwitchYN $settingGnomeTerminal)
+				settingXed=$(SwitchYN $settingXed)
 				break;;
 				
 			"27")
+				settingGnomeTerminal=$(SwitchYN $settingGnomeTerminal)
+				break;;
+				
+			"28")
 				settingSamba=$(SwitchYN $settingSamba)
 				break;;
 				
@@ -353,6 +361,10 @@ MainMenu() {
 				
 			"76")
 				installMeld=$(SwitchYN $installMeld)
+				break;;
+
+			"77")
+				installDocker=$(SwitchYN $installDocker)
 				break;;
 
 			#Games
@@ -461,7 +473,11 @@ Actions() {
 	if [[ "$installSevenConky" == [yY] ]]; then
 		./apps/seven-conky.sh
 	fi
-	
+
+	if [[ "$installCpux" == [yY] ]]; then
+		./apps/cpu-x.sh
+	fi
+
 	if [[ "$installDrivers" == [yY] ]]; then
 		sudo ubuntu-drivers autoinstall
 		if [ "$(echo -e "${searchDrivers}" | grep 'vendor.*:' | grep 'NVIDIA')" ]; then
@@ -550,7 +566,11 @@ Actions() {
 	if [[ "$installMeld" == [yY] ]]; then
 		./apps/meld.sh
 	fi
-	
+
+	if [[ "$installDocker" == [yY] ]]; then
+		./apps/docker.sh
+	fi
+
 	#Games
 	if [[ "$installSteam" == [yY] ]]; then
 		./apps/steam.sh

@@ -32,6 +32,12 @@ function SaveProfile(){
 	#if ! ProfileExists $newProfileHash ; then
 	if [ -z "$(ProfileExists $newProfileHash)" ]; then
 		local setList=$(dconf read /org/gnome/terminal/legacy/profiles:/list | sed -r "s/']/', '${newProfileHash}']/g")
+		if [ ! -z "$setList" ]; then # Check if setList not empty
+		    # Create list with the default profile
+		    dconf write /org/gnome/terminal/legacy/profiles:/list "[$(dconf read /org/gnome/terminal/legacy/profiles:/default)]"
+		fi
+		# Add a new profile
+		local setList=$(dconf read /org/gnome/terminal/legacy/profiles:/list | sed -r "s/']/', '${newProfileHash}']/g")
 		dconf write /org/gnome/terminal/legacy/profiles:/list "${setList}"
 	fi
 	dconf write /org/gnome/terminal/legacy/profiles:/:"${newProfileHash}"/visible-name "'${profileName}'"
