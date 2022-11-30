@@ -281,6 +281,9 @@ gsettings set org.nemo.plugins disabled-extensions '["EmblemPropertyPage+NemoPyt
 
 ## SHORTCUTS
 
+echo "Change shortcut > Special key to move and resize windows: Super + Left click"
+gsettings set org.cinnamon.desktop.wm.preferences mouse-button-modifier "<Super>"
+
 echo -e "${ORANGE}Applying shortcut for run command: Super + r${NC}"
 gsettings set org.cinnamon.desktop.keybindings.wm panel-run-dialog '["<Alt>F2", "<Super>r"]'
 

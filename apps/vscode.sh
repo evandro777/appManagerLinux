@@ -31,10 +31,12 @@ printf '{
 	"editor.renderWhitespace": "all",
 	"editor.minimap.enabled": false,
 	"editor.fontFamily": "'"'"'Fira Code'"'"', '"'"'Droid Sans Mono'"'"', '"'"'monospace'"'"', monospace, '"'"'Droid Sans Fallback'"'"'",
+	"window.titleBarStyle": "custom",
 	"editor.fontLigatures": true,
 	"editor.lineHeight": 24,
 	"editor.fontSize": 16,
-	"php.suggest.basic": false
+	"php.suggest.basic": false,
+	"cSpell.language": "en,pt,pt_BR"
 }' | tee -a ~/.config/Code/User/settings.json > /dev/null
 
 #Plugins

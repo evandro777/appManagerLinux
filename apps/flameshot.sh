@@ -46,20 +46,20 @@ apt update
 sudo apt install -y flameshot
 
 if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
-	echo -e "${ORANGE}Applying shortcut: Super + Print Screen${NC}"
-	
+    echo -e "${ORANGE}Applying shortcut: Super + Print Screen${NC}"
+    
     lastId=$(GetKeybindingLastId)
     newId=$(($lastId + 1))
     newCustomId="custom${newId}"
-	
+    
     if [ -z "$(KeybindingExists "<Super>Print")" ]; then
         setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g") # Insert new id on first one
         #setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/']/', '${newCustomId}']/g") # Insert new id on last one
         dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
-	    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "Flameshot"
-	    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "flameshot gui"
-	    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Super>Print"]'
-	else
-	    echo -e "${ORANGE}Shortcut was already been using${NC}"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "Flameshot"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "flameshot gui"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Super>Print"]'
+    else
+        echo -e "${ORANGE}Shortcut was already been using${NC}"
     fi
 fi

@@ -93,6 +93,7 @@ settingSamba="N"
 installLibreOffice="N"
 uninstallThunderbird="N"
 installFlameshot="N"
+installCopyQ="N"
 
 #Security & Privacy
 installKeePassXC="N"
@@ -164,6 +165,7 @@ MainMenu() {
 		echo -e "30: ${ORANGE}Install${NC} Libreoffice (official PPA)?: $installLibreOffice"
 		echo -e "31: ${RED}Uninstall${NC} Thunderbird e-mail?: $uninstallThunderbird"
 		echo -e "32: ${ORANGE}Install${NC} Flameshot (official PPA)?: $installFlameshot"
+		echo -e "33: ${ORANGE}Install${NC} CopyQ [Clipboard Manager] (official PPA)?: $installCopyQ"
 		
 		echo -e ""
 		echo -e "++++++++++++++++++++++"
@@ -195,7 +197,7 @@ MainMenu() {
 		echo -e "73: ${ORANGE}Install${NC} HeidiSQL [Requires Wine] (Custom download)?: $installHeidiSql"
 		echo -e "74: ${ORANGE}Install${NC} DBeaver (official PPA)?: $installDbeaver"
 		echo -e "75: ${ORANGE}Install${NC} HTTPie (RESTful calls) (distro PPA)?: $installHttpie"
-		echo -e "76: ${ORANGE}Install${NC} Meld (Compare files) (distro PPA)?: $installMeld"
+		echo -e "76: ${ORANGE}Install${NC} Meld [Compare files] (distro PPA)?: $installMeld"
 		echo -e "77: ${ORANGE}Install${NC} Docker & docker-compose (official PPA)?: $installDocker"
 		
 		echo -e ""
@@ -309,6 +311,10 @@ MainMenu() {
 				
 			"32")
 				installFlameshot=$(SwitchYN $installFlameshot)
+				break;;
+				
+			"33")
+				installCopyQ=$(SwitchYN $installCopyQ)
 				break;;
 				
 			#Security & Privacy
@@ -513,6 +519,10 @@ Actions() {
 
 	if [[ "$installFlameshot" == [yY] ]]; then
 		./apps/flameshot.sh
+	fi
+	
+	if [[ "$installCopyQ" == [yY] ]]; then
+		./apps/copyq.sh
 	fi
 	
 	#Security & Privacy
