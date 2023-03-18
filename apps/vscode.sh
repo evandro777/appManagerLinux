@@ -31,12 +31,17 @@ printf '{
 	"editor.renderWhitespace": "all",
 	"editor.minimap.enabled": false,
 	"editor.fontFamily": "'"'"'Fira Code'"'"', '"'"'Droid Sans Mono'"'"', '"'"'monospace'"'"', monospace, '"'"'Droid Sans Fallback'"'"'",
+	"terminal.integrated.fontFamily": "'"'"'MesloLGS NF'"'"',
 	"window.titleBarStyle": "custom",
 	"editor.fontLigatures": true,
 	"editor.lineHeight": 24,
 	"editor.fontSize": 16,
 	"php.suggest.basic": false,
-	"cSpell.language": "en,pt,pt_BR"
+	"cSpell.language": "en,pt,pt_BR",
+	"[markdown]": {
+		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+		"editor.formatOnSave": true
+	}
 }' | tee -a ~/.config/Code/User/settings.json > /dev/null
 
 #Plugins

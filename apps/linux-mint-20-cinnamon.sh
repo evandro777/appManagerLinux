@@ -235,12 +235,17 @@ gsettings set org.nemo.desktop trash-icon-visible true
 echo "Notifications on the bottom side of the screen"
 gsettings set org.cinnamon.desktop.notifications.bottom-notifications true
 
-## THEME > MINT-Y
-echo "Apply Mint-Y-Dark theme"
+## THEME > Mint-Y-Dark
+echo "Apply Mint-Y-Dark theme with transparency panel"
+cp -r /usr/share/themes/Mint-Y-Dark/ /home/evandro/.themes/Mint-Y-Dark-Transparency/ # create a new theme based on original one
+# Change panel background color, and add transparency
+sed -i s/"  background-color: rgba(48, 49, 48, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
+
 gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
 gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Dark"
 gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y"
-gsettings set org.cinnamon.theme name "Mint-Y-Dark"
+#gsettings set org.cinnamon.theme name "Mint-Y-Dark" #original
+gsettings set org.cinnamon.theme name "Mint-Y-Dark-Transparency" #modified with panel transparency
 
 #DISABLE LOCK ON MONITOR OFF
 #gsettings set org.cinnamon.desktop.screensaver lock-enabled false

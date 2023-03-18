@@ -393,6 +393,10 @@ MainMenu() {
 }
 
 Actions() {
+	# Log everything and show on terminal
+	log_file="app-log_$(date +%Y-%m-%d_%H-%M-%S).txt"
+	exec > >(tee -i "$log_file") 2>&1
+	
 	#########################
 	##### UPDATE DISTRO #####
 	#########################
