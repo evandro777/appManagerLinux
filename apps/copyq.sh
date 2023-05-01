@@ -8,8 +8,8 @@ NC='\033[0m' # No Color
 echo -e "${ORANGE}Installing CopyQ (official PPA)${NC}"
 
 #dbeaver Official PPA
-sudo add-apt-repository -y ppa:hluk/copyq
-sudo apt-get update
+sudo apt add-repository -y  ppa:hluk/copyq
+sudo apt update
 sudo apt install -y copyq
 
 echo -e "Enable CopyQ autostart"

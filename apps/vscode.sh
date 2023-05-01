@@ -4,29 +4,29 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/../includes/essentials.sh"
 . "../includes/root_restrict_but_sudo.sh"
 
-#COLORS
+# COLORS
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color
 echo -e "${ORANGE}Installing VSCode${NC}"
 
-#VSCODE repository official
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+# VSCODE repository official
+curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
 sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 
 sudo apt update
 
-#FIRA CODE (FONT WITH LIGATURES)
+# FIRA CODE (FONT WITH LIGATURES)
 sudo apt install -y fonts-firacode
 
-#VS CODE
+# VS CODE
 sudo apt install -y apt-transport-https
 # Stable
 sudo apt install -y code
 # Bleeding edge
-#sudo apt-get install code-insiders
+# sudo apt-get install code-insiders
 
-#Settings:
+# Settings:
 printf '{
 	"editor.renderWhitespace": "all",
 	"editor.minimap.enabled": false,
@@ -42,43 +42,65 @@ printf '{
 		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
 		"editor.formatOnSave": true
 	}
-}' | tee -a ~/.config/Code/User/settings.json > /dev/null
+}' | tee -a ~/.config/Code/User/settings.json >/dev/null
 
-#Plugins
-#highlight .env
+# Plugins
+# highlight .env
 sudo -u $SUDO_USER -H code --install-extension mikestead.dotenv
 
-#PHPDoc
+# PHPDoc
 sudo -u $SUDO_USER -H code --install-extension neilbrayfield.php-docblocker
 
-#PHP INTELEPHENSE
+# PHP INTELEPHENSE
 sudo -u $SUDO_USER -H code --install-extension bmewburn.vscode-intelephense-client
 
-#Code Runner
+# Code Runner
 sudo -u $SUDO_USER -H code --install-extension formulahendry.code-runner
 
-#Markdown (.md) lint
+# Markdown (.md) lint
 sudo -u $SUDO_USER -H code --install-extension davidanson.vscode-markdownlint
 
-#Markdown table formater (beautify)
-#sudo -u $SUDO_USER -H code --install-extension shuworks.vscode-table-formatter
+# Formats shell scripts, Dockerfiles, gitignore, dotenv, properties, hosts, .bats
+sudo -u $SUDO_USER -H code --install-extension foxundermoon.shell-format
+# To disable formatOnSave for shellscript open user settings (CTRL + SHIFT + P => Type user settings):
+# "[shellscript]": {
+# 	"editor.formatOnSave": false
+# },
+# "shellformat.effectLanguages": [
+# 	"dockerfile",
+# 	"dotenv",
+# 	"hosts",
+# 	"jvmoptions",
+# 	"ignore",
+# 	"gitignore",
+# 	"properties",
+# 	"spring-boot-properties",
+# 	"azcli",
+# 	"bats"
+# ]
 
-#Local history
-#sudo -u $SUDO_USER -H code --install-extension xyz.local-history
+# Indentation more readable by colorizing
+sudo -u $SUDO_USER -H code --install-extension oderwat.indent-rainbow
 
-#Class import checker (if not using an import)
-#sudo -u $SUDO_USER -H code --install-extension marabesi.php-import-checker
+# Markdown table formater (beautify)
+# sudo -u $SUDO_USER -H code --install-extension shuworks.vscode-table-formatter
 
-#Highlight TODO:, FIXME:
-#sudo -u $SUDO_USER -H code --install-extension wayou.vscode-todo-highlight
+# Local history
+# sudo -u $SUDO_USER -H code --install-extension xyz.local-history
 
-#highlight .htaccess
-#sudo -u $SUDO_USER -H code --install-extension mrmlnc.vscode-apache
+# Class import checker (if not using an import)
+# sudo -u $SUDO_USER -H code --install-extension marabesi.php-import-checker
 
-#VUE
-#sudo -u $SUDO_USER -H code --install-extension octref.vetur
+# Highlight TODO:, FIXME:
+# sudo -u $SUDO_USER -H code --install-extension wayou.vscode-todo-highlight
 
-#Settings:
+# highlight .htaccess
+# sudo -u $SUDO_USER -H code --install-extension mrmlnc.vscode-apache
+
+# VUE
+# sudo -u $SUDO_USER -H code --install-extension octref.vetur
+
+# Settings:
 printf '// Place your key bindings in this file to overwrite the defaults
 [
 	{
@@ -101,4 +123,4 @@ printf '// Place your key bindings in this file to overwrite the defaults
 		"command": "-editor.action.copyLinesDownAction",
 		"when": "editorTextFocus && !editorReadonly"
 	}
-]' | tee -a ~/.config/Code/User/keybindings.json > /dev/null
+]' | tee -a ~/.config/Code/User/keybindings.json >/dev/null
