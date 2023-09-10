@@ -29,12 +29,12 @@ function GetKeybindingLastId(){
     if [ "$listId" == "" ]; then
         listId="[]"
     fi
-    
+
     # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
     # Get first sequence
     firstId=${listId:2:10} # Get 10 first chars (except first 2)
     firstId=$(echo "${firstId}" | sed 's/[^0-9]*//g') # Remove all except numbers
-    
+
     # Get last sequence
     lastId=${listId::-2} # Remove 2 last chars
     lastId=${listId: -7} # Get 7 last chars
@@ -45,7 +45,7 @@ function GetKeybindingLastId(){
     else
         id=$lastId
     fi
-    
+
     if [ "$id" == "" ]; then
         id="-1" # Force -1 (doesn't exist the id). So the next id will be 0
     fi
@@ -109,7 +109,7 @@ done
 
 #Trayicon for NVIDIA Prime
 while true; do
-	echo -e "${RED}Disable startup${NC} trayicon NVIDIA Prime? (Y/N): "
+	echo -e "${RED}Disable startup${NC} trayicon NVIDIA Prime (can be accessed through the System Settings)? (Y/N): "
 	read -p "" nvidia_trayicon_disable
 	case $nvidia_trayicon_disable in
 		[YyNn]* ) break;;
@@ -156,7 +156,7 @@ if [[ "$redshift_enable" == [yY] ]]; then
 		StartupAppSetting "Hidden" false "${REDSHIFT_DESKTOP_FILE}"
 		StartupAppSetting "X-GNOME-Autostart-enabled" true "${REDSHIFT_DESKTOP_FILE}"
 		StartupAppSetting "Exec" "redshift-gtk -t 6000:4500" "${REDSHIFT_DESKTOP_FILE}"
-	else 
+	else
 		#CREATE FILE WITH USER PERMISSION. USING ECHO OR PRINTF DIRECTLY WILL CREATE WITH ROOT PERMISSION
 		printf "${REDSHIFT_DESKTOP_CONTENT}" | tee -a "${REDSHIFT_DESKTOP_FILE}" > /dev/null
 	fi
@@ -175,6 +175,7 @@ echo -e "${ORANGE}http://askubuntu.com/questions/414841/which-applications-to-st
 #AUTOSTART > DISABLE > Bluetooth OBEX Agent > Allows to receive files via Bluetooth
 if [[ "$bluetooth_disable" == [yY] ]]; then
 	DisableAutoStart "blueberry-obex-agent"
+	DisableAutoStart "blueman"
 fi
 
 #AUTOSTART > DISABLE > Alarm notifier for Evolution incoming events and appointments
@@ -185,6 +186,7 @@ fi
 #AUTOSTART > DISABLE > NVIDIA PRIME
 if [[ "$nvidia_trayicon_disable" == [yY] ]]; then
 	DisableAutoStart "nvidia-prime"
+	DisableAutoStart "nvidia-settings-autostart"
 fi
 
 #AUTOSTART > DISABLE > UPDATE MANAGER
@@ -237,9 +239,14 @@ gsettings set org.cinnamon.desktop.notifications.bottom-notifications true
 
 ## THEME > Mint-Y-Dark
 echo "Apply Mint-Y-Dark theme with transparency panel"
-cp -r /usr/share/themes/Mint-Y-Dark/ /home/evandro/.themes/Mint-Y-Dark-Transparency/ # create a new theme based on original one
-# Change panel background color, and add transparency
+cp -r /usr/share/themes/Mint-Y-Dark/ "$HOME/.themes/Mint-Y-Dark-Transparency/" # create a new theme based on original one
+
+# Manually look for: .menu {
+# Change panel background color, and add transparency #Mint 20.x
 sed -i s/"  background-color: rgba(48, 49, 48, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
+
+# Change panel background color, and add transparency #Mint 21.x
+sed -i s/"  background-color: rgba(47, 47, 47, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
 
 gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
 gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Dark"
@@ -306,7 +313,7 @@ if [ -z "$(KeybindingExists "<Primary><Shift>Escape")" ]; then
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "gnome-system-monitor"
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Shift>Escape"]'
 else
-	
+
 echo -e "${ORANGE}Applying shortcut for xkill: CTRL + ALT + X${NC}"
 newId=$(($newId + 1))
 newCustomId="custom${newId}"
@@ -317,7 +324,7 @@ if [ -z "$(KeybindingExists "<Primary><Alt>x")" ]; then
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "xkill"
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Alt>x"]'
 else
-	
+
 echo -e "${ORANGE}Applying shortcut for System Info: SUPER + Pause${NC}"
 newId=$(($newId + 1))
 newCustomId="custom${newId}"
@@ -329,7 +336,7 @@ if [ -z "$(KeybindingExists "<Super>Pause")" ]; then
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Super>Pause"]'
 else
 
-	
+
 echo -e "${ORANGE}Applying shortcut for Media > Volume Down: ALT + SUPER + -${NC}"
 gsettings set org.cinnamon.desktop.keybindings.media-keys volume-down '["XF86AudioLowerVolume", "<Alt><Super>KP_Subtract"]'
 
@@ -347,3 +354,9 @@ gsettings set org.cinnamon.desktop.keybindings.media-keys next '["XF86AudioNext"
 echo -e "${ORANGE}Applying shortcut for Media > Previous: ALT + SUPER + 4${NC}"
 echo -e "${ORANGE}Applying shortcut for Media > Previous: ALT + SUPER + u${NC}"
 gsettings set org.cinnamon.desktop.keybindings.media-keys previous '["XF86AudioPrev", "<Alt><Super>KP_4", "<Alt><Super>u"]'
+
+echo -e "${ORANGE}Removing shortcut for workspace > <Control><Shift><Alt>Up|Down > Conflict with VS Code Duplicate Lines (Copy lines up|down)${NC}"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up '["<Super><Shift>Page_Up"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down '["<Super><Shift>Page_Down"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Super>Page_Up"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Super>Page_Down"]'

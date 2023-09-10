@@ -4,7 +4,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/../includes/essentials.sh"
 . "../includes/root_restrict_but_sudo.sh"
 
-echo -e "${ORANGE}Installing SMPlayer${NC}"
+echo -e "${ORANGE}Installing SMPlayer - Official PPA [+custom configs]${NC}"
 
 #SMPLAYER > OFFICIAL
 sudo apt add-repository -y ppa:rvm/smplayer

@@ -7,12 +7,14 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 # COLORS
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color
+
 echo -e "${ORANGE}Installing VSCode${NC}"
 
 # VSCODE repository official
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
-sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
-sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+rm -f packages.microsoft.gpg
 
 sudo apt update
 
@@ -28,40 +30,41 @@ sudo apt install -y code
 
 # Settings:
 printf '{
-	"editor.renderWhitespace": "all",
-	"editor.minimap.enabled": false,
-	"editor.fontFamily": "'"'"'Fira Code'"'"', '"'"'Droid Sans Mono'"'"', '"'"'monospace'"'"', monospace, '"'"'Droid Sans Fallback'"'"'",
-	"terminal.integrated.fontFamily": "'"'"'MesloLGS NF'"'"',
-	"window.titleBarStyle": "custom",
-	"editor.fontLigatures": true,
-	"editor.lineHeight": 24,
-	"editor.fontSize": 16,
-	"php.suggest.basic": false,
-	"cSpell.language": "en,pt,pt_BR",
-	"[markdown]": {
-		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-		"editor.formatOnSave": true
-	}
+    "editor.renderWhitespace": "all",
+    "editor.minimap.enabled": false,
+    "editor.fontFamily": "'"'"'Fira Code'"'"', '"'"'Droid Sans Mono'"'"', '"'"'monospace'"'"', monospace, '"'"'Droid Sans Fallback'"'"'",
+    "terminal.integrated.fontFamily": "'"'"'MesloLGS NF'"'"',
+    "window.titleBarStyle": "custom",
+    "editor.fontLigatures": true,
+    "editor.lineHeight": 24,
+    "editor.fontSize": 16,
+    "php.suggest.basic": false,
+    "cSpell.language": "en,pt,pt_BR",
+    "[markdown]": {
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+        "editor.formatOnSave": true
+    },
+    "markdown.extension.list.indentationSize": "inherit"
 }' | tee -a ~/.config/Code/User/settings.json >/dev/null
 
 # Plugins
 # highlight .env
-sudo -u $SUDO_USER -H code --install-extension mikestead.dotenv
+code --install-extension mikestead.dotenv
 
 # PHPDoc
-sudo -u $SUDO_USER -H code --install-extension neilbrayfield.php-docblocker
+code --install-extension neilbrayfield.php-docblocker
 
 # PHP INTELEPHENSE
-sudo -u $SUDO_USER -H code --install-extension bmewburn.vscode-intelephense-client
+code --install-extension bmewburn.vscode-intelephense-client
 
 # Code Runner
-sudo -u $SUDO_USER -H code --install-extension formulahendry.code-runner
+code --install-extension formulahendry.code-runner
 
 # Markdown (.md) lint
-sudo -u $SUDO_USER -H code --install-extension davidanson.vscode-markdownlint
+code --install-extension davidanson.vscode-markdownlint
 
 # Formats shell scripts, Dockerfiles, gitignore, dotenv, properties, hosts, .bats
-sudo -u $SUDO_USER -H code --install-extension foxundermoon.shell-format
+code --install-extension foxundermoon.shell-format
 # To disable formatOnSave for shellscript open user settings (CTRL + SHIFT + P => Type user settings):
 # "[shellscript]": {
 # 	"editor.formatOnSave": false
@@ -80,7 +83,7 @@ sudo -u $SUDO_USER -H code --install-extension foxundermoon.shell-format
 # ]
 
 # Indentation more readable by colorizing
-sudo -u $SUDO_USER -H code --install-extension oderwat.indent-rainbow
+code --install-extension oderwat.indent-rainbow
 
 # Markdown table formater (beautify)
 # sudo -u $SUDO_USER -H code --install-extension shuworks.vscode-table-formatter
@@ -103,24 +106,9 @@ sudo -u $SUDO_USER -H code --install-extension oderwat.indent-rainbow
 # Settings:
 printf '// Place your key bindings in this file to overwrite the defaults
 [
-	{
-		"key": "ctrl+shift+d",
-		"command": "editor.action.addSelectionToNextFindMatch",
-		"when": "editorFocus"
-	},
-	{
-		"key": "ctrl+d",
-		"command": "-editor.action.addSelectionToNextFindMatch",
-		"when": "editorFocus"
-	},
-	{
-		"key": "ctrl+d",
-		"command": "editor.action.copyLinesDownAction",
-		"when": "editorTextFocus && !editorReadonly"
-	},
-	{
-		"key": "ctrl+shift+alt+down",
-		"command": "-editor.action.copyLinesDownAction",
-		"when": "editorTextFocus && !editorReadonly"
-	}
+    {
+        "key": "ctrl+shift+alt+d",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus"
+    }
 ]' | tee -a ~/.config/Code/User/keybindings.json >/dev/null

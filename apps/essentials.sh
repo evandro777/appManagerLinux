@@ -4,7 +4,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/../includes/essentials.sh"
 . "../includes/root_restrict_but_sudo.sh"
 
-echo -e "${ORANGE}Installing Essentials apps${NC}"
+echo -e "${ORANGE}Installing Essentials Apps${NC}"
 
 echo -e "${ORANGE}Installing Conky${NC}"
 sudo apt install -y conky conky-all
@@ -46,6 +46,9 @@ sudo apt install -y samba
 
 echo -e "${ORANGE}Installing mint meta (media) codecs${NC}"
 sudo apt install -y mint-meta-codecs
+
+echo -e "${ORANGE}Installing .heic images support${NC}"
+sudo apt install -y heif-gdk-pixbuf
 
 echo -e "${ORANGE}Installing Os Query${NC}"
 ./osquery.sh

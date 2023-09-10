@@ -3,7 +3,8 @@
 #COLORS
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color
-echo -e "${ORANGE}Installing Composer${NC}"
+
+echo -e "${ORANGE}Installing Composer - Bin Download${NC}"
 
 command -v php >/dev/null 2>&1 || { echo -e >&2 "php is required, but it's not installed.  ${ORANGE}Aborting.${NC}"; exit 1; }
 

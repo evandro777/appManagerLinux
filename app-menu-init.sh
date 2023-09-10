@@ -401,13 +401,19 @@ Actions() {
 	##### UPDATE DISTRO #####
 	#########################
 	echo -e "${GREEN}Distro upgrade${NC}"
-	#Update softwares (from repositories) [+intelligently handle the dependencies] [UPDATE ALSO DISTRO IF AVAILABLE]
-	apt update
-	sudo apt dist-upgrade -y -u
+	
+	echo -e "${GREEN}Update/Refresh APT keys${NC}"
+	sudo apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com
+	sudo apt update 2>&1 | grep "NO_PUBKEY" | awk '{print $NF}' | while read key; do gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" && gpg --export --armor "$key" | sudo apt-key add -; done
 	
 	# UPDATE ALL EXPIRED KEYS
 	echo -e "${GREEN}Updating expired keys${NC}"
 	for K in $(APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key list | grep expired\|expirado | cut -d'/' -f2 | cut -d' ' -f1); do sudo apt-key adv --recv-keys --keyserver keys.gnupg.net $K; done
+	
+	#Update softwares (from repositories) [+intelligently handle the dependencies] [UPDATE ALSO DISTRO IF AVAILABLE]
+	apt update
+	
+	sudo apt dist-upgrade -y -u
 	
 	#AUTOSTART > CREATE CUSTOM FOLDER WITH DEFAULT USER PERMISSION
 	mkdir -p "${HOME}/.config/autostart/"
@@ -441,7 +447,7 @@ Actions() {
 	fi
 
 	if [[ "$installSmplayer" == [yY] ]]; then
-		./apps/smplayer.sh
+		./apps/smplayer-ppa-official.sh
 		if [[ "$smplayer_default" == [yY] ]]; then
 			#cat /usr/share/applications/defaults.list | grep "video/\|x-content/video-" | sed 's/=io.github.celluloid_player.*$/=smplayer.desktop/g' >> "${PREFERRED_APP_PATH}"
 			SetPreferredApp "$(GetVideoMimeTypes)" "smplayer" "${PREFERRED_APP_PATH}"
@@ -454,11 +460,11 @@ Actions() {
 
 	#Media > Audio & Music
 	if [[ "$installSpotify" == [yY] ]]; then
-		./apps/spotify.sh
+		./apps/spotify-ppa-official.sh
 	fi
 	
 	if [[ "$installStrawberry" == [yY] ]]; then
-		./apps/clementine.sh
+		./apps/strawberry-ppa-official.sh
 	fi
 	
 	if [[ "$installClementine" == [yY] ]]; then
@@ -477,7 +483,7 @@ Actions() {
 	fi
 	
 	if [[ "$installVariety" == [yY] ]]; then
-		./apps/variety.sh
+		./apps/variety-ppa-official.sh
 	fi
 
 	if [[ "$installSevenConky" == [yY] ]]; then
@@ -513,7 +519,7 @@ Actions() {
 
 	#Office & Productivity
 	if [[ "$installLibreOffice" == [yY] ]]; then
-		./apps/libreoffice.sh
+		./apps/libreoffice-ppa-official.sh
 	fi
 	
 	if [[ "$uninstallThunderbird" == [yY] ]]; then
@@ -526,17 +532,17 @@ Actions() {
 	fi
 	
 	if [[ "$installCopyQ" == [yY] ]]; then
-		./apps/copyq.sh
+		./apps/copyq-ppa-official.sh
 	fi
 	
 	#Security & Privacy
 	if [[ "$installKeePassXC" == [yY] ]]; then
-		./apps/keepassxc.sh
+		./apps/keepassxc-ppa-official.sh
 	fi
 	
 	#File Sharing
 	if [[ "$installQBittorrent" == [yY] ]]; then
-		./apps/qbittorrent.sh
+		./apps/qbittorrent-ppa-official.sh
 	fi
 	
 	if [[ "$uninstallTransmission" == [yY] ]]; then
@@ -545,7 +551,7 @@ Actions() {
 	
 	#Web Browsers
 	if [[ "$installChrome" == [yY] ]]; then
-		./apps/chrome.sh
+		./apps/chrome-ppa-official.sh
 	fi
 	
 	if [[ "$settingFirefox" == [yY] ]]; then
@@ -562,15 +568,15 @@ Actions() {
 	fi
 
 	if [[ "$installVsCode" == [yY] ]]; then
-		./apps/vscode.sh
+		./apps/vscode-ppa-official.sh
 	fi
 	
 	if [[ "$installHeidiSql" == [yY] ]]; then
-		./apps/heidisql-manual.sh
+		./apps/heidisql-bin-download.sh
 	fi
 	
 	if [[ "$installDbeaver" == [yY] ]]; then
-		./apps/dbeaver.sh
+		./apps/dbeaver-ppa-official.sh
 	fi
 
 	if [[ "$installHttpie" == [yY] ]]; then
@@ -591,7 +597,7 @@ Actions() {
 	fi
 	
 	if [[ "$installLutris" == [yY] ]]; then
-		./apps/lutris.sh
+		./apps/lutris-ppa-official.sh
 	fi
 	
 	#Desktop
@@ -602,7 +608,7 @@ Actions() {
 	#        ./linux_mint_18.1_mate.sh
 	#    fi
 	fi
-	
+
 	echo -e "${GREEN}Fixing broken packages${NC}"
 	sudo apt install -f
 

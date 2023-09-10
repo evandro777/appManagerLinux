@@ -7,7 +7,7 @@ NC='\033[0m' # No Color
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
 
-echo -e "${ORANGE}Installing Discord (Third party Flatpak)${NC}"
+echo -e "${ORANGE}Installing Discord - Third party Flatpak${NC}"
 
 flatpak install -y flathub com.discordapp.Discord
 
