@@ -9,4 +9,4 @@ echo -e "${ORANGE}Installing Clementine - Official PPA${NC}"
 sudo apt-add-repository -y ppa:me-davidsansome/clementine
 
 #DO NOT USE --install-suggests --install-recommends IT WILL INSTALL ABOUT 1GB OF FILES
-sudo apt install -y clementine
+sudo apt-get install -y clementine

@@ -1,2 +1,2 @@
-sudo apt update
-sudo apt install -y filezilla
+sudo apt-get update
+sudo apt-get install -y filezilla

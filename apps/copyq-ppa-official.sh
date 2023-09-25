@@ -8,20 +8,20 @@ NC='\033[0m' # No Color
 echo -e "${ORANGE}Installing CopyQ - Official PPA${NC}"
 
 #dbeaver Official PPA
-sudo apt add-repository -y  ppa:hluk/copyq
-sudo apt update
-sudo apt install -y copyq
+sudo apt-get add-repository -y  ppa:hluk/copyq
+sudo apt-get update
+sudo apt-get install -y copyq
 
 echo -e "Enable CopyQ autostart"
 copyq config autostart true
 
 if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
     echo -e "${ORANGE}CopyQ Applying shortcut: CTRL + ALT + V${NC}"
-    
+
     lastId=$(GetKeybindingLastId)
     newId=$(($lastId + 1))
     newCustomId="custom${newId}"
-    
+
     if [ -z "$(KeybindingExists "<Primary><Alt>v")" ]; then
         setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g") # Insert new id on first one
         #setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/']/', '${newCustomId}']/g") # Insert new id on last one

@@ -19,4 +19,4 @@ sudo chmod +x "${downloaded_file}"
 #EXECUTE INSTALL
 echo -e "${ORANGE}Installing${NC}"
 sudo dpkg -i  "${downloaded_file}"
-sudo apt install -f -y
+sudo apt-get install -f -y

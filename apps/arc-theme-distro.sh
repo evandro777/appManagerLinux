@@ -1,2 +1,2 @@
 #Arc Theme & Official distro
-sudo apt install -y arc-theme
+sudo apt-get install -y arc-theme

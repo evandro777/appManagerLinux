@@ -133,6 +133,8 @@ SetFirefoxProperty "browser.urlbar.tipShownCount.searchTip_onboard" 4
 
 SetFirefoxProperty "extensions.pocket.enabled" false
 
+SetFirefoxProperty "dom.security.https_only_mode" true
+
 # Alpenglow Theme 
 SetFirefoxProperty "browser.theme.toolbar-theme" 1
 SetFirefoxProperty "extensions.activeThemeId" "firefox-alpenglow@mozilla.org"

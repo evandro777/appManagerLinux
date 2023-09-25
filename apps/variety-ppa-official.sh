@@ -9,4 +9,4 @@ echo -e "${ORANGE}Installing Variety - Official PPA${NC}"
 sudo add-apt-repository -y ppa:variety/stable
 
 #Variety (Wallpaper) > DO NOT USE --install-suggests --install-recommends IT WILL INSTALL ABOUT 1GB OF FILES
-sudo apt install -y variety
+sudo apt-get install -y variety

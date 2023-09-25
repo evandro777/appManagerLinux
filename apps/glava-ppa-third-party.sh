@@ -7,8 +7,8 @@ NC='\033[0m' # No Color / Reset color
 echo -e "${ORANGE}Installing GLava - Thirdparty not official repository (linuxuprising/apps)${NC}"
 
 sudo add-apt-repository ppa:linuxuprising/apps
-sudo apt update
-sudo apt install glava
+sudo apt-get update
+sudo apt-get install glava
 
 glava --copy-config
 

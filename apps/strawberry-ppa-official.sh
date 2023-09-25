@@ -8,4 +8,4 @@ echo -e "${ORANGE}Installing Strawberry - Official PPA${NC}"
 
 sudo add-apt-repository -y ppa:jonaski/strawberry
 
-sudo apt install -y strawberry
+sudo apt-get install -y strawberry

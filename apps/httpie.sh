@@ -6,7 +6,6 @@ NC='\033[0m' # No Color / Reset color
 
 echo -e "${ORANGE}Installing HTTPie (RESTful calls)${NC}"
 
-sudo apt update
+sudo apt-get update
 
-#HTTPie (RESTful calls)
-sudo apt install -y httpie
+sudo apt-get install -y httpie

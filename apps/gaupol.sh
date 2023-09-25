@@ -6,5 +6,5 @@ NC='\033[0m' # No Color / Reset color
 
 echo -e "${ORANGE}Installing Gaupol${NC}"
 
-sudo apt update
-sudo apt install -y gaupol
+sudo apt-get update
+sudo apt-get install -y gaupol

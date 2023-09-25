@@ -19,5 +19,5 @@ sudo mkdir -p $debdir
     echo 'deb [trusted=yes lang=none] file:'$debdir' ./' | sudo tee $sourcelist
 ) >/dev/null
 
-sudo apt update
-sudo apt install -y zoom
+sudo apt-get update
+sudo apt-get install -y zoom

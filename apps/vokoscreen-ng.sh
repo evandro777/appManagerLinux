@@ -1,5 +1,5 @@
-apt update
-sudo apt install -y vokoscreen-ng
+sudo apt-get update
+sudo apt-get install -y vokoscreen-ng
 
 #if $DESKTOP_SESSION = "cinnamon"; then
 	#SHORTCUTS > Super + Print Screen

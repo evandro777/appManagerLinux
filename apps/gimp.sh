@@ -1,2 +1,2 @@
-sudo apt update
-sudo apt install -y gimp
+sudo apt-get update
+sudo apt-get install -y gimp

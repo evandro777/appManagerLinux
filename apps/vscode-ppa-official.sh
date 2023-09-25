@@ -16,15 +16,15 @@ sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/
 sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
 rm -f packages.microsoft.gpg
 
-sudo apt update
+sudo apt-get update
 
 # FIRA CODE (FONT WITH LIGATURES)
-sudo apt install -y fonts-firacode
+sudo apt-get install -y fonts-firacode
 
 # VS CODE
-sudo apt install -y apt-transport-https
+sudo apt-get install -y apt-transport-https
 # Stable
-sudo apt install -y code
+sudo apt-get install -y code
 # Bleeding edge
 # sudo apt-get install code-insiders
 

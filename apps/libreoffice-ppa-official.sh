@@ -9,6 +9,6 @@ echo -e "${ORANGE}Installing Libreoffice - Official PPA${NC}"
 sudo add-apt-repository -y ppa:libreoffice/ppa
 
 #Libreoffice > icons
-#sudo apt install -y libreoffice-style-elementary
+#sudo apt-get install -y libreoffice-style-elementary
 
-sudo apt install -y libreoffice
+sudo apt-get install -y libreoffice

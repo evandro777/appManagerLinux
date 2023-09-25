@@ -13,4 +13,4 @@ if [ $EUID != "0" ]; then
 fi
 
 #INSTALL NPM
-sudo apt install -y npm
+sudo apt-get install -y npm

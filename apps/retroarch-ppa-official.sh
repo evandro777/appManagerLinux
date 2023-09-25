@@ -8,9 +8,9 @@ NC='\033[0m' # No Color
 
 echo -e "${ORANGE}Installing RetroArch - Official PPA [+custom configs]${NC}"
 
-sudo apt add-repository -y ppa:libretro/stable
-sudo apt update
-sudo apt install -y retroarch
+sudo apt-get add-repository -y ppa:libretro/stable
+sudo apt-get update
+sudo apt-get install -y retroarch
 
 # Base URL for RetroArch cores
 CORES_BASE_URL="https://buildbot.libretro.com/nightly/linux/x86_64/latest/"
@@ -44,7 +44,7 @@ for FILE in ${ASSET_FILES[@]}; do
 
     # Extract asset file
     unzip "$FILE_PATH" -d "$DIR_PATH"
-    
+
     # Remove zip file
     rm "$FILE_PATH"
 done
@@ -255,36 +255,36 @@ do
     FILE="$FILE.slangp"
     # Get the file name from the path
     FILENAME=$(basename "$FILE")
-    
+
     # Check if the file exists
     if [ -f "${SHADERS_DIR}$FILE" ]; then
         # Create the destination path for the shader file
         DEST_PATH="$DEST_SHADERS_SELECTION_DIR/$FILENAME"
-        
+
         # Create the symbolic link to the destination directory
         ln -s -f "${SHADERS_DIR}$FILE" "$DEST_PATH"
-        
+
         # Print a message indicating the file was symlinked
         # echo -e "${GREEN}Symlinked${NC} $FILE to $DEST_PATH"
-        
+
         # Get the path of the shaders directory for this shader file
         SHADERS_PATH="$(dirname "$FILE")/shaders"
-        
+
         # Check if the shaders directory for this shader file has already been symlinked
         if ! [[ " ${SYMLINKED_SHADERS[@]} " =~ " ${SHADERS_PATH} " ]]; then
             # Add the shaders directory to the array of symlinked shader folders
             SYMLINKED_SHADERS+=("$SHADERS_PATH")
-            
+
             # Create a symlink for each file and directory in the shaders directory for this shader file
             # echo -e "${ORANGE}Symlinking all files and folders inside subfolder '$SHADERS_PATH'${NC}"
             find "${SHADERS_DIR}$SHADERS_PATH" -mindepth 1 -print0 | while IFS= read -r -d $'\0' SHADER_FILE
             do
                 # Get the file name from the path
                 SHADER_FILENAME=$(basename "$SHADER_FILE")
-                
+
                 # Create the destination path for the shader file
                 DEST_SHADER_PATH="$DEST_SHADERS_DIR/$SHADER_FILENAME"
-                
+
                 # Create the symbolic link to the destination directory
                 ln -s -f "$SHADER_FILE" "$DEST_SHADER_PATH"
             done

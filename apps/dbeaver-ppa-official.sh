@@ -10,8 +10,8 @@ echo -e "${ORANGE}Installing DBeaver - Official PPA${NC}"
 #dbeaver Official PPA
 sudo add-apt-repository -y ppa:serge-rider/dbeaver-ce
 sudo apt-get update
-sudo apt install -y dbeaver-ce
- 
+sudo apt-get install -y dbeaver-ce
+
 #Older version had problem with dark themes
 
 #echo -e "${ORANGE}May have problem with dark themes\n${NC}"
@@ -25,7 +25,7 @@ sudo apt install -y dbeaver-ce
 #			#sed -i 's/Exec=\/usr\/share\/dbeaver\/dbeaver/Exec=env GTK2_RC_FILES=\/usr\/share\/themes\/Redmond\/gtk-2.0\/gtkrc \/usr\/share\/dbeaver\/dbeaver/g' "/usr/share/applications/dbeaver.desktop"
 #			sudo sed -i 's/Exec=\/usr\/share\/dbeaver\/dbeaver/Exec=env GTK_THEME=Adwaita:light \/usr\/share\/dbeaver\/dbeaver/g' "/usr/share/applications/dbeaver.desktop"
 #			sudo sed -i 's/Exec=\/usr\/share\/dbeaver\/dbeaver/Exec=env GTK_THEME=Adwaita:light \/usr\/share\/dbeaver\/dbeaver/g' "$HOME/.local/share/applications/dbeaver.desktop"
-#			
+#
 #		break;;
 #		[Nn]* ) break;;
 #		* ) break;;

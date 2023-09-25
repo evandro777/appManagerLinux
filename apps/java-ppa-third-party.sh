@@ -2,11 +2,11 @@
 sudo add-apt-repository -y ppa:webupd8team/java
 
 #JAVA
-sudo apt install -y default-jre
+sudo apt-get install -y default-jre
 
 #JAVA > ORACLE - REQUIRED BY SOME BANKS
 #AUTO SET YES TO LICENSE AGREEMENT
 echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
 echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
-sudo apt install -y oracle-java8-installer
+sudo apt-get install -y oracle-java8-installer
 

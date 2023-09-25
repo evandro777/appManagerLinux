@@ -3,6 +3,7 @@
 #COLORS
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color
+
 echo -e "${ORANGE}Installing Flameshot [+custom config]${NC}"
 
 # Get Last Id From Keybinding
@@ -11,12 +12,12 @@ function GetKeybindingLastId(){
     if [ "$listId" == "" ]; then
         listId="[]"
     fi
-    
+
     # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
     # Get first sequence
     firstId=${listId:2:10} # Get 10 first chars (except first 2)
     firstId=$(echo "${firstId}" | sed 's/[^0-9]*//g') # Remove all except numbers
-    
+
     # Get last sequence
     lastId=${listId::-2} # Remove 2 last chars
     lastId=${listId: -7} # Get 7 last chars
@@ -27,7 +28,7 @@ function GetKeybindingLastId(){
     else
         id=$lastId
     fi
-    
+
     if [ "$id" == "" ]; then
         id="-1" # Force -1 (doesn't exist the id). So the next id will be 0
     fi
@@ -42,16 +43,22 @@ function KeybindingExists(){
     echo "$return"
 }
 
-apt update
-sudo apt install -y flameshot
+sudo apt-get update
+sudo apt-get install -y flameshot
+
+flameShotIniFile="${HOME}/.config/flameshot/flameshot.ini"
+touch "${flameShotIniFile}"
+
+echo -e "${ORANGE}Flameshot > Disable welcome message${NC}"
+crudini --set "${flameShotIniFile}" General showStartupLaunchMessage "false"
 
 if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
-    echo -e "${ORANGE}Applying shortcut: Super + Print Screen${NC}"
-    
+    echo -e "${ORANGE}Flameshot > Applying shortcut: Super + Print Screen${NC}"
+
     lastId=$(GetKeybindingLastId)
     newId=$(($lastId + 1))
     newCustomId="custom${newId}"
-    
+
     if [ -z "$(KeybindingExists "<Super>Print")" ]; then
         setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g") # Insert new id on first one
         #setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/']/', '${newCustomId}']/g") # Insert new id on last one

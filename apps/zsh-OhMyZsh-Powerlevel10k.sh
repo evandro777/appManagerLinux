@@ -19,7 +19,7 @@ CommandDependency "git" #Needed for installing oh-my-zsh and the powerlinetheme
 function UpdateGnomeTerminalProfileFont(){
 	local profileHash="${1}"
 	local checkProfileExists=$(dconf read /org/gnome/terminal/legacy/profiles:/:"${profileHash}"/visible-name)
-	
+
 	if [ "${checkProfileExists}" ]; then
 		dconf write /org/gnome/terminal/legacy/profiles:/:"${profileHash}"/use-system-font false
 		dconf write /org/gnome/terminal/legacy/profiles:/:"${profileHash}"/font "'MesloLGS NF 11'"
@@ -27,7 +27,7 @@ function UpdateGnomeTerminalProfileFont(){
 }
 
 #Fonts
-sudo apt install -y fontconfig
+sudo apt-get install -y fontconfig
 wget --directory-prefix="${HOME}/.local/share/fonts/" https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
 wget --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
 wget --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
@@ -42,7 +42,7 @@ UpdateGnomeTerminalProfileFont "765e07a8-5a35-408a-b25c-630650a6c695"
 UpdateGnomeTerminalProfileFont "5fb53c50-40ea-4836-9958-956ee13d6ed9"
 
 #Install zsh
-sudo apt install -y zsh zsh-autosuggestions zsh-syntax-highlighting
+sudo apt-get install -y zsh zsh-autosuggestions zsh-syntax-highlighting
 
 #SET AS DEFAULT SHELL
 chsh -s /bin/zsh
@@ -62,7 +62,7 @@ echo "exit this shell and start a new one"
 echo "Type \"p10k configure\" if the configuration wizard doesn't start automatically"
 
 #If error like "command not found: ^M"
-	#sudo apt install -y dos2unix
+	#sudo apt-get install -y dos2unix
 	#cd /home/evandro/.oh-my-zsh/themes/
 	#find . -name "*.zsh-theme" | xargs dos2unix
 	#find . -name "*.zsh" | xargs dos2unix

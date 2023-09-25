@@ -8,4 +8,4 @@ NC='\033[0m' # No Color / Reset color
 echo -e "${ORANGE}Installing QBittorrent - Official PPA${NC}"
 
 sudo add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable
-sudo apt install -y qbittorrent
+sudo apt-get install -y qbittorrent

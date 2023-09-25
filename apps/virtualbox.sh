@@ -13,7 +13,7 @@ if [ $EUID != "0" ]; then
 fi
 
 echo "Installing virtual Box (free version)"
-sudo apt install -y virtualbox virtualbox-dkms virtualbox-qt
+sudo apt-get install -y virtualbox virtualbox-dkms virtualbox-qt
 
 echo "Auto disabling services"
 sudo systemctl disable virtualbox.service

@@ -14,10 +14,10 @@
 
 #INSTALL NODE FROM OFFICIAL REPOSITORY
 #curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-#sudo apt install -y nodejs
+#sudo apt-get install -y nodejs
 
 #USING SNAP
-#sudo apt install -y snapd
+#sudo apt-get install -y snapd
 #sudo snap install node --classic
 
 #DO NOT USE ROOT!
@@ -33,7 +33,7 @@ if test -f "$FILE"; then
 	echo 'export NVM_DIR="$HOME/.nvm"' >> $FILE
 	echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> $FILE
 	echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> $FILE
-	
+
 	source $FILE
 fi
 
@@ -43,5 +43,5 @@ nvm install --lts
 
 echo '*Restart terminal to execute nvm or node!*'
 
-# SET DEFAULT SHELL LATEST NODE VERSION 
+# SET DEFAULT SHELL LATEST NODE VERSION
 #nvm alias default node

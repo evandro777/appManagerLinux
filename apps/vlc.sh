@@ -6,6 +6,6 @@ NC='\033[0m' # No Color / Reset color
 
 echo -e "${ORANGE}Installing VLC${NC}"
 
-apt update
-sudo apt install -y vlc
-sudo apt install -y vlc-plugin-fluidsynth
+sudo apt-get update
+sudo apt-get install -y vlc
+sudo apt-get install -y vlc-plugin-fluidsynth
