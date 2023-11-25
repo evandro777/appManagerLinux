@@ -10,7 +10,7 @@ I created this script for easy installing applications through terminal, some us
 
 The main idea is to use it on a fresh install, eliminating a lot of manual effort. Using this on a running system might clean some configurations already applied, so use it with caution.
 
-The script is tested on Linux Mint 20.3 Cinnamon. Some routines are only executed if is using Cinnamon, but the script should run fine on Mate as well.
+The script is tested on Linux Mint 21.2 Cinnamon. Some routines are only executed if is using Cinnamon, but the script should run fine on Mate as well.
 
 ## Disclaimer
 

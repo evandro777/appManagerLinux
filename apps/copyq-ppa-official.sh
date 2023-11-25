@@ -1,4 +1,8 @@
 #!/bin/bash
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/../includes/essentials.sh"
+. "../includes/root_restrict_but_sudo.sh"
 
 #COLORS
 RED='\033[0;31m'
@@ -8,12 +12,12 @@ NC='\033[0m' # No Color
 echo -e "${ORANGE}Installing CopyQ - Official PPA${NC}"
 
 #dbeaver Official PPA
-sudo apt-get add-repository -y  ppa:hluk/copyq
+sudo apt-add-repository -y ppa:hluk/copyq
 sudo apt-get update
 sudo apt-get install -y copyq
 
 echo -e "Enable CopyQ autostart"
-copyq config autostart true
+copyq --start-server config autostart true
 
 if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
     echo -e "${ORANGE}CopyQ Applying shortcut: CTRL + ALT + V${NC}"

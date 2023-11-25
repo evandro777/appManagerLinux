@@ -45,10 +45,13 @@ echo -e "${ORANGE}Installing samba (access windows network)${NC}"
 sudo apt-get install -y samba
 
 echo -e "${ORANGE}Installing mint meta (media) codecs${NC}"
-sudo apt-get install -y mint-meta-codecs
+sudo apt-get install -y mint-meta-codecs --install-suggests
 
 echo -e "${ORANGE}Installing .heic images support${NC}"
 sudo apt-get install -y heif-gdk-pixbuf
+
+echo -e "${ORANGE}Installing GIT${NC}"
+./git.sh
 
 # echo -e "${ORANGE}Installing Os Query${NC}"
 # ./osquery.sh
@@ -81,3 +84,13 @@ if ! grep -q "export HISTTIMEFORMAT=" ~/.bashrc; then # Check if not already set
 	echo 'export HISTTIMEFORMAT="%Y/%m/%d %T "' >> ~/.bashrc ; source ~/.bashrc
 fi
 
+echo -e "${GREEN}Tweeks to faster startup > GRUB${NC}"
+sudo sed -i '/GRUB_TIMEOUT=/ s/10/3/' /etc/default/grub
+sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"quiet splash"/"noplymouth"/' /etc/default/grub
+sudo update-grub
+
+echo -e "${GREEN}Tweeks to faster startup > Disable NetworkManager-wait-online${NC}"
+sudo systemctl disable NetworkManager-wait-online.service
+
+# Disable bluetooth service
+#sudo systemctl disable blueman-mechanism.service

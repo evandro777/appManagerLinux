@@ -46,7 +46,10 @@ function KeybindingExists(){
 sudo apt-get update
 sudo apt-get install -y flameshot
 
-flameShotIniFile="${HOME}/.config/flameshot/flameshot.ini"
+flameShotIniPath="${HOME}/.config/flameshot/"
+mkdir -p "${flameShotIniPath}"
+
+flameShotIniFile="${flameShotIniPath}flameshot.ini"
 touch "${flameShotIniFile}"
 
 echo -e "${ORANGE}Flameshot > Disable welcome message${NC}"

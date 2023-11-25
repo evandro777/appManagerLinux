@@ -4,7 +4,7 @@
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color
 
-echo -e "${ORANGE}Installing GLava - Thirdparty not official repository (linuxuprising/apps)${NC}"
+echo -e "${ORANGE}Installing GLava - Unofficial repository (linuxuprising/apps)${NC}"
 
 sudo add-apt-repository ppa:linuxuprising/apps
 sudo apt-get update

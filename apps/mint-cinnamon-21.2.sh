@@ -23,59 +23,10 @@ function DisableAutoStart(){
 	StartupAppSetting "X-GNOME-Autostart-enabled" false "${HOME}/.config/autostart/${1}.desktop"
 }
 
-# Get Last Id From Keybinding
-function GetKeybindingLastId(){
-    local listId=$(dconf read /org/cinnamon/desktop/keybindings/custom-list)
-    if [ "$listId" == "" ]; then
-        listId="[]"
-    fi
-
-    # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
-    # Get first sequence
-    firstId=${listId:2:10} # Get 10 first chars (except first 2)
-    firstId=$(echo "${firstId}" | sed 's/[^0-9]*//g') # Remove all except numbers
-
-    # Get last sequence
-    lastId=${listId::-2} # Remove 2 last chars
-    lastId=${listId: -7} # Get 7 last chars
-    lastId=$(echo "${lastId}" | sed 's/[^0-9]*//g') # Remove all except numbers
-
-    if (( $firstId > $lastId )); then
-        id=$firstId
-    else
-        id=$lastId
-    fi
-
-    if [ "$id" == "" ]; then
-        id="-1" # Force -1 (doesn't exist the id). So the next id will be 0
-    fi
-    echo "$id"
-}
-
-# Return string if keybiding is found
-#$1: keybinding (example: <Super>Print)
-function KeybindingExists(){
-    local keyBinding="$1"
-    local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${keyBinding}")
-    echo "$return"
-}
-
 ####################
 ##### CINNAMON #####
 ####################
 echo -e "${Orange}Cinnamon Desktop${NC}"
-
-############################
-##### APPS > QUESTIONS #####
-############################
-#DROPBOX
-while true; do
-	echo -e "${ORANGE}Install${NC} Dropbox (nemo) (distro)? (Y/N): "
-	read -p "" dropbox_install
-	case $dropbox_install in
-		[YyNn]* ) break;;
-	esac
-done
 
 ###############################
 ##### STARTUP > QUESTIONS #####
@@ -99,13 +50,13 @@ while true; do
 done
 
 #notification calendar
-while true; do
-	echo -e "${RED}Disable startup${NC} calendar/events notifications/alarms? (Y/N): "
-	read -p "" evolution_notify_disable
-	case $evolution_notify_disable in
-		[YyNn]* ) break;;
-	esac
-done
+#while true; do
+#	echo -e "${RED}Disable startup${NC} calendar/events notifications/alarms? (Y/N): "
+#	read -p "" evolution_notify_disable
+#	case $evolution_notify_disable in
+#		[YyNn]* ) break;;
+#	esac
+#done
 
 #Trayicon for NVIDIA Prime
 while true; do
@@ -117,20 +68,13 @@ while true; do
 done
 
 #Update
-while true; do
-	echo -e "${RED}Disable startup${NC} update manager? (Y/N): "
-	read -p "" update_manager_disable
-	case $update_manager_disable in
-		[YyNn]* ) break;;
-	esac
-done
-
-##########################
-##### APPS > INSTALL #####
-##########################
-if [[ "$dropbox_install" == [yY] ]]; then
-	sudo ./dropbox.sh
-fi
+#while true; do
+#	echo -e "${RED}Disable startup${NC} update manager? (Y/N): "
+#	read -p "" update_manager_disable
+#	case $update_manager_disable in
+#		[YyNn]* ) break;;
+#	esac
+#done
 
 #################################
 ##### STARTUP APPS > ENABLE #####
@@ -174,14 +118,17 @@ echo -e "${ORANGE}http://askubuntu.com/questions/414841/which-applications-to-st
 
 #AUTOSTART > DISABLE > Bluetooth OBEX Agent > Allows to receive files via Bluetooth
 if [[ "$bluetooth_disable" == [yY] ]]; then
-	DisableAutoStart "blueberry-obex-agent"
+	echo "Auto start > Disable > Blueberry"
+	DisableAutoStart "blueberry-tray" 2>/dev/null
+	DisableAutoStart "blueberry-obex-agent" 2>/dev/null
+	echo "Auto start > Disable > Blueman"
 	DisableAutoStart "blueman"
 fi
 
 #AUTOSTART > DISABLE > Alarm notifier for Evolution incoming events and appointments
-if [[ "$evolution_notify_disable" == [yY] ]]; then
-	DisableAutoStart "org.gnome.Evolution-alarm-notify"
-fi
+#if [[ "$evolution_notify_disable" == [yY] ]]; then
+#	DisableAutoStart "org.gnome.Evolution-alarm-notify"
+#fi
 
 #AUTOSTART > DISABLE > NVIDIA PRIME
 if [[ "$nvidia_trayicon_disable" == [yY] ]]; then
@@ -190,15 +137,12 @@ if [[ "$nvidia_trayicon_disable" == [yY] ]]; then
 fi
 
 #AUTOSTART > DISABLE > UPDATE MANAGER
-if [[ "$update_manager_disable" == [yY] ]]; then
-	DisableAutoStart "mintupdate"
-fi
+#if [[ "$update_manager_disable" == [yY] ]]; then
+#	DisableAutoStart "mintupdate"
+#fi
 
 echo "Auto start > Disable > Mint Welcome"
 DisableAutoStart "mintwelcome"
-
-echo "Auto start > Disable > Blueberry"
-DisableAutoStart "blueberry-tray"
 
 echo "Auto start > Disable > Orca Screen Reader"
 DisableAutoStart "orca-autostart"
@@ -235,7 +179,7 @@ echo "Enable desktop trash icon"
 gsettings set org.nemo.desktop trash-icon-visible true
 
 echo "Notifications on the bottom side of the screen"
-gsettings set org.cinnamon.desktop.notifications.bottom-notifications true
+gsettings set org.cinnamon.desktop.notifications bottom-notifications true
 
 ## THEME > Mint-Y-Dark
 echo "Apply Mint-Y-Dark theme with transparency panel"
@@ -249,7 +193,7 @@ sed -i s/"  background-color: rgba(48, 49, 48, 0.99);"$/"  background-color: rgb
 sed -i s/"  background-color: rgba(47, 47, 47, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
 
 gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
-gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Dark"
+gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Yaru"
 gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y"
 #gsettings set org.cinnamon.theme name "Mint-Y-Dark" #original
 gsettings set org.cinnamon.theme name "Mint-Y-Dark-Transparency" #modified with panel transparency
@@ -299,44 +243,6 @@ gsettings set org.cinnamon.desktop.wm.preferences mouse-button-modifier "<Super>
 echo -e "${ORANGE}Applying shortcut for run command: Super + r${NC}"
 gsettings set org.cinnamon.desktop.keybindings.wm panel-run-dialog '["<Alt>F2", "<Super>r"]'
 
-lastId=$(GetKeybindingLastId)
-
-#SHORTCUTS > SYSTEM MONITOR
-echo -e "${ORANGE}Applying shortcut for System Monitor: CTRL + SHIFT + ESC${NC}"
-newId=$(($lastId + 1))
-newCustomId="custom${newId}"
-#su $SUDO_USER -c 'gsettings set org.cinnamon.desktop.keybindings custom-list '"'"'["custom0"]'"'"
-if [ -z "$(KeybindingExists "<Primary><Shift>Escape")" ]; then
-    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
-    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "System Monitor"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "gnome-system-monitor"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Shift>Escape"]'
-else
-
-echo -e "${ORANGE}Applying shortcut for xkill: CTRL + ALT + X${NC}"
-newId=$(($newId + 1))
-newCustomId="custom${newId}"
-if [ -z "$(KeybindingExists "<Primary><Alt>x")" ]; then
-    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
-    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "xkill"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "xkill"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Alt>x"]'
-else
-
-echo -e "${ORANGE}Applying shortcut for System Info: SUPER + Pause${NC}"
-newId=$(($newId + 1))
-newCustomId="custom${newId}"
-if [ -z "$(KeybindingExists "<Super>Pause")" ]; then
-    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
-    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "System Info"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "cinnamon-settings info"
-    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Super>Pause"]'
-else
-
-
 echo -e "${ORANGE}Applying shortcut for Media > Volume Down: ALT + SUPER + -${NC}"
 gsettings set org.cinnamon.desktop.keybindings.media-keys volume-down '["XF86AudioLowerVolume", "<Alt><Super>KP_Subtract"]'
 
@@ -360,3 +266,47 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up '["<Super><S
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down '["<Super><Shift>Page_Down"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Super>Page_Up"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Super>Page_Down"]'
+
+
+lastId=$(GetKeybindingLastId)
+
+#su $SUDO_USER -c 'gsettings set org.cinnamon.desktop.keybindings custom-list '"'"'["custom0"]'"'"
+
+# Check if custom-list is empty > create a dummy one
+if [ -z $(dconf read /org/cinnamon/desktop/keybindings/custom-list) ]; then
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "['__dummy__']"
+fi
+
+#SHORTCUTS > SYSTEM MONITOR
+echo -e "${ORANGE}Applying shortcut for System Monitor: CTRL + SHIFT + ESC${NC}"
+newId=$(($lastId + 1))
+newCustomId="custom${newId}"
+if [ -z "$(KeybindingExists "<Primary><Shift>Escape")" ]; then
+    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "System Monitor"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "gnome-system-monitor"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Shift>Escape"]'
+fi
+
+echo -e "${ORANGE}Applying shortcut for xkill: CTRL + ALT + X${NC}"
+newId=$(($newId + 1))
+newCustomId="custom${newId}"
+if [ -z "$(KeybindingExists "<Primary><Alt>x")" ]; then
+    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "xkill"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "xkill"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Super>x"]'
+fi
+
+echo -e "${ORANGE}Applying shortcut for System Info: SUPER + Pause${NC}"
+newId=$(($newId + 1))
+newCustomId="custom${newId}"
+if [ -z "$(KeybindingExists "<Super>Pause")" ]; then
+    setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "System Info"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "cinnamon-settings info"
+    gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Super>Pause"]'
+fi

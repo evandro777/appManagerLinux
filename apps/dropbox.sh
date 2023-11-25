@@ -1,10 +1,10 @@
 #!/bin/bash
 
 if [[ $SUDO_USER ]]; then
-	#AVOID USING EVAL: USER_HOME=$(eval echo ~${SUDO_USER})
-	USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
+    #AVOID USING EVAL: USER_HOME=$(eval echo ~${SUDO_USER})
+    USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
 else
-	USER_HOME=$HOME
+    USER_HOME=$HOME
 fi
 
 #COLORS
@@ -13,22 +13,17 @@ NC='\033[0m' # No Color / Reset color
 
 echo -e "${ORANGE}Installing Dropbox${NC}"
 
-sudo apt-get install -y dropbox
+#sudo apt-get install -y dropbox
 
-if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
+if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
     sudo apt-get install -y nemo-dropbox
 
-	#ADD SHORTCUT (BOOKMARKS) TO NEMO
-	printf "\nfile://${USER_HOME}/Dropbox Dropbox" >> ~/.config/gtk-3.0/bookmarks
-	#printf "\nfile://${USER_HOME}/Dropbox/documments/SO/Linux Linux" >> ~/.config/gtk-3.0/bookmarks
-#else
-#    if $DESKTOP_SESSION = "mate"; then
-#        ./linux_mint_18.1_mate.sh
-#    fi
+    #ADD SHORTCUT (BOOKMARKS) TO NEMO
+    printf "\nfile://${USER_HOME}/Dropbox Dropbox" >> ~/.config/gtk-3.0/bookmarks
 fi
 
 
-#Give Write permission to dropbox folder (usefull for some applications like apache access files on this folder) > A PASTA SÓ É CRIADA APÓS USAR A PRIMEIRA VEZ, ENTAO FOI COMENTADO, POIS A PASTA NESTE MOMENTO NAO EXISTE
+#Give Write permission to dropbox folder (usefull for some applications like apache access files on this folder) > FOLDER IS ONLY CREATED AFTER THE FIRST RUN, SO IT'S COMMENTED
 #sudo chmod 755 ~/Dropbox/
 
 #DROPBOX > DISABLE AUTOSTART

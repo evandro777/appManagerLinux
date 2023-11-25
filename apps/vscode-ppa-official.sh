@@ -29,36 +29,58 @@ sudo apt-get install -y code
 # sudo apt-get install code-insiders
 
 # Settings:
-printf '{
+echo -e "Applying settings to VSCode${NC}"
+
+original_json=$(cat <<EOF
+{
     "editor.renderWhitespace": "all",
     "editor.minimap.enabled": false,
-    "editor.fontFamily": "'"'"'Fira Code'"'"', '"'"'Droid Sans Mono'"'"', '"'"'monospace'"'"', monospace, '"'"'Droid Sans Fallback'"'"'",
-    "terminal.integrated.fontFamily": "'"'"'MesloLGS NF'"'"',
+    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', 'monospace', 'Droid Sans Fallback'",
+    "terminal.integrated.fontFamily": "'MesloLGS NF'",
     "window.titleBarStyle": "custom",
     "editor.fontLigatures": true,
     "editor.lineHeight": 24,
     "editor.fontSize": 16,
     "php.suggest.basic": false,
     "cSpell.language": "en,pt,pt_BR",
+    "cSpell.diagnosticLevel": "Hint",
     "[markdown]": {
         "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
         "editor.formatOnSave": true
     },
     "markdown.extension.list.indentationSize": "inherit"
-}' | tee -a ~/.config/Code/User/settings.json >/dev/null
+}
+EOF
+)
+
+userConfigsPath="${HOME}/.config/Code/User/"
+mkdir -p "${userConfigsPath}"
+
+userConfigsSettings="${userConfigsPath}settings.json"
+
+# Check if the destination file exists or is empty
+if [ ! -s "$userConfigsSettings" ]; then
+    # The file doesn't exist or is empty, so use the original JSON directly
+    echo "{}" > "$userConfigsSettings"
+fi
+
+# The file exists, so use `jq` to add or update only the necessary keys
+jq --argjson orig "$original_json" '. + $orig' "$userConfigsSettings" > "${HOME}/.config/Code/User/settings_temp.json"
+mv "${HOME}/.config/Code/User/settings_temp.json" "$userConfigsSettings"
+
 
 # Plugins
 # highlight .env
 code --install-extension mikestead.dotenv
 
 # PHPDoc
-code --install-extension neilbrayfield.php-docblocker
+#code --install-extension neilbrayfield.php-docblocker
 
 # PHP INTELEPHENSE
-code --install-extension bmewburn.vscode-intelephense-client
+#code --install-extension bmewburn.vscode-intelephense-client
 
 # Code Runner
-code --install-extension formulahendry.code-runner
+#code --install-extension formulahendry.code-runner
 
 # Markdown (.md) lint
 code --install-extension davidanson.vscode-markdownlint

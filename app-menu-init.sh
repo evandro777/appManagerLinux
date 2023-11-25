@@ -106,6 +106,7 @@ installLibreOffice="N"
 uninstallThunderbird="N"
 installFlameshot="N"
 installCopyQ="N"
+installDropbox="N"
 
 #Security & Privacy
 installKeePassXC="N"
@@ -122,7 +123,6 @@ installZoom="N"
 installDiscord="N"
 
 #Development
-installGit="N"
 installZshOhMyZshPowerlevel10k="N"
 installVsCode="N"
 installHeidiSql="N"
@@ -144,26 +144,26 @@ MainMenu() {
         echo -e "| Media > Video & Movies |"
         echo -e "++++++++++++++++++++++++++"
         echo -e "11: ${ORANGE}Install${NC} SMPlayer (official PPA)?: $(ColorYN $installSmplayer)"
-        echo -e "12: ${ORANGE}Install${NC} VLC (distro)?: $(ColorYN $installVLC) [default app: $defaultAppVLC]"
-        echo -e "13: ${ORANGE}Install${NC} FFmpeg (distro PPA)?: $(ColorYN $installFFmpeg)"
-        echo -e "14: ${ORANGE}Install${NC} Gaupol (distro)?: $(ColorYN $installGaupol)"
+        echo -e "12: ${ORANGE}Install${NC} VLC (distro repository)?: $(ColorYN $installVLC) [default app: $defaultAppVLC]"
+        echo -e "13: ${ORANGE}Install${NC} FFmpeg (distro repository)?: $(ColorYN $installFFmpeg)"
+        echo -e "14: ${ORANGE}Install${NC} Gaupol (distro repository)?: $(ColorYN $installGaupol)"
         echo -e "15: ${ORANGE}Install${NC} Stremio (official Flatpak)?: $(ColorYN $installStremio)"
 
         echo -e ""
         echo -e "+++++++++++++++++++++++++"
         echo -e "| Media > Audio & Music |"
         echo -e "+++++++++++++++++++++++++"
-        echo -e "15: ${ORANGE}Install${NC} Spotify (official PPA)?: $(ColorYN $installSpotify)"
-        echo -e "16: ${ORANGE}Install${NC} Clementine Music Player (official PPA)?: $(ColorYN $installClementine)"
-        echo -e "17: ${ORANGE}Install${NC} Strawberry Music Player (official PPA)?: $(ColorYN $installStrawberry)"
-        echo -e "18: ${RED}Uninstall${NC} Rhythmbox?: $(ColorYN $uninstallRhythmbox)"
+        echo -e "16: ${ORANGE}Install${NC} Spotify (official PPA)?: $(ColorYN $installSpotify)"
+        echo -e "17: ${ORANGE}Install${NC} Clementine Music Player (official PPA)?: $(ColorYN $installClementine)"
+        echo -e "18: ${ORANGE}Install${NC} Strawberry Music Player (official PPA)?: $(ColorYN $installStrawberry)"
+        echo -e "19: ${RED}Uninstall${NC} Rhythmbox?: $(ColorYN $uninstallRhythmbox)"
 
         echo -e ""
         echo -e "++++++++++++++++++"
         echo -e "| OS & Utilities |"
         echo -e "++++++++++++++++++"
         if [ "${recommendedDrivers}" ]; then
-            echo -e "20: ${ORANGE}Install${NC} drivers (${recommendedDrivers})?: $(ColorYN $installDrivers)"
+            echo -e "20: ${ORANGE}Install${NC} drivers > Official + Unofficial patches (${recommendedDrivers})?: $(ColorYN $installDrivers)"
         fi
         if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
             echo -e "21: ${RED}Setting${NC} Cinnamon: disable some autostart, install redshift, change theme, general adjustments, keyboard shortcuts?: $(ColorYN $settingCinnamon)"
@@ -171,7 +171,7 @@ MainMenu() {
         echo -e "22: ${ORANGE}Install${NC} Wine [Ubuntu: 20.04 - focal] (official PPA)?: $(ColorYN $installWine)"
         echo -e "23: ${ORANGE}Install${NC} Variety Wallpaper (official PPA)?: $(ColorYN $installVariety)"
         echo -e "24: ${ORANGE}Install${NC} seven-conky with autostart (official git repository)?: $(ColorYN $installSevenConky)"
-        echo -e "25: ${ORANGE}Install${NC} cpu-x (distro)?: $(ColorYN $installCpux)"
+        echo -e "25: ${ORANGE}Install${NC} cpu-x (distro repository)?: $(ColorYN $installCpux)"
 
         echo -e "26: ${RED}Setting${NC} Show all hidden startup applications?: $(ColorYN $settingShowAllStartupApps)"
         echo -e "27: ${RED}Setting${NC} Xed > tweaking?: $(ColorYN $settingXed)"
@@ -186,6 +186,7 @@ MainMenu() {
         echo -e "31: ${RED}Uninstall${NC} Thunderbird e-mail?: $(ColorYN $uninstallThunderbird)"
         echo -e "32: ${ORANGE}Install${NC} Flameshot (official PPA)?: $(ColorYN $installFlameshot)"
         echo -e "33: ${ORANGE}Install${NC} CopyQ [Clipboard Manager] (official PPA)?: $(ColorYN $installCopyQ)"
+        echo -e "34: ${ORANGE}Install${NC} Dropbox (distro)?: $(ColorYN $installDropbox)"
 
         echo -e ""
         echo -e "++++++++++++++++++++++"
@@ -208,19 +209,18 @@ MainMenu() {
         echo -e "60: ${ORANGE}Install${NC} Chrome (official PPA)?: $(ColorYN $installChrome)"
         echo -e "61: ${RED}Setting${NC} Firefox > tweaking?: $(ColorYN $settingFirefox)"
         echo -e "62: ${ORANGE}Install${NC} Zoom (official deb download/update)?: $(ColorYN $installZoom)"
-        echo -e "63: ${ORANGE}Install${NC} Discord (Third party Flatpak)?: $(ColorYN $installDiscord)"
+        echo -e "63: ${ORANGE}Install${NC} Discord (Unofficial Flatpak)?: $(ColorYN $installDiscord)"
 
         echo -e ""
         echo -e "+++++++++++++++"
         echo -e "| Development |"
         echo -e "+++++++++++++++"
-        echo -e "70: ${ORANGE}Install${NC} Git (distro PPA)?: $(ColorYN $installGit)"
-        echo -e "71: ${ORANGE}Install${NC} ZSH With OhMyZsh PowerLevel10k (distro PPA)?: $(ColorYN $installZshOhMyZshPowerlevel10k)"
+        echo -e "71: ${ORANGE}Install${NC} ZSH With OhMyZsh PowerLevel10k (distro repository)?: $(ColorYN $installZshOhMyZshPowerlevel10k)"
         echo -e "72: ${ORANGE}Install${NC} VS Code (official PPA)?: $(ColorYN $installVsCode)"
         echo -e "73: ${ORANGE}Install${NC} HeidiSQL [Requires Wine] (Custom download)?: $(ColorYN $installHeidiSql)"
         echo -e "74: ${ORANGE}Install${NC} DBeaver (official PPA)?: $(ColorYN $installDbeaver)"
-        echo -e "75: ${ORANGE}Install${NC} HTTPie (RESTful calls) (distro PPA)?: $(ColorYN $installHttpie)"
-        echo -e "76: ${ORANGE}Install${NC} Meld [Compare files] (distro PPA)?: $(ColorYN $installMeld)"
+        echo -e "75: ${ORANGE}Install${NC} HTTPie (RESTful calls) (distro repository)?: $(ColorYN $installHttpie)"
+        echo -e "76: ${ORANGE}Install${NC} Meld [Compare files] (distro repository)?: $(ColorYN $installMeld)"
         echo -e "77: ${ORANGE}Install${NC} Docker (official PPA)?: $(ColorYN $installDocker)"
         echo -e "78: ${ORANGE}Install${NC} Insomnia (official PPA)?: $(ColorYN $installInsomnia)"
 
@@ -228,7 +228,7 @@ MainMenu() {
         echo -e "+++++++++"
         echo -e "| GAMES |"
         echo -e "+++++++++"
-        echo -e "80: ${ORANGE}Install${NC} Steam (distro PPA)?: $(ColorYN $installSteam)"
+        echo -e "80: ${ORANGE}Install${NC} Steam (distro repository)?: $(ColorYN $installSteam)"
         echo -e "81: ${ORANGE}Install${NC} Lutris (official Flatpak)?: $(ColorYN $installLutris)"
 
         echo -e ""
@@ -275,19 +275,19 @@ MainMenu() {
                 break;;
 
             #Media > Audio & Music
-            "15")
+            "16")
                 installSpotify=$(SwitchYN $installSpotify)
                 break;;
 
-            "16")
+            "17")
                 installClementine=$(SwitchYN $installClementine)
                 break;;
 
-            "17")
+            "18")
                 installStrawberry=$(SwitchYN $installStrawberry)
                 break;;
 
-            "18")
+            "19")
                 uninstallRhythmbox=$(SwitchYN $uninstallRhythmbox)
                 break;;
 
@@ -349,6 +349,10 @@ MainMenu() {
                 installCopyQ=$(SwitchYN $installCopyQ)
                 break;;
 
+            "34")
+                installDropbox=$(SwitchYN $installDropbox)
+                break;;
+
             #Security & Privacy
             "40")
                 installKeePassXC=$(SwitchYN $installKeePassXC)
@@ -385,10 +389,6 @@ MainMenu() {
                 break;;
 
             #Development
-            "70")
-                installGit=$(SwitchYN $installGit)
-                break;;
-
             "71")
                 installZshOhMyZshPowerlevel10k=$(SwitchYN $installZshOhMyZshPowerlevel10k)
                 break;;
@@ -442,7 +442,7 @@ MainMenu() {
 
 Actions() {
     # Log everything and show on terminal
-    log_file="app-log_$(date +%Y-%m-%d_%H-%M-%S).txt"
+    log_file="${HOME}/appManager-log_$(date +%Y-%m-%d_%H-%M-%S).txt"
     exec > >(tee -i "$log_file") 2>&1
 
     #########################
@@ -549,15 +549,10 @@ Actions() {
         ./apps/cpu-x.sh
     fi
 
-    if [[ "$installDrivers" == [yY] ]]; then
-        sudo ubuntu-drivers autoinstall
-        if [ "$(echo -e "${searchDrivers}" | grep 'vendor.*:' | grep 'NVIDIA')" ]; then
-            sudo apt-get install -y nvidia-settings
-        fi
-    fi
+    ## NVIDIA > Moved to the end of all
 
     if [[ "$settingCinnamon" == [yY] ]]; then
-        ./apps/linux-mint-20-cinnamon.sh
+        ./apps/mint-cinnamon-21.2.sh
     fi
 
     if [[ "$settingShowAllStartupApps" == [yY] ]]; then
@@ -579,7 +574,7 @@ Actions() {
     #Office & Productivity
     if [[ "$installLibreOffice" == [yY] ]]; then
         sudo apt-get remove --purge -y "libreoffice*"
-        ./apps/libreoffice-ppa-official.sh
+        ./apps/libreoffice-flatpak-official.sh
     fi
 
     if [[ "$uninstallThunderbird" == [yY] ]]; then
@@ -593,6 +588,10 @@ Actions() {
 
     if [[ "$installCopyQ" == [yY] ]]; then
         ./apps/copyq-ppa-official.sh
+    fi
+
+    if [[ "$installDropbox" == [yY] ]]; then
+        ./apps/dropbox.sh
     fi
 
     #Security & Privacy
@@ -627,14 +626,10 @@ Actions() {
     fi
 
     if [[ "$installDiscord" == [yY] ]]; then
-        ./apps/discord-flatpak-third-party.sh
+        ./apps/discord-flatpak-unofficial.sh
     fi
 
     #Development
-    if [[ "$installGit" == [yY] ]]; then
-        ./apps/git.sh
-    fi
-
     if [[ "$installZshOhMyZshPowerlevel10k" == [yY] ]]; then
         ./apps/zsh-OhMyZsh-Powerlevel10k.sh
     fi
@@ -675,6 +670,14 @@ Actions() {
     if [[ "$installLutris" == [yY] ]]; then
         ./apps/lutris-flatpak-official.sh
     fi
+    
+    #OS & Utilities > NVIDIA > MOVED TO THE LAST INSTALLATION BECAUSE THERE ARE PATCHES APPLYED TO PREVIOUS INSTALLED FLATPACK
+    if [[ "$installDrivers" == [yY] ]]; then
+        sudo ubuntu-drivers autoinstall
+        if [ "$(echo -e "${searchDrivers}" | grep 'vendor.*:' | grep 'NVIDIA')" ]; then
+            ./apps/nvidia-driver-proprietary.sh
+        fi
+    fi
 
     echo -e "${GREEN}Fixing broken packages${NC}"
     sudo apt-get install -f
@@ -696,6 +699,7 @@ Actions() {
     fi
 
     echo -e "\nTime elapsed: $SECONDS seconds"
+    echo -e "\nIt's recommended to restart computer"
     read -p "Press any key to continue"
 }
 

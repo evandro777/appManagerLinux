@@ -28,13 +28,13 @@ function UpdateGnomeTerminalProfileFont(){
 
 #Fonts
 sudo apt-get install -y fontconfig
-wget --directory-prefix="${HOME}/.local/share/fonts/" https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+wget --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf"
 wget --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
 wget --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
 wget --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
 wget --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
 fc-cache -vf ~/.local/share/fonts/
-wget --directory-prefix="${HOME}/.config/fontconfig/conf.d/" https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+wget --directory-prefix="${HOME}/.config/fontconfig/conf.d/" "https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf"
 
 
 #Update gnome terminal profiles font for the MesloLGS font used by powerline

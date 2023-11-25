@@ -99,10 +99,10 @@ On_IWhite="\[\033[0;107m\]"   # White
 #$2: value
 #$3: file
 function SetProperty(){
-	local param="${1}="
-	local value="${1}=${2}"
-	local fileLocation="${3}"
-	SearchReplaceOrCreate "$param" "$value" "$fileLocation"
+    local param="${1}="
+    local value="${1}=${2}"
+    local fileLocation="${3}"
+    SearchReplaceOrCreate "$param" "$value" "$fileLocation"
 }
 
 #Search & Replace or create line
@@ -111,17 +111,17 @@ function SetProperty(){
 #$2: value
 #$3: file
 function SearchReplaceOrCreate(){
-	local param="${1}"
-	local value="${2}"
-	local fileLocation="${3}"
-	
-	if ! grep -q "${param}" "${fileLocation}"; then
-		#insert
-		echo "${value}" >> "${fileLocation}"
-	else
-		#update
-		sed -i s/"${param}".*$/"${value}"/ "${fileLocation}"
-	fi
+    local param="${1}"
+    local value="${2}"
+    local fileLocation="${3}"
+    
+    if ! grep -q "${param}" "${fileLocation}"; then
+        #insert
+        echo "${value}" >> "${fileLocation}"
+    else
+        #update
+        sed -i s/"${param}".*$/"${value}"/ "${fileLocation}"
+    fi
 }
 
 #Ps.: Force remove white spaces " = ", happens when creating a new file, when editing a file that already doesn't have, it isn't needed
@@ -129,14 +129,49 @@ function SearchReplaceOrCreate(){
 #Example: TrimPropertys "${HOME}/.config/autostart/mintwelcome.desktop"
 #$1: file
 function TrimPropertys(){
-	local fileLocation="${1}"
-	
-	sed -i -r "s/(\S*)\s*=\s*(.*)/\1=\2/g" "${fileLocation}"
+    local fileLocation="${1}"
+    
+    sed -i -r "s/(\S*)\s*=\s*(.*)/\1=\2/g" "${fileLocation}"
 }
 
 function CommandDependency(){
-	local commandName="${1}"
-	command -v "$commandName" >/dev/null 2>&1 || { echo -e >&2 "${RED}$commandName${NC} is required but it's not installed! Aborting."; exit 1; }
+    local commandName="${1}"
+    command -v "$commandName" >/dev/null 2>&1 || { echo -e >&2 "${RED}$commandName${NC} is required but it's not installed! Aborting."; exit 1; }
 }
 
+# Get Last Id From Keybinding
+function GetKeybindingLastId(){
+    local listId=$(dconf read /org/cinnamon/desktop/keybindings/custom-list)
+    if [ "$listId" == "" ]; then
+        listId="[]"
+    fi
 
+    # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
+    # Get first sequence
+    firstId=${listId:2:10} # Get 10 first chars (except first 2)
+    firstId=$(echo "${firstId}" | sed 's/[^0-9]*//g') # Remove all except numbers
+
+    # Get last sequence
+    lastId=${listId::-2} # Remove 2 last chars
+    lastId=${lastId: -7} # Get 7 last chars
+    lastId=$(echo "${lastId}" | sed 's/[^0-9]*//g') # Remove all except numbers
+    
+    if (( firstId > lastId )); then
+        id=$firstId
+    else
+        id=$lastId
+    fi
+
+    if [ "$id" == "" ]; then
+        id="-1" # Force -1 (doesn't exist the id). So the next id will be 0
+    fi
+    echo "$id"
+}
+
+# Return string if keybiding is found
+#$1: keybinding (example: <Super>Print)
+function KeybindingExists(){
+    local keyBinding="$1"
+    local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${keyBinding}")
+    echo "$return"
+}

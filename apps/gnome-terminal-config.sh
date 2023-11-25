@@ -33,20 +33,22 @@ function SaveProfile(){
 	#if ! ProfileExists $newProfileHash ; then
 	if [ -z "$(ProfileExists $newProfileHash)" ]; then
 		local setList=$(dconf read /org/gnome/terminal/legacy/profiles:/list | sed -r "s/']/', '${newProfileHash}']/g")
-		if [ ! -z "$setList" ]; then # Check if setList not empty
+		if [ -z "$setList" ]; then # if setList is empty
 		    # Create list with the default profile
-		    dconf write /org/gnome/terminal/legacy/profiles:/list "[$(dconf read /org/gnome/terminal/legacy/profiles:/default)]"
+		    # dconf write /org/gnome/terminal/legacy/profiles:/list "[$(dconf read /org/gnome/terminal/legacy/profiles:/default)]"
+		    dconf write /org/gnome/terminal/legacy/profiles:/list "['$newProfileHash']"
+		else
+		    # Add a new profile
+		    local setList=$(dconf read /org/gnome/terminal/legacy/profiles:/list | sed -r "s/']/', '${newProfileHash}']/g")
+		    dconf write /org/gnome/terminal/legacy/profiles:/list "${setList}"
 		fi
-		# Add a new profile
-		local setList=$(dconf read /org/gnome/terminal/legacy/profiles:/list | sed -r "s/']/', '${newProfileHash}']/g")
-		dconf write /org/gnome/terminal/legacy/profiles:/list "${setList}"
 	fi
 	dconf write /org/gnome/terminal/legacy/profiles:/:"${newProfileHash}"/visible-name "'${profileName}'"
 }
 
 
-
 #ADD GREEN THEME
+echo -e "Creating Green profile theme"
 newProfileHash="5fb53c50-40ea-4836-9958-956ee13d6ed9"
 SaveProfile "${newProfileHash}" "Green"
 greenThemeParams="[/]
@@ -57,15 +59,16 @@ foreground-color='rgb(14,234,120)'"
 dconf load /org/gnome/terminal/legacy/profiles:/:"${newProfileHash}"/ <<< "${greenThemeParams}"
 #dconf load /org/gnome/terminal/legacy/profiles:/:"${newProfileHash}"/ < dconf/terminal-settings.dconf
 
-
-
 #ADD DRACULA THEME
+echo -e "Creating Dracula profile"
 newProfileHash="765e07a8-5a35-408a-b25c-630650a6c695"
 SaveProfile "${newProfileHash}" "Dracula"
 
 #Set default
+echo -e "Setting Dracula profile as default"
 dconf write /org/gnome/terminal/legacy/profiles:/default "'${newProfileHash}'"
 
+echo -e "Downloading Dracula Theme"
 draculaFolder="/tmp/gnome-terminal-dracula/"
 wget --directory-prefix="${draculaFolder}" https://github.com/dracula/gnome-terminal/archive/master.zip
 unzip -o "${draculaFolder}master.zip" -d "${draculaFolder}"
@@ -76,4 +79,5 @@ unzip -o "${draculaFolder}master.zip" -d "${draculaFolder}"
 #A dircolors adapted to solarized can be automatically downloaded.
 #--install-dircolors: Download seebi' dircolors-solarized: https://github.com/seebi/dircolors-solarized
 #--skip-dircolors: [DEFAULT] I don't need any dircolors.
+echo -e "Installing Dracula Theme and applying to Dracula profile"
 "${draculaFolder}gnome-terminal-master/"./install.sh --scheme=Dracula --profile=Dracula --skip-dircolors

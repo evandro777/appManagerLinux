@@ -13,5 +13,6 @@ sudo apt-get update
 sudo apt-get install -y google-chrome-stable
 #BETA: sudo apt-get install -y google-chrome-beta
 #UNSTABLE: sudo apt-get install -y google-chrome-unstable
-#After install, remove duplicate source entry
-#sudo rm /etc/apt/sources.list.d/google-chrome.list &>/dev/null
+
+echo -e "Chrome > After install > Removing duplicate source entry"
+sudo rm /etc/apt/sources.list.d/google-chrome.list &>/dev/null

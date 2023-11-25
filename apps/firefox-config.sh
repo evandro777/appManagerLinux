@@ -83,6 +83,29 @@ while pidof "$process" >/dev/null; do
 	#done
 done
 
+echo -e "Firefox > Themes > Tabs in title bar (disable title bar)"
+SetFirefoxProperty "browser.tabs.inTitlebar" 1
+
+# echo -e "Firefox > Themes > Enable Alpenglow Theme"
+# SetFirefoxProperty "extensions.activeThemeID" "firefox-alpenglow@mozilla.org"
+
+echo -e "Firefox > Themes > Enable Dark Theme"
+SetFirefoxProperty "browser.theme.content-theme" 0
+SetFirefoxProperty "extensions.activeThemeID" "firefox-compact-dark"
+
+echo -e "Firefox > Performance > Unload tabs on low memory"
+SetFirefoxProperty "browser.tabs.unloadOnLowMemory" true
+
+echo -e "Firefox > Performance > Disable pocket"
+SetFirefoxProperty "extensions.pocket.enabled" false
+
+echo -e "Firefox > Security > Enable HTTPS-Only Mode in all windows"
+SetFirefoxProperty "dom.security.https_only_mode" true
+
+echo -e "Firefox > Others configs to validate"
+
+SetFirefoxProperty "browser.theme.toolbar-theme" 0
+
 SetFirefoxProperty "browser.cache.use_new_backend" 1
 
 SetFirefoxProperty "browser.sessionhistory.max_entries" 5
@@ -127,14 +150,7 @@ SetFirefoxProperty "privacy.trackingprotection.enabled" true
 
 SetFirefoxProperty "privacy.trackingprotection.socialtracking.enabled" true
 
-SetFirefoxProperty "browser.tabs.drawInTitlebar" true
-
 SetFirefoxProperty "browser.urlbar.tipShownCount.searchTip_onboard" 4
 
-SetFirefoxProperty "extensions.pocket.enabled" false
 
-SetFirefoxProperty "dom.security.https_only_mode" true
 
-# Alpenglow Theme 
-SetFirefoxProperty "browser.theme.toolbar-theme" 1
-SetFirefoxProperty "extensions.activeThemeId" "firefox-alpenglow@mozilla.org"
