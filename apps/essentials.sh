@@ -53,6 +53,9 @@ sudo apt-get install -y heif-gdk-pixbuf
 echo -e "${ORANGE}Installing GIT${NC}"
 ./git.sh
 
+echo -e "${ORANGE}Installing numlockx > Enabling numlock on startup${NC}"
+sudo apt-get install -y numlockx
+
 # echo -e "${ORANGE}Installing Os Query${NC}"
 # ./osquery.sh
 

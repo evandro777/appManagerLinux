@@ -310,3 +310,10 @@ if [ -z "$(KeybindingExists "<Super>Pause")" ]; then
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "cinnamon-settings info"
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Super>Pause"]'
 fi
+
+echo -e "${ORANGE}Login settings > Enable numlock and dark theme${NC}"
+loginSettingsFile="/etc/lightdm/slick-greeter.conf"
+sudo crudini --set "${loginSettingsFile}" Greeter activate-numlock "true"
+sudo crudini --set "${loginSettingsFile}" Greeter theme-name "Mint-Y-Dark"
+sudo crudini --set "${loginSettingsFile}" Greeter icon-theme-name "Mint-Y-Yaru"
+
