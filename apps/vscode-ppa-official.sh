@@ -41,7 +41,6 @@ original_json=$(cat <<EOF
     "editor.fontLigatures": true,
     "editor.lineHeight": 24,
     "editor.fontSize": 16,
-    "php.suggest.basic": false,
     "cSpell.language": "en,pt,pt_BR",
     "cSpell.diagnosticLevel": "Hint",
     "[markdown]": {
@@ -125,12 +124,31 @@ code --install-extension oderwat.indent-rainbow
 # VUE
 # sudo -u $SUDO_USER -H code --install-extension octref.vetur
 
-# Settings:
-printf '// Place your key bindings in this file to overwrite the defaults
-[
-    {
-        "key": "ctrl+shift+alt+d",
-        "command": "editor.action.copyLinesDownAction",
-        "when": "editorTextFocus"
-    }
-]' | tee -a ~/.config/Code/User/keybindings.json >/dev/null
+echo -e "Applying Keybindings to VSCode${NC}"
+
+original_json=$(cat <<EOF
+{
+    "key": "ctrl+shift+alt+d",
+    "command": "editor.action.copyLinesDownAction",
+    "when": "editorTextFocus"
+}
+EOF
+)
+
+userKeybindings="${userConfigsPath}keybindings.json"
+
+# Check if the destination file exists or is empty
+if [ ! -s "$userKeybindings" ]; then
+    # The file doesn't exist or is empty, so use the original JSON directly
+    # echo "// Place your key bindings in this file to overwrite the defaults" > "$userKeybindings" # Do not use this with `jq`, common json is not allowed commentary
+    echo "[]" >> "$userKeybindings"
+fi
+
+# Check if the key already exists in the array
+if jq --arg key "ctrl+shift+alt+d" 'map(select(.key == $key)) | length' "$userKeybindings" | grep -qv '^0$'; then
+    echo "The key binding already exists in $userKeybindings."
+else
+    # The file exists, so use `jq` to add or update only the necessary keys
+    jq --argjson orig "$original_json" '. += [$orig]' "$userKeybindings" > "${HOME}/.config/Code/User/keybindings_temp.json"
+    mv "${HOME}/.config/Code/User/keybindings_temp.json" "$userKeybindings"
+fi
