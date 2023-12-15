@@ -31,15 +31,6 @@ echo -e "${Orange}Cinnamon Desktop${NC}"
 ###############################
 ##### STARTUP > QUESTIONS #####
 ###############################
-#redshift
-while true; do
-	echo -e "${GREEN}Enable startup${NC} redshift (blue light filter)? (Y/N): "
-	read -p "" redshift_enable
-	case $redshift_enable in
-		[YyNn]* ) break;;
-	esac
-done
-
 #bluetooth
 while true; do
 	echo -e "${RED}Disable startup${NC} bluetooth? (Y/N): "
@@ -79,6 +70,7 @@ done
 #################################
 ##### STARTUP APPS > ENABLE #####
 #################################
+echo -e "${GREEN}Redshift (Blue Light Filter) > ${NC}Creating config"
 #REDSHIFT > BLUELIGHT FILTER < LATITUDE LONGITUDE MIRASSOL: redshift-gtk -l -20.8136:-49.5144 -t 6000:5000
 REDSHIFT_DESKTOP_CONTENT='[Desktop Entry]
 Type=Application
@@ -94,16 +86,17 @@ StartupNotify=true
 Icon=redshift
 X-GNOME-Autostart-Delay=3
 X-GNOME-Autostart-enabled=true'
-if [[ "$redshift_enable" == [yY] ]]; then
-	REDSHIFT_DESKTOP_FILE="${HOME}/.config/autostart/redshift-gtk.desktop"
-	if [ -f "$REDSHIFT_DESKTOP_FILE" ]; then
-		StartupAppSetting "Hidden" false "${REDSHIFT_DESKTOP_FILE}"
-		StartupAppSetting "X-GNOME-Autostart-enabled" true "${REDSHIFT_DESKTOP_FILE}"
-		StartupAppSetting "Exec" "redshift-gtk -t 6000:4500" "${REDSHIFT_DESKTOP_FILE}"
-	else
-		#CREATE FILE WITH USER PERMISSION. USING ECHO OR PRINTF DIRECTLY WILL CREATE WITH ROOT PERMISSION
-		printf "${REDSHIFT_DESKTOP_CONTENT}" | tee -a "${REDSHIFT_DESKTOP_FILE}" > /dev/null
-	fi
+
+echo -e "${GREEN}Redshift (Blue Light Filter) > ${NC}Enabled autostart"
+
+REDSHIFT_DESKTOP_FILE="${HOME}/.config/autostart/redshift-gtk.desktop"
+if [ -f "$REDSHIFT_DESKTOP_FILE" ]; then
+	StartupAppSetting "Hidden" false "${REDSHIFT_DESKTOP_FILE}"
+	StartupAppSetting "X-GNOME-Autostart-enabled" true "${REDSHIFT_DESKTOP_FILE}"
+	StartupAppSetting "Exec" "redshift-gtk -t 6000:4500" "${REDSHIFT_DESKTOP_FILE}"
+else
+	#CREATE FILE WITH USER PERMISSION. USING ECHO OR PRINTF DIRECTLY WILL CREATE WITH ROOT PERMISSION
+	printf "${REDSHIFT_DESKTOP_CONTENT}" | tee -a "${REDSHIFT_DESKTOP_FILE}" > /dev/null
 fi
 
 ##################################
