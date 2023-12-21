@@ -11,15 +11,14 @@ fi
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color
 
-echo -e "${ORANGE}Installing Dropbox${NC}"
-
-#sudo apt-get install -y dropbox
-
 if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
+    echo -e "${ORANGE}Installing Dropbox with Nemo integration${NC}"
     sudo apt-get install -y nemo-dropbox
-
     #ADD SHORTCUT (BOOKMARKS) TO NEMO
     printf "\nfile://${USER_HOME}/Dropbox Dropbox" >> ~/.config/gtk-3.0/bookmarks
+else
+    echo -e "${ORANGE}Installing Dropbox${NC}"
+    sudo apt-get install -y dropbox
 fi
 
 

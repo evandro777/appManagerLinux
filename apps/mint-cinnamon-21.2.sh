@@ -70,6 +70,25 @@ done
 #################################
 ##### STARTUP APPS > ENABLE #####
 #################################
+
+#################################
+##### STARTUP APPS > ENABLE #####
+#################################
+echo -e "${GREEN}Enable IBus daemon (Keyboard language & Emojis: CTRL + ;) > ${NC} Enabled autostart"
+
+IBUS_DESKTOP_CONTENT='[Desktop Entry]
+Type=Application
+Exec=ibus-daemon --daemonize
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+Hidden=false
+Name[en_US]=IBus daemon
+Comment[en_US]=IBus input method
+X-GNOME-Autostart-Delay=5'
+
+#CREATE FILE WITH USER PERMISSION. USING ECHO OR PRINTF DIRECTLY WILL CREATE WITH ROOT PERMISSION
+printf "${IBUS_DESKTOP_CONTENT}" | tee -a "${HOME}/.config/autostart/IBus daemon.desktop" > /dev/null
+
 echo -e "${GREEN}Redshift (Blue Light Filter) > ${NC}Creating config"
 #REDSHIFT > BLUELIGHT FILTER < LATITUDE LONGITUDE MIRASSOL: redshift-gtk -l -20.8136:-49.5144 -t 6000:5000
 REDSHIFT_DESKTOP_CONTENT='[Desktop Entry]
