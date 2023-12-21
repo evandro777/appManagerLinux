@@ -102,7 +102,9 @@ settingGnomeTerminal="N"
 settingSamba="N"
 
 #Office & Productivity
-installLibreOffice="N"
+uninstallLibreOffice="N"
+installLibreOfficeFlatpak="N"
+installOnlyOffice="N"
 uninstallThunderbird="N"
 installFlameshot="N"
 installCopyQ="N"
@@ -182,11 +184,13 @@ MainMenu() {
         echo -e "+++++++++++++++++++++++++"
         echo -e "| Office & Productivity |"
         echo -e "+++++++++++++++++++++++++"
-        echo -e "30: ${RED}Install & Remove${NC} Libreoffice (official Flatpak) and remove from repository?: $(ColorYN $installLibreOffice)"
-        echo -e "31: ${RED}Uninstall${NC} Thunderbird e-mail?: $(ColorYN $uninstallThunderbird)"
-        echo -e "32: ${ORANGE}Install${NC} Flameshot (official PPA)?: $(ColorYN $installFlameshot)"
-        echo -e "33: ${ORANGE}Install${NC} CopyQ [Clipboard Manager] (official PPA)?: $(ColorYN $installCopyQ)"
-        echo -e "34: ${ORANGE}Install${NC} Dropbox (distro)?: $(ColorYN $installDropbox)"
+        echo -e "30: ${RED}Uninstall${NC} Libreoffice?: $(ColorYN $uninstalllLibreOffice)"
+        echo -e "31: ${ORANGE}Install${NC} Libreoffice (official Flatpak)?: $(ColorYN $installLibreOfficeFlatpak)"
+        echo -e "32: ${ORANGE}Install${NC} OnlyOffice (official Flatpak)?: $(ColorYN $installOnlyOffice)"
+        echo -e "33: ${RED}Uninstall${NC} Thunderbird e-mail?: $(ColorYN $uninstallThunderbird)"
+        echo -e "34: ${ORANGE}Install${NC} Flameshot (official PPA)?: $(ColorYN $installFlameshot)"
+        echo -e "35: ${ORANGE}Install${NC} CopyQ [Clipboard Manager] (official PPA)?: $(ColorYN $installCopyQ)"
+        echo -e "36: ${ORANGE}Install${NC} Dropbox (distro)?: $(ColorYN $installDropbox)"
 
         echo -e ""
         echo -e "++++++++++++++++++++++"
@@ -334,22 +338,30 @@ MainMenu() {
 
             # Office & Productivity
             "30")
-                installLibreOffice=$(SwitchYN $installLibreOffice)
+                uninstallLibreOffice=$(SwitchYN $uninstallLibreOffice)
                 break;;
 
             "31")
-                uninstallThunderbird=$(SwitchYN $uninstallThunderbird)
+                installLibreOfficeFlatpak=$(SwitchYN $installLibreOfficeFlatpak)
                 break;;
 
             "32")
-                installFlameshot=$(SwitchYN $installFlameshot)
+                installOnlyOffice=$(SwitchYN $installOnlyOffice)
                 break;;
 
             "33")
-                installCopyQ=$(SwitchYN $installCopyQ)
+                uninstallThunderbird=$(SwitchYN $uninstallThunderbird)
                 break;;
 
             "34")
+                installFlameshot=$(SwitchYN $installFlameshot)
+                break;;
+
+            "35")
+                installCopyQ=$(SwitchYN $installCopyQ)
+                break;;
+
+            "36")
                 installDropbox=$(SwitchYN $installDropbox)
                 break;;
 
@@ -541,18 +553,8 @@ Actions() {
         ./apps/variety-ppa-official.sh
     fi
 
-    if [[ "$installSevenConky" == [yY] ]]; then
-        ./apps/seven-conky.sh
-    fi
-
     if [[ "$installCpux" == [yY] ]]; then
         ./apps/cpu-x.sh
-    fi
-
-    ## NVIDIA > Moved to the end of all
-
-    if [[ "$settingCinnamon" == [yY] ]]; then
-        ./apps/mint-cinnamon-21.2.sh
     fi
 
     if [[ "$settingShowAllStartupApps" == [yY] ]]; then
@@ -572,9 +574,16 @@ Actions() {
     fi
 
     #Office & Productivity
-    if [[ "$installLibreOffice" == [yY] ]]; then
+    if [[ "$uninstallLibreOffice" == [yY] ]]; then
         sudo apt-get remove --purge -y "libreoffice*"
+    fi
+
+    if [[ "$installLibreOfficeFlatpak" == [yY] ]]; then
         ./apps/libreoffice-flatpak-official.sh
+    fi
+
+    if [[ "$installOnlyOffice" == [yY] ]]; then
+        ./apps/onlyoffice-flatpak-official.sh
     fi
 
     if [[ "$uninstallThunderbird" == [yY] ]]; then
@@ -630,10 +639,6 @@ Actions() {
     fi
 
     #Development
-    if [[ "$installZshOhMyZshPowerlevel10k" == [yY] ]]; then
-        ./apps/zsh-OhMyZsh-Powerlevel10k.sh
-    fi
-
     if [[ "$installVsCode" == [yY] ]]; then
         ./apps/vscode-ppa-official.sh
     fi
@@ -670,7 +675,24 @@ Actions() {
     if [[ "$installLutris" == [yY] ]]; then
         ./apps/lutris-flatpak-official.sh
     fi
-    
+
+    # Latest installs
+
+    # Ask questions
+    if [[ "$installSevenConky" == [yY] ]]; then
+        ./apps/seven-conky.sh
+    fi
+
+    # Ask questions
+    if [[ "$settingCinnamon" == [yY] ]]; then
+        ./apps/mint-cinnamon-21.2.sh
+    fi
+
+    # Ask for password
+    if [[ "$installZshOhMyZshPowerlevel10k" == [yY] ]]; then
+        ./apps/zsh-OhMyZsh-Powerlevel10k.sh
+    fi
+
     #OS & Utilities > NVIDIA > MOVED TO THE LAST INSTALLATION BECAUSE THERE ARE PATCHES APPLYED TO PREVIOUS INSTALLED FLATPACK
     if [[ "$installDrivers" == [yY] ]]; then
         sudo ubuntu-drivers autoinstall

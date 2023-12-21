@@ -176,6 +176,7 @@ gsettings set org.cinnamon.desktop.notifications bottom-notifications true
 
 ## THEME > Mint-Y-Dark
 echo "Apply Mint-Y-Dark theme with transparency panel"
+mkdir -p "${HOME}/.themes/"
 cp -r /usr/share/themes/Mint-Y-Dark/ "$HOME/.themes/Mint-Y-Dark-Transparency/" # create a new theme based on original one
 
 # Manually look for: .menu {
@@ -266,7 +267,7 @@ lastId=$(GetKeybindingLastId)
 #su $SUDO_USER -c 'gsettings set org.cinnamon.desktop.keybindings custom-list '"'"'["custom0"]'"'"
 
 # Check if custom-list is empty > create a dummy one
-if [ -z $(dconf read /org/cinnamon/desktop/keybindings/custom-list) ]; then
+if [ -z "$(dconf read /org/cinnamon/desktop/keybindings/custom-list)" ]; then
     dconf write /org/cinnamon/desktop/keybindings/custom-list "['__dummy__']"
 fi
 
@@ -285,7 +286,7 @@ fi
 echo -e "${ORANGE}Applying shortcut for xkill: CTRL + ALT + X${NC}"
 newId=$(($newId + 1))
 newCustomId="custom${newId}"
-if [ -z "$(KeybindingExists "<Primary><Alt>x")" ]; then
+if [ -z "$(KeybindingExists "<Primary><Super>x")" ]; then
     setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g")
     dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
     gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "xkill"
