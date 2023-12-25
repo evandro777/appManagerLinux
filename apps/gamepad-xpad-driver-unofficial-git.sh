@@ -12,7 +12,7 @@ echo -e "Alternative to use 8bitdo with xinput without installing: https://gist.
 echo -e "To identify plugged usb gamepad and peripherals, execute `lsusb`"
 
 echo -e "Clearing already installed driver"
-rm -rf /usr/src/xpad-0.4
+sudo rm -rf /usr/src/xpad-0.4
 
 echo -e "Getting updated version"
 sudo git clone --depth=1 https://github.com/paroj/xpad.git /usr/src/xpad-0.4
