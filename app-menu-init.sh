@@ -685,7 +685,6 @@ Actions() {
     if [[ "$installGamepadXpadDriver" == [yY] ]]; then
         ./apps/gamepad-xpad-driver-unofficial-git.sh
     fi
-    
 
     # Latest installs
 
