@@ -137,6 +137,7 @@ installInsomnia="N"
 #Games
 installSteam="N"
 installLutris="N"
+installGamepadXpadDriver="N"
 
 MainMenu() {
     clear
@@ -234,6 +235,7 @@ MainMenu() {
         echo -e "+++++++++"
         echo -e "80: ${ORANGE}Install${NC} Steam (distro repository)?: $(ColorYN $installSteam)"
         echo -e "81: ${ORANGE}Install${NC} Lutris (official Flatpak)?: $(ColorYN $installLutris)"
+        echo -e "82: ${ORANGE}Install${NC} More gamepad xpad drivers (Unofficial Git)?: $(ColorYN $installGamepadXpadDriver)"
 
         echo -e ""
         echo -e "++++++++++"
@@ -440,6 +442,10 @@ MainMenu() {
 
             "81")
                 installLutris=$(SwitchYN $installLutris)
+                break;;
+
+            "82")
+                installGamepadXpadDriver=$(SwitchYN $installGamepadXpadDriver)
                 break;;
 
             *) MainMenu
@@ -675,6 +681,11 @@ Actions() {
     if [[ "$installLutris" == [yY] ]]; then
         ./apps/lutris-flatpak-official.sh
     fi
+
+    if [[ "$installGamepadXpadDriver" == [yY] ]]; then
+        ./apps/gamepad-xpad-driver-unofficial-git.sh
+    fi
+    
 
     # Latest installs
 

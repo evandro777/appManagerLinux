@@ -11,7 +11,6 @@ NC='\033[0m' # No Color
 
 echo -e "${ORANGE}Installing CopyQ - Official PPA${NC}"
 
-#dbeaver Official PPA
 sudo apt-add-repository -y ppa:hluk/copyq
 sudo apt-get update
 sudo apt-get install -y copyq
