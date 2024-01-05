@@ -228,11 +228,14 @@ gsettings set org.cinnamon.settings-daemon.peripherals.touchpad natural-scroll f
 echo "Notebook > On battery power > Turn off screen when inactive for 5 minutes"
 gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-battery 300
 
-echo "Notebook > On battery power > When lid is closed, do nothing"
-gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-battery-action "nothing"
+echo "Notebook > On battery power > Suspend when inactive for 15 minutes"
+gsettings set org.cinnamon.settings-daemon.plugins.power sleep-inactive-battery-timeout 900
 
-echo "Notebook > On A/C power > When lid is closed, do nothing"
-gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-ac-action "nothing"
+#echo "Notebook > On battery power > When lid is closed, do nothing"
+#gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-battery-action "nothing"
+
+#echo "Notebook > On A/C power > When lid is closed, do nothing"
+#gsettings set org.cinnamon.settings-daemon.plugins.power lid-close-ac-action "nothing"
 
 ## NEMO
 
