@@ -223,7 +223,7 @@ gsettings set org.cinnamon.theme name "Mint-Y-Dark-Transparency" #modified with 
 ## NOTEBOOK
 
 echo "Notebook > Disable reverse rolling"
-gsettings set org.cinnamon.settings-daemon.peripherals.touchpad natural-scroll false
+gsettings set org.cinnamon.desktop.peripherals.touchpad natural-scroll false
 
 echo "Notebook > On battery power > Turn off screen when inactive for 5 minutes"
 gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-battery 300
