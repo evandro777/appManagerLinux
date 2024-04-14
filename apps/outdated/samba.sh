@@ -4,6 +4,8 @@
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color / Reset color
 
+echo -e "29: ${RED}Setting${NC} Samba (network share) > less restrictions (caution). Tip: Share public folder and create symlinks: $(ColorYN "$settingSamba")"
+
 echo -e "${ORANGE}Configure Samba${NC}"
 
 DIR="${BASH_SOURCE%/*}"
@@ -12,7 +14,9 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "../includes/root_restrict_but_sudo.sh"
 
 sudo apt-get -y update
-sudo apt-get -y install samba
+
+echo -e "${YELLOW}Installing samba (access windows network)${NC}"
+sudo apt-get install -y samba
 
 shareFolder="${HOME}/Public"
 mkdir -p "$shareFolder"
@@ -22,7 +26,6 @@ sambaConf="/etc/samba/smb.conf"
 
 #backup
 #sudo cp "$sambaConf" "/etc/samba/smb.conf.bk"
-
 
 #Prepare file to use crudini
 #Remove white spaces on the beginning
@@ -63,7 +66,6 @@ sudo crudini --set "$sambaConf" "global" "directory mode" "0775"
 #sudo crudini --set "$sambaConf" "Files" "create mode" "0777"
 #sudo crudini --set "$sambaConf" "Files" "directory mode" "0777"
 
-
 #Prepare file to conf pattern
 #Add white spaces on the beginning
 sudo sed -i 's/^/   /' "$sambaConf"
@@ -77,7 +79,6 @@ sudo sed -i 's/^   #/#/' "$sambaConf"
 #Remove white spaces on the beginning with ";"
 sudo sed -i 's/^   ;/;/' "$sambaConf"
 
-
 #Permissions
 #PROBABLY NEEDS THIS: MAYBE NEED TO FORCE THE SAME PASSWORD AS THE LOGGED USER
 
@@ -86,7 +87,6 @@ sudo smbpasswd -a "$USER"
 
 echo -e "${GREEN}When needed to change the password execute: ${NC}"
 echo -e "sudo smbpasswd -a \$USER"
-
 
 #sudo smbpasswd -e "$USER"
 

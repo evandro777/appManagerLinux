@@ -1,14 +1,27 @@
 #!/bin/bash
 
-#COLORS
-ORANGE='\033[0;33m'
-NC='\033[0m' # No Color / Reset color
+readonly IS_APT_PACKAGE=1
+readonly APPLICATION_NAME="Libreoffice [official PPA]"
+readonly APPLICATION_ID="libreoffice"
+readonly APPLICATION_PPA="ppa:libreoffice/ppa"
 
-echo -e "${ORANGE}Installing Libreoffice - Official PPA${NC}"
+function perform_install() {
+    sudo add-apt-repository -y "$APPLICATION_PPA"
+    package_update
+    package_install "$APPLICATION_ID"
+}
 
-sudo add-apt-repository -y ppa:libreoffice/ppa
+function perform_uninstall() {
+    package_uninstall "$APPLICATION_ID"
+    sudo add-apt-repository --remove "$APPLICATION_PPA"
+}
 
-#Libreoffice > icons
-#sudo apt-get install -y libreoffice-style-elementary
+function perform_check() {
+    package_is_installed "$APPLICATION_ID"
+}
 
-sudo apt-get install -y libreoffice
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/../includes/header_packages.sh"
+
+exit 0

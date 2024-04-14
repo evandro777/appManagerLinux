@@ -1,9 +1,22 @@
 #!/bin/bash
 
-#COLORS
-ORANGE='\033[0;33m'
-NC='\033[0m' # No Color / Reset color
+readonly APPLICATION_NAME="Lutris [official Flatpak]"
+readonly APPLICATION_ID="net.lutris.Lutris"
 
-echo -e "${ORANGE}Installing Lutris - Official Flatpak${NC}"
+function perform_install() {
+    flatpak_install --system "$APPLICATION_ID"
+}
 
-flatpak install --user -y flathub net.lutris.Lutris
+function perform_uninstall() {
+    flatpak_uninstall "$APPLICATION_ID"
+}
+
+function perform_check() {
+    flatpak_is_installed "$APPLICATION_ID"
+}
+
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/../includes/header_packages.sh"
+
+exit 0

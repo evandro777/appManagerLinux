@@ -1,165 +1,135 @@
 #!/bin/bash
 
 #FOLLOW SYMLINK / USE SCRIPT DIRECTORY
-#MAY CAUSE PROBLEM WHEN EXECUTING FROM OTHER DIRECTORYS. BETTER BE THE LAST ONE TO EXECUTE
-cd "$(dirname "$(realpath "$0")")"
+#MAY CAUSE PROBLEM WHEN EXECUTING FROM OTHER DIRECTORIES. BETTER BE THE LAST ONE TO EXECUTE
+cd "$(dirname "$(realpath "$0")")" || exit
 
-#COLORS
-BLACK='\033[0;30m'
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-ORANGE='\033[0;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-WHITE='\033[0;37m'
-NC='\033[0m' # No Color / Reset color
+# Font colors & style > If using with color, it MUST be putted AFTER the color
 
-
-
+readonly BOLD=$(tput bold)       # Sets text to bold
+readonly BLINK=$(tput blink)     # Makes text blink
+readonly UNDER=$(tput smul)      # Underlines text
+readonly NORMAL=$(tput sgr0)     # Turn off all attributes
+readonly DIM=$(tput dim)         # Sets text to dim (less bright) mode
+readonly REVERSE=$(tput rev)     # Reverses background and color
+readonly INVISIBLE=$(tput invis) # Hides text
+readonly ITALIC=$(tput sitm)     # Sets text to italic mode
+readonly NO_ITALIC=$(tput ritm)  # Disables italic mode
 
 # Reset
-Color_Off="\[\033[0m\]"       # Text Reset
+readonly RESET=$(tput reset) # Reset all
+readonly NC='\033[0m'        # No Color / Reset all
 
 # Regular Colors
-Black="\[\033[0;30m\]"        # Black
-Red="\[\033[0;31m\]"          # Red
-Green="\[\033[0;32m\]"        # Green
-Yellow="\[\033[0;33m\]"       # Yellow
-Blue="\[\033[0;34m\]"         # Blue
-Purple="\[\033[0;35m\]"       # Purple
-Cyan="\[\033[0;36m\]"         # Cyan
-White="\[\033[0;37m\]"        # White
-
-# Bold
-BBlack="\[\033[1;30m\]"       # Black
-BRed="\[\033[1;31m\]"         # Red
-BGreen="\[\033[1;32m\]"       # Green
-BYellow="\[\033[1;33m\]"      # Yellow
-BBlue="\[\033[1;34m\]"        # Blue
-BPurple="\[\033[1;35m\]"      # Purple
-BCyan="\[\033[1;36m\]"        # Cyan
-BWhite="\[\033[1;37m\]"       # White
-
-# Underline
-UBlack="\[\033[4;30m\]"       # Black
-URed="\[\033[4;31m\]"         # Red
-UGreen="\[\033[4;32m\]"       # Green
-UYellow="\[\033[4;33m\]"      # Yellow
-UBlue="\[\033[4;34m\]"        # Blue
-UPurple="\[\033[4;35m\]"      # Purple
-UCyan="\[\033[4;36m\]"        # Cyan
-UWhite="\[\033[4;37m\]"       # White
+readonly BLACK="\033[0;30m"  # Black
+readonly RED="\033[0;31m"    # Red
+readonly GREEN="\033[0;32m"  # Green
+readonly YELLOW="\033[0;33m" # Yellow
+readonly BLUE="\033[0;34m"   # Blue
+readonly PURPLE="\033[0;35m" # Purple
+readonly CYAN="\033[0;36m"   # Cyan
+readonly WHITE="\033[0;37m"  # White
 
 # Background
-On_Black="\[\033[40m\]"       # Black
-On_Red="\[\033[41m\]"         # Red
-On_Green="\[\033[42m\]"       # Green
-On_Yellow="\[\033[43m\]"      # Yellow
-On_Blue="\[\033[44m\]"        # Blue
-On_Purple="\[\033[45m\]"      # Purple
-On_Cyan="\[\033[46m\]"        # Cyan
-On_White="\[\033[47m\]"       # White
+readonly BG_BLACK="\033[40m"  # Black
+readonly BG_RED="\033[41m"    # Red
+readonly BG_GREEN="\033[42m"  # Green
+readonly BG_YELLOW="\033[43m" # Yellow
+readonly BG_BLUE="\033[44m"   # Blue
+readonly BG_PURPLE="\033[45m" # Purple
+readonly BG_CYAN="\033[46m"   # Cyan
+readonly BG_WHITE="\033[47m"  # White
 
-# High Intensty
-IBlack="\[\033[0;90m\]"       # Black
-IRed="\[\033[0;91m\]"         # Red
-IGreen="\[\033[0;92m\]"       # Green
-IYellow="\[\033[0;93m\]"      # Yellow
-IBlue="\[\033[0;94m\]"        # Blue
-IPurple="\[\033[0;95m\]"      # Purple
-ICyan="\[\033[0;96m\]"        # Cyan
-IWhite="\[\033[0;97m\]"       # White
+# High Intensity
+readonly I_BLACK="\033[0;90m"  # Black
+readonly I_RED="\033[0;91m"    # Red
+readonly I_GREEN="\033[0;92m"  # Green
+readonly I_YELLOW="\033[0;93m" # Yellow
+readonly I_BLUE="\033[0;94m"   # Blue
+readonly I_PURPLE="\033[0;95m" # Purple
+readonly I_CYAN="\033[0;96m"   # Cyan
+readonly I_WHITE="\033[0;97m"  # White
 
-# Bold High Intensty
-BIBlack="\[\033[1;90m\]"      # Black
-BIRed="\[\033[1;91m\]"        # Red
-BIGreen="\[\033[1;92m\]"      # Green
-BIYellow="\[\033[1;93m\]"     # Yellow
-BIBlue="\[\033[1;94m\]"       # Blue
-BIPurple="\[\033[1;95m\]"     # Purple
-BICyan="\[\033[1;96m\]"       # Cyan
-BIWhite="\[\033[1;97m\]"      # White
-
-# High Intensty backgrounds
-On_IBlack="\[\033[0;100m\]"   # Black
-On_IRed="\[\033[0;101m\]"     # Red
-On_IGreen="\[\033[0;102m\]"   # Green
-On_IYellow="\[\033[0;103m\]"  # Yellow
-On_IBlue="\[\033[0;104m\]"    # Blue
-On_IPurple="\[\033[10;95m\]"  # Purple
-On_ICyan="\[\033[0;106m\]"    # Cyan
-On_IWhite="\[\033[0;107m\]"   # White
-
-
+# High Intensity backgrounds
+readonly BGI_BLACK="\033[0;100m"  # Black
+readonly BGI_RED="\033[0;101m"    # Red
+readonly BGI_GREEN="\033[0;102m"  # Green
+readonly BGI_YELLOW="\033[0;103m" # Yellow
+readonly BGI_BLUE="\033[0;104m"   # Blue
+readonly BGI_PURPLE="\033[10;95m" # Purple
+readonly BGI_CYAN="\033[0;106m"   # Cyan
+readonly BGI_WHITE="\033[0;107m"  # White
 
 #Insert or update settings
-#Example: SetProperty "X-GNOME-Autostart-enabled" false "${HOME}/.config/autostart/mintwelcome.desktop"
-#$1: param
-#$2: value
-#$3: file
-function SetProperty(){
-    local param="${1}="
-    local value="${1}=${2}"
-    local fileLocation="${3}"
-    SearchReplaceOrCreate "$param" "$value" "$fileLocation"
+#Example: set_property "X-GNOME-Autostart-enabled" false "${HOME}/.config/autostart/mintwelcome.desktop"
+#$1: file
+#$2: property
+#$3: value
+function set_property() {
+    local file_location="${1}"
+    local property="${2}="
+    local value="${property}=${3}"
+    search_replace_or_create "$property" "$value" "$file_location"
 }
 
 #Search & Replace or create line
-#Example: SearchReplaceOrCreate "X-GNOME-Autostart-enabled=" "X-GNOME-Autostart-enabled=false" "${HOME}/.config/autostart/mintwelcome.desktop"
+#Example: search_replace_or_create "X-GNOME-Autostart-enabled=" "X-GNOME-Autostart-enabled=false" "${HOME}/.config/autostart/mintwelcome.desktop"
 #$1: param
 #$2: value
 #$3: file
-function SearchReplaceOrCreate(){
+function search_replace_or_create() {
     local param="${1}"
     local value="${2}"
-    local fileLocation="${3}"
-    
-    if ! grep -q "${param}" "${fileLocation}"; then
+    local file_location="${3}"
+
+    if ! grep -q "${param}" "${file_location}"; then
         #insert
-        echo "${value}" >> "${fileLocation}"
+        echo "${value}" >> "${file_location}"
     else
         #update
-        sed -i s/"${param}".*$/"${value}"/ "${fileLocation}"
+        sed -i s/"${param}".*$/"${value}"/ "${file_location}"
     fi
 }
 
 #Ps.: Force remove white spaces " = ", happens when creating a new file, when editing a file that already doesn't have, it isn't needed
 #Force remove white spaces " = " between key and value
-#Example: TrimPropertys "${HOME}/.config/autostart/mintwelcome.desktop"
+#Example: trim_properties "${HOME}/.config/autostart/mintwelcome.desktop"
 #$1: file
-function TrimPropertys(){
-    local fileLocation="${1}"
-    
-    sed -i -r "s/(\S*)\s*=\s*(.*)/\1=\2/g" "${fileLocation}"
+function trim_properties() {
+    local file_location="${1}"
+
+    sed -i -r "s/(\S*)\s*=\s*(.*)/\1=\2/g" "${file_location}"
 }
 
-function CommandDependency(){
-    local commandName="${1}"
-    command -v "$commandName" >/dev/null 2>&1 || { echo -e >&2 "${RED}$commandName${NC} is required but it's not installed! Aborting."; exit 1; }
+function command_dependency() {
+    local command_name="${1}"
+    command -v "$command_name" > /dev/null 2>&1 || {
+        echo -e "${RED}$command_name${NC} is required but it's not installed! Aborting." >&2
+        exit 1
+    }
 }
 
 # Get Last Id From Keybinding
-function GetKeybindingLastId(){
-    local listId=$(dconf read /org/cinnamon/desktop/keybindings/custom-list)
-    if [ "$listId" == "" ]; then
-        listId="[]"
+function get_keybinding_last_id() {
+    local list_id=$(dconf read /org/cinnamon/desktop/keybindings/custom-list)
+    if [ "$list_id" == "" ]; then
+        list_id="[]"
     fi
 
     # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
     # Get first sequence
-    firstId=${listId:2:10} # Get 10 first chars (except first 2)
-    firstId=$(echo "${firstId}" | sed 's/[^0-9]*//g') # Remove all except numbers
+    first_id=${list_id:2:10}                            # Get 10 first chars (except first 2)
+    first_id=$(echo "${first_id}" | sed 's/[^0-9]*//g') # Remove all except numbers
 
     # Get last sequence
-    lastId=${listId::-2} # Remove 2 last chars
-    lastId=${lastId: -7} # Get 7 last chars
-    lastId=$(echo "${lastId}" | sed 's/[^0-9]*//g') # Remove all except numbers
-    
-    if (( firstId > lastId )); then
-        id=$firstId
+    last_id=${list_id::-2}                            # Remove 2 last chars
+    last_id=${list_id: -7}                            # Get 7 last chars
+    last_id=$(echo "${last_id}" | sed 's/[^0-9]*//g') # Remove all except numbers
+
+    if ((first_id > last_id)); then
+        id=$first_id
     else
-        id=$lastId
+        id=$last_id
     fi
 
     if [ "$id" == "" ]; then
@@ -168,10 +138,152 @@ function GetKeybindingLastId(){
     echo "$id"
 }
 
-# Return string if keybiding is found
+# Return string if keybinding is found
 #$1: keybinding (example: <Super>Print)
-function KeybindingExists(){
-    local keyBinding="$1"
-    local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${keyBinding}")
+function keybinding_exists() {
+    local key_binding="$1"
+    local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${key_binding}")
     echo "$return"
+}
+
+# Return a new id to use with custom keybinding
+function get_new_keybinding_id() {
+    last_id=$(get_keybinding_last_id)
+    new_id=$(($last_id + 1))
+    new_custom_id="custom${new_id}"
+    echo "$new_custom_id"
+}
+
+# Set new custom keybinding
+# Example: set_new_keybinding "Teste" "flameshot gui" "'<Super>A'"
+# Warning: the third parameter must use "'"
+function set_new_keybinding() {
+    local name="${1}"
+    local command="${2}"
+    local keybinding="${3}"
+
+    # Check if custom-list is empty > create a dummy one
+    if [ -z "$(dconf read /org/cinnamon/desktop/keybindings/custom-list)" ]; then
+        dconf write /org/cinnamon/desktop/keybindings/custom-list "['__dummy__']"
+    fi
+
+    new_custom_id=$(get_new_keybinding_id)
+    if [ -z "$(keybinding_exists "$keybinding")" ]; then
+        set_list=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${new_custom_id}', /g")
+        dconf write /org/cinnamon/desktop/keybindings/custom-list "${set_list}"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/ name "$name"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/ command "$command"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/ binding '['"$keybinding"']'
+    else
+        echo -e "Shortcut has already been using"
+    fi
+}
+
+# Check if a single package is installed
+function package_is_installed() {
+    local package_name=$1
+
+    if dpkg -l | grep -q "ii.*${package_name} "; then
+        echo 1 # Package is installed
+    else
+        echo 0 # Package is not installed
+    fi
+}
+
+# Check if multiple packages is installed
+function packages_is_installed() {
+    local search_string=$1
+
+    # Remove "*" character if present in the search string
+    search_string=${search_string//\*/}
+
+    # Search for packages matching the search string
+    search_results=$(apt search "$search_string" | grep -v "^i")
+
+    # Check if there are any packages available for installation
+    if [ -z "$search_results" ]; then
+        echo 1 # Package is installed
+    else
+        echo 0 # Package is not installed
+    fi
+}
+
+# Function to update cache
+function package_update() {
+    echo "update"
+    # sudo apt-get update
+}
+
+# Function to install packages
+function package_install() {
+    # echo "install"
+    sudo apt-get install -y "$@"
+}
+
+# Function to uninstall packages
+function package_uninstall() {
+    echo "Uninstall"
+    # sudo apt-get purge -y "$@"
+    # sudo apt-get autoremove -y
+}
+
+# Function to check if a flatpak is installed
+function flatpak_is_installed() {
+    local flatpak_name=$1
+
+    if flatpak list | grep -q "$flatpak_name"; then
+        echo 1 # Flatpak is installed
+    else
+        echo 0 # Flatpak is not installed
+    fi
+}
+
+# Function to install flatpak
+function flatpak_install() {
+    echo "install flatpak"
+    # flatpak install -y "$@"
+}
+
+# Function to uninstall packages
+function flatpak_uninstall() {
+    flatpak uninstall -y "$@"
+}
+
+#Return a list of video mime types
+#Example: get_video_mime_types
+function get_video_mime_types() {
+    grep < /usr/share/applications/defaults.list "video/\|x-content/video-" | sed 's/=.*$//g'
+}
+
+#Set preferred apps
+#Example:
+#	videoMimeTypes=$(cat /usr/share/applications/defaults.list | grep "video/\|x-content/video-" | sed 's/=.*celluloid_player.*$//g')
+#	SetPreferredVideoApp $video_mime_types smplayer
+#$1: array of mime_types
+#$2: app name
+#$3: file location
+function set_preferred_app() {
+    local mime_types="${1}"
+    local app_name="${2}"
+    local file_location="${HOME}/.config/mimeapps.list" # Ubuntu >= 16.04
+    #local fileLocation=$([ "${3}" ] && echo "${3}" || echo ${HOME}/.config/mimeapps.list)
+
+    for mimeType in "${mime_types[@]}"; do
+        crudini --set "${file_location}" "Default Applications" "$mimeType" "${app_name}".desktop
+        crudini --set "${file_location}" "Added Associations" "$mimeType" "${app_name}".desktop
+    done
+
+    #Force remove white spaces " = ", happens when creating a new file, when editing a file that already doesn't have, it isn't needed
+    trim_properties "${file_location}"
+}
+
+# Function to check if a process is running
+function is_process_running() {
+    local process_name=$1
+
+    if pgrep "$process_name" > /dev/null; then
+        echo 1 #Process is running
+    else
+        echo 0 #Process not running
+    fi
 }

@@ -1,11 +1,27 @@
 #!/bin/bash
 
-#QBittorrent > OFFICIAL
-#COLORS
-ORANGE='\033[0;33m'
-NC='\033[0m' # No Color / Reset color
+readonly IS_APT_PACKAGE=1
+readonly APPLICATION_NAME="QBittorrent [official PPA]"
+readonly APPLICATION_ID="qbittorrent"
+readonly APPLICATION_PPA="ppa:qbittorrent-team/qbittorrent-stable"
 
-echo -e "${ORANGE}Installing QBittorrent - Official PPA${NC}"
+function perform_install() {
+    sudo add-apt-repository -y $APPLICATION_PPA
+    package_update
+    package_install "$APPLICATION_ID"
+}
 
-sudo add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable
-sudo apt-get install -y qbittorrent
+function perform_uninstall() {
+    package_uninstall "$APPLICATION_ID"
+    sudo add-apt-repository --remove $APPLICATION_PPA
+}
+
+function perform_check() {
+    package_is_installed "$APPLICATION_ID"
+}
+
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/../includes/header_packages.sh"
+
+exit 0

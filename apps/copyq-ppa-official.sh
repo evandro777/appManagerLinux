@@ -1,38 +1,36 @@
 #!/bin/bash
+
+readonly IS_APT_PACKAGE=1
+readonly APPLICATION_NAME="CopyQ [official PPA]"
+readonly APPLICATION_ID="copyq"
+readonly APPLICATION_PPA="ppa:hluk/copyq"
+
+function perform_install() {
+    sudo add-apt-repository -y $APPLICATION_PPA
+    package_update
+    package_install "$APPLICATION_ID"
+
+    echo "Enable CopyQ autostart"
+    copyq --start-server config autostart true
+
+    if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
+        echo -e "${YELLOW}CopyQ Applying shortcut: CTRL + ALT + V${NC}"
+        set_new_keybinding "CopyQ" "copyq menu" "'<Primary><Alt>v'"
+    fi
+
+}
+
+function perform_uninstall() {
+    package_uninstall "$APPLICATION_ID"
+    sudo add-apt-repository --remove $APPLICATION_PPA
+}
+
+function perform_check() {
+    package_is_installed "$APPLICATION_ID"
+}
+
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-. "$DIR/../includes/essentials.sh"
-. "../includes/root_restrict_but_sudo.sh"
+. "$DIR/../includes/header_packages.sh"
 
-#COLORS
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-NC='\033[0m' # No Color
-
-echo -e "${ORANGE}Installing CopyQ - Official PPA${NC}"
-
-sudo apt-add-repository -y ppa:hluk/copyq
-sudo apt-get update
-sudo apt-get install -y copyq
-
-echo -e "Enable CopyQ autostart"
-copyq --start-server config autostart true
-
-if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
-    echo -e "${ORANGE}CopyQ Applying shortcut: CTRL + ALT + V${NC}"
-
-    lastId=$(GetKeybindingLastId)
-    newId=$(($lastId + 1))
-    newCustomId="custom${newId}"
-
-    if [ -z "$(KeybindingExists "<Primary><Alt>v")" ]; then
-        setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${newCustomId}', /g") # Insert new id on first one
-        #setList=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/']/', '${newCustomId}']/g") # Insert new id on last one
-        dconf write /org/cinnamon/desktop/keybindings/custom-list "${setList}"
-        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ name "CopyQ"
-        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ command "copyq menu"
-        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/${newCustomId}/ binding '["<Primary><Alt>v"]'
-    else
-        echo -e "${ORANGE}Shortcut was already been using${NC}"
-    fi
-fi
+exit 0

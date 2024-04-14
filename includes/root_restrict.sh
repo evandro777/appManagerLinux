@@ -20,7 +20,7 @@ fi
 RUSER_UID=$(id -u ${REAL_USER})
 
 # drop privileges back to non-root user if we got here with sudo. Ex.: depriv touch a
-function Depriv(){
+function depriv(){
 	if [[ $SUDO_USER ]]; then
 		sudo -u "$SUDO_USER" -H -- "$@"
 	else
@@ -28,7 +28,7 @@ function Depriv(){
 	fi
 }
 
-function RunInUserSession(){
+function run_in_user_session(){
 	local _display_id=":$(find /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"
 	local _username=$(who | grep "\(${_display_id}\)" | awk '{print $1}')
 	local _user_id=$(id -u "$_username")

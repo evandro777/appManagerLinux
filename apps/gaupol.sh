@@ -1,10 +1,23 @@
 #!/bin/bash
 
-#COLORS
-ORANGE='\033[0;33m'
-NC='\033[0m' # No Color / Reset color
+readonly IS_APT_PACKAGE=1
+readonly APPLICATION_NAME="Gaupol (subtitle editor) [distro repository]"
+readonly APPLICATION_ID="gaupol"
 
-echo -e "${ORANGE}Installing Gaupol${NC}"
+function perform_install() {
+    package_install "$APPLICATION_ID"
+}
 
-sudo apt-get update
-sudo apt-get install -y gaupol
+function perform_uninstall() {
+    package_uninstall "$APPLICATION_ID"
+}
+
+function perform_check() {
+    package_is_installed "$APPLICATION_ID"
+}
+
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/../includes/header_packages.sh"
+
+exit 0

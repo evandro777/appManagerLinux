@@ -1,10 +1,22 @@
 #!/bin/bash
 
-#COLORS
-ORANGE='\033[0;33m'
-NC='\033[0m' # No Color / Reset color
+readonly APPLICATION_NAME="OnlyOffice [official Flatpak]"
+readonly APPLICATION_ID="org.onlyoffice.desktopeditors"
 
-echo -e "${ORANGE}Installing OnlyOffice - Official Flatpak${NC}"
+function perform_install() {
+    flatpak_install "$APPLICATION_ID"
+}
 
-flatpak install -y flathub org.onlyoffice.desktopeditors
+function perform_uninstall() {
+    flatpak_uninstall "$APPLICATION_ID"
+}
 
+function perform_check() {
+    flatpak_is_installed "$APPLICATION_ID"
+}
+
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+. "$DIR/../includes/header_packages.sh"
+
+exit 0
