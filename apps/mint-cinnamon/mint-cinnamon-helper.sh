@@ -8,12 +8,18 @@ function startup_get_app_property() {
     local property="${2}"
     local desktop_filename="${HOME}/.config/autostart/${filename}.desktop"
 
-    if [ -f "$desktop_filename" ]; then
-        if command -v crudini &> /dev/null; then
-            crudini --get "${desktop_filename}" "Desktop Entry" "${property}"
-        else
-            grep -oP "(?<=^${property}=).*" "${desktop_filename}"
-        fi
+    if [ ! -f "$desktop_filename" ]; then # If home autostart is not found, tries global "/etc"
+        desktop_filename="/etc/xdg/autostart/${filename}.desktop"
+    fi
+
+    if [ ! -f "$desktop_filename" ]; then # If none is found, exits function
+        return
+    fi
+
+    if command -v crudini &> /dev/null; then
+        crudini --get "${desktop_filename}" "Desktop Entry" "${property}"
+    else
+        grep -oP "(?<=^${property}=).*" "${desktop_filename}"
     fi
 }
 
