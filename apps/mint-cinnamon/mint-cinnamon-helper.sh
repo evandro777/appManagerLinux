@@ -6,7 +6,13 @@
 function startup_get_app_property() {
     local filename="${1}"
     local property="${2}"
-    crudini --get "${HOME}/.config/autostart/${filename}.desktop" "Desktop Entry" "${property}"
+    local dekstop_filename="${HOME}/.config/autostart/${filename}.desktop"
+
+    if command -v crudinia &> /dev/null; then
+        crudini --get "${dekstop_filename}" "Desktop Entry" "${property}"
+    else
+        grep -oP "(?<=^${property}=).*" "${dekstop_filename}"
+    fi
 }
 
 #Change startup apps settings

@@ -49,7 +49,7 @@ function show_main_menu() {
     readarray -t dialog_options <<< "$(create_dialog_options "$categories")"
 
     # Adicionando a opção para listar os itens selecionados
-    dialog_options+=("Apply" "\ZuExecute actions\Zn")
+    dialog_options+=("Apply" "\ZuUpdate & apply\Zn")
 
     export DIALOGRC="dialogrc"
     choice=$(dialog --backtitle "Select Options" \
@@ -91,7 +91,9 @@ function get_apps_in_group() {
 # Function to read selections
 function read_group_selections() {
     local group="$1"
-    grep "^$group|" "$GROUP_SELECTIONS_TMP_FILE" | cut -d '|' -f 2- | tr '|' ' '
+    if [ -f "$GROUP_SELECTIONS_TMP_FILE" ]; then
+        grep "^$group|" "$GROUP_SELECTIONS_TMP_FILE" | cut -d '|' -f 2- | tr '|' ' '
+    fi
 }
 
 # Function to read all selections
@@ -136,7 +138,9 @@ function show_apps_menu() {
     choice=$(< /tmp/choice.txt)
     case $choice in
         *)
-            sed -i "/^$group|/d" $GROUP_SELECTIONS_TMP_FILE
+            if [ -f "$GROUP_SELECTIONS_TMP_FILE" ]; then        # Check if file exists
+                sed -i "/^$group|/d" $GROUP_SELECTIONS_TMP_FILE # Cleaning $group
+            fi
             if [[ -n "$choice" ]]; then
                 local group_selection="$group|$choice|"
                 echo "$group_selection" >> $GROUP_SELECTIONS_TMP_FILE
