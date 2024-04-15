@@ -81,7 +81,7 @@ function install_dracula_theme() {
 
 # Download & install fonts
 function install_fonts() {
-    sudo apt-get install -y fontconfig
+    sudo apt-get install -y -q fontconfig
     wget --no-verbose --timestamping --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf"
     wget --no-verbose --timestamping --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
     wget --no-verbose --timestamping --directory-prefix="${HOME}/.local/share/fonts/" "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"

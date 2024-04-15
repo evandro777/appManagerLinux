@@ -10,7 +10,7 @@ echo -e "${ORANGE}Installing RetroArch - Official PPA [+custom configs]${NC}"
 
 sudo apt-get add-repository -y ppa:libretro/stable
 sudo apt-get update
-sudo apt-get install -y retroarch
+sudo apt-get install -y -q retroarch
 
 # Base URL for RetroArch cores
 CORES_BASE_URL="https://buildbot.libretro.com/nightly/linux/x86_64/latest/"
@@ -159,11 +159,13 @@ for CORE in ${CORES_LIST[@]}; do
     case $CORE in
         "opera" | "scummvm")
             # Force kill, these cores will load frontend
-            (retroarch -L "${CORE}" &); sleep 3; killall retroarch
+            (retroarch -L "${CORE}" &)
+            sleep 3
+            killall retroarch
             ;;
         *)
             retroarch -L "${CORE}"
-        ;;
+            ;;
     esac
 done
 
@@ -250,8 +252,7 @@ SHADER_FILES=(
 )
 
 # Loop through the desired files and symlink them to the destination directory
-for FILE in "${SHADER_FILES[@]}"
-do
+for FILE in "${SHADER_FILES[@]}"; do
     FILE="$FILE.slangp"
     # Get the file name from the path
     FILENAME=$(basename "$FILE")
@@ -277,8 +278,7 @@ do
 
             # Create a symlink for each file and directory in the shaders directory for this shader file
             # echo -e "${ORANGE}Symlinking all files and folders inside subfolder '$SHADERS_PATH'${NC}"
-            find "${SHADERS_DIR}$SHADERS_PATH" -mindepth 1 -print0 | while IFS= read -r -d $'\0' SHADER_FILE
-            do
+            find "${SHADERS_DIR}$SHADERS_PATH" -mindepth 1 -print0 | while IFS= read -r -d $'\0' SHADER_FILE; do
                 # Get the file name from the path
                 SHADER_FILENAME=$(basename "$SHADER_FILE")
 

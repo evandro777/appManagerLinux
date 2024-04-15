@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt-get install -y wget ca-certificates
+sudo apt-get install -y -q wget ca-certificates
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 
 #DYNAMIC > ONLY FOR UBUNTU
@@ -10,8 +10,7 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
 
 sudo apt-get update
-sudo apt-get install -y postgresql postgresql-contrib
-
+sudo apt-get install -y -q postgresql postgresql-contrib
 
 #SET A PASSWORD
 echo "Set a password for postgres user"

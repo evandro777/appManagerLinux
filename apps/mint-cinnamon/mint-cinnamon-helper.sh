@@ -70,7 +70,7 @@ function startup_is_enable_app() {
         else
             grep -oP "(?<=^${property}=).*" "${desktop_filename_user}"
         fi
-    elif [ ! -f "${desktop_filename_global}" ]; then # If global desktop file is found > it is already an autostart app
+    elif [ -f "${desktop_filename_global}" ]; then # If global desktop file is found > it is already an autostart app
         echo "true"
     fi
 }

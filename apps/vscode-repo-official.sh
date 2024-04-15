@@ -19,7 +19,6 @@ readonly APPLICATION_CUSTOM_JSON_CONFIG=$(
     "editor.fontSize": 16,
     "editor.stickyScroll.enabled": true,
     "cSpell.language": "en,pt,pt_BR",
-    "cSpell.diagnosticLevel": "Hint",
     "cSpell.enableFiletypes": [
         "shellscript"
     ],
@@ -60,7 +59,7 @@ function perform_install() {
     package_install apt-transport-https "$APPLICATION_ID"
 
     # FIRA CODE (FONT WITH LIGATURES)
-    sudo apt-get install -y fonts-firacode
+    sudo apt-get install -y -q fonts-firacode
 
     # Settings:
     echo -e "Applying settings to VS Code${NC}"

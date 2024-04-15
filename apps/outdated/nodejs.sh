@@ -3,21 +3,21 @@
 ##### ROOT ACCESS #####
 #######################
 #if [ $EUID != "0" ]; then
-	#echo "Must be run as root!" 1>&2
-	##exit 1
-	#if [ -t 1 ]; then
-	  #exec sudo -- "$0" "$@"
-	#else
-	  #exec gksudo -- "$0" "$@"
-	#fi
+#echo "Must be run as root!" 1>&2
+##exit 1
+#if [ -t 1 ]; then
+#exec sudo -- "$0" "$@"
+#else
+#exec gksudo -- "$0" "$@"
+#fi
 #fi
 
 #INSTALL NODE FROM OFFICIAL REPOSITORY
 #curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-#sudo apt-get install -y nodejs
+#sudo apt-get install -y -q nodejs
 
 #USING SNAP
-#sudo apt-get install -y snapd
+#sudo apt-get install -y -q snapd
 #sudo snap install node --classic
 
 #DO NOT USE ROOT!
@@ -29,12 +29,12 @@ wget -qO- "https://raw.githubusercontent.com/nvm-sh/nvm/$latestNVMVersion/instal
 # UPDATE ZSH
 FILE="$HOME"/.zshrc
 if test -f "$FILE"; then
-	echo '' >> $FILE
-	echo 'export NVM_DIR="$HOME/.nvm"' >> $FILE
-	echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> $FILE
-	echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> $FILE
+    echo '' >> $FILE
+    echo 'export NVM_DIR="$HOME/.nvm"' >> $FILE
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> $FILE
+    echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> $FILE
 
-	source $FILE
+    source $FILE
 fi
 
 echo 'Installing the latest lts node'

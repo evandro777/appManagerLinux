@@ -217,7 +217,7 @@ function package_update() {
 # Function to install packages
 function package_install() {
     # echo "install"
-    sudo apt-get install -y "$@"
+    sudo apt-get install -y -q "$@"
 }
 
 # Function to uninstall packages

@@ -3,14 +3,14 @@
 ##### ROOT ACCESS #####
 #######################
 if [ $EUID != "0" ]; then
-	echo "Must be run as root!" 1>&2
-	#exit 1
-	if [ -t 1 ]; then
-	  exec sudo -- "$0" "$@"
-	else
-	  exec gksudo -- "$0" "$@"
-	fi
+    echo "Must be run as root!" 1>&2
+    #exit 1
+    if [ -t 1 ]; then
+        exec sudo -- "$0" "$@"
+    else
+        exec gksudo -- "$0" "$@"
+    fi
 fi
 
 #INSTALL NPM
-sudo apt-get install -y npm
+sudo apt-get install -y -q npm

@@ -3,17 +3,17 @@
 ##### ROOT ACCESS #####
 #######################
 if [ $EUID != "0" ]; then
-	echo "Must be run as root!" 1>&2
-	#exit 1
-	if [ -t 1 ]; then
-	  exec sudo -- "$0" "$@"
-	else
-	  exec gksudo -- "$0" "$@"
-	fi
+    echo "Must be run as root!" 1>&2
+    #exit 1
+    if [ -t 1 ]; then
+        exec sudo -- "$0" "$@"
+    else
+        exec gksudo -- "$0" "$@"
+    fi
 fi
 
 echo "Installing virtual Box (free version)"
-sudo apt-get install -y virtualbox virtualbox-dkms virtualbox-qt
+sudo apt-get install -y -q virtualbox virtualbox-dkms virtualbox-qt
 
 echo "Auto disabling services"
 sudo systemctl disable virtualbox.service

@@ -8,5 +8,4 @@ echo -e "${ORANGE}Installing Snap Store (Canonical)${NC}"
 
 sudo rm /etc/apt/preferences.d/nosnap.pref
 sudo apt-get update
-sudo apt-get install -y snapd
-
+sudo apt-get install -y -q snapd

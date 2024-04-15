@@ -159,7 +159,7 @@ function exit_script() {
 
 # Function to list selected items
 function apply_actions() {
-
+    clear
     echo -e "${RED}${BOLD}${UNDER}Script started! It's recommended to close every other application, like browsers, players, and wait until it is completed!${NC}"
 
     # Log everything and show on terminal
@@ -181,7 +181,7 @@ function apply_actions() {
     for K in $(APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key list | grep expired\|expirado | cut -d'/' -f2 | cut -d' ' -f1); do sudo apt-key adv --recv-keys --keyserver keys.gnupg.net "$K"; done
 
     echo -e "${GREEN}Distro upgrade${NC}"
-    apt update
+    sudo apt-get update
     sudo apt-get dist-upgrade -y -u
 
     echo -e "${GREEN}Flatpak upgrade${NC}"

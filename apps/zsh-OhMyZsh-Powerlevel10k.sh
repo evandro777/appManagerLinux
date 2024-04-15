@@ -37,7 +37,7 @@ function perform_install() {
 
     echo 'If error like "command not found: ^M"'
     echo "execute:"
-    echo "sudo apt-get install -y dos2unix"
+    echo "sudo apt-get install -y -q dos2unix"
     echo "cd /home/evandro/.oh-my-zsh/themes/"
     echo "find . -name "*.zsh-theme" | xargs dos2unix"
     echo "find . -name "*.zsh" | xargs dos2unix"

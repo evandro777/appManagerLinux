@@ -7,59 +7,59 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 echo -e "${YELLOW}Installing Essentials Apps${NC}"
 
 echo -e "${YELLOW}Installing Conky${NC}"
-sudo apt-get install -y conky conky-all
+sudo apt-get install -y -q conky conky-all
 #allow regular user to execute hddtemp without needing sudo (to get temperatures for conky)
 sudo chmod +s /usr/sbin/hddtemp
 
 echo -e "${YELLOW}Installing Indicator CPU Frequency${NC}"
-sudo apt-get install -y indicator-cpufreq
+sudo apt-get install -y -q indicator-cpufreq
 
 echo -e "${YELLOW}Installing Microsoft fonts${NC}"
 # Auto set yes to license
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-sudo apt-get install -y ttf-mscorefonts-installer
+sudo apt-get install -y -q ttf-mscorefonts-installer
 
 echo -e "${YELLOW}Installing Crudini (manipulate .ini files)${NC}"
-sudo apt-get install -y crudini
+sudo apt-get install -y -q crudini
 
 #MANIPULATE OPENED WINDOWS (ALREADY HAVE ON UBUNTU 18+)
-#sudo apt-get install -y wmctrl
+#sudo apt-get install -y -q wmctrl
 
 echo -e "${YELLOW}Installing jq (manipulate .js json files)${NC}"
-sudo apt-get install -y jq
+sudo apt-get install -y -q jq
 
 echo -e "${YELLOW}Installing 7ZIP Lib (use in file-roller)${NC}"
-sudo apt-get install -y p7zip-full
+sudo apt-get install -y -q p7zip-full
 
 echo -e "${YELLOW}Installing Unrar Lib (use in file-roller)${NC}"
-sudo apt-get install -y unrar
+sudo apt-get install -y -q unrar
 
 echo -e "${YELLOW}Installing PIGZ [parallel implementation of gzip]. pigz takes advantage of both multiple CPUs and multiple CPU cores for higher compression and decompression speed${NC}"
-sudo apt-get install -y pigz
+sudo apt-get install -y -q pigz
 
 echo -e "${YELLOW}Installing icoutils (.exe resource extractor, usefull for some automated install scripts)${NC}"
-sudo apt-get install -y icoutils
+sudo apt-get install -y -q icoutils
 
 echo -e "${YELLOW}Installing gnome settings${NC}"
-sudo apt-get install -y dconf-editor
+sudo apt-get install -y -q dconf-editor
 
 echo -e "${YELLOW}Installing mint meta (media) codecs${NC}"
-sudo apt-get install -y mint-meta-codecs --install-suggests
+sudo apt-get install -y -q mint-meta-codecs --install-suggests
 
 echo -e "${YELLOW}Installing .heic images support${NC}"
-sudo apt-get install -y heif-gdk-pixbuf
+sudo apt-get install -y -q heif-gdk-pixbuf
 
 echo -e "${YELLOW}Installing FFmpeg${NC}"
-sudo apt-get install -y ffmpeg
+sudo apt-get install -y -q ffmpeg
 
 echo -e "${YELLOW}Installing GIT${NC}"
-sudo apt-get install -y git
+sudo apt-get install -y -q git
 
 echo -e "${YELLOW}Installing numlockx > Enabling numlock on startup${NC}"
-sudo apt-get install -y numlockx
+sudo apt-get install -y -q numlockx
 
 echo -e "${YELLOW}Installing API VA-API (Video Acceleration API) and VDPAU -> VA-API translator${NC}"
-sudo apt-get install -y va-driver-all libvdpau-va-gl1
+sudo apt-get install -y -q va-driver-all libvdpau-va-gl1
 
 # echo -e "${YELLOW}Installing Os Query${NC}"
 # ./osquery.sh

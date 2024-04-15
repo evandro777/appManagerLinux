@@ -7,4 +7,4 @@ NC='\033[0m' # No Color / Reset color
 echo -e "${ORANGE}Installing KeePassXC - Official PPA${NC}"
 
 sudo add-apt-repository -y ppa:phoerious/keepassxc
-sudo apt-get install -y keepassxc
+sudo apt-get install -y -q keepassxc

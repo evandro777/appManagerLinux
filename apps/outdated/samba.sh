@@ -16,7 +16,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 sudo apt-get -y update
 
 echo -e "${YELLOW}Installing samba (access windows network)${NC}"
-sudo apt-get install -y samba
+sudo apt-get install -y -q samba
 
 shareFolder="${HOME}/Public"
 mkdir -p "$shareFolder"

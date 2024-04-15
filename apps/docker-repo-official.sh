@@ -34,7 +34,7 @@ function get_ubuntu_codename() {
 function perform_install() {
     # Add Docker's official GPG key:
     package_update
-    sudo apt-get install -y ca-certificates curl gnupg
+    sudo apt-get install -y -q ca-certificates curl gnupg
     sudo install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --yes -o "$APPLICATION_KEYRING"
     sudo chmod a+r "$APPLICATION_KEYRING"
