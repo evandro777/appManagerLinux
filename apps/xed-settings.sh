@@ -2,13 +2,14 @@
 
 readonly APPLICATION_NAME="XED > Settings > dracula theme +custom settings"
 readonly THEME_DRACULA_FOLDER="/usr/share/gtksourceview-3.0/styles"
+readonly THEME_DRACULA_FILE="${THEME_DRACULA_FOLDER}/dracula.xml"
 
 function perform_install() {
     echo -e "${YELLOW}Applying $APPLICATION_NAME...${NC}"
     echo -e "${YELLOW}Installing dracula theme for XED${NC}"
     ## Download & create folder and overwrite file
     sudo wget --no-verbose --timestamping --directory-prefix="${THEME_DRACULA_FOLDER}" https://raw.githubusercontent.com/dracula/gedit/master/dracula.xml
-    sudo cp "${THEME_DRACULA_FOLDER}/dracula.xml" /usr/share/gtksourceview-4/styles/
+    sudo cp "${THEME_DRACULA_FILE}" /usr/share/gtksourceview-4/styles/
 
     echo "Applying custom settings for XED"
     gsettings set org.x.editor.preferences.editor highlight-current-line true
@@ -32,7 +33,7 @@ function perform_uninstall() {
 
 function perform_check() {
     package_is_installed=0
-    if [ -e "${THEME_DRACULA_FOLDER}" ]; then
+    if [ -f "${THEME_DRACULA_FILE}" ]; then
         package_is_installed=1
     fi
     echo $package_is_installed

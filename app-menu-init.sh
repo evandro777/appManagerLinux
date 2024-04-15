@@ -107,12 +107,17 @@ function show_apps_menu() {
     local apps_in_group
     apps_in_group=$(get_apps_in_group "$group")
     eval "$apps_in_group" # Convert it to associative array
+    declare -p apps_in_group
 
     local selections
     read -ra selections <<< "$(read_group_selections "$group")"
 
+    # Get ordered keys of associative array
+    sorted_keys=($(printf '%s\n' "${!apps_in_group[@]}" | LC_ALL=C sort))
+
+    # Loop associative array ordered
     local dialog_options=()
-    for key in "${!apps_in_group[@]}"; do
+    for key in "${sorted_keys[@]}"; do
         # local app="${apps_in_group[$key]}"
         local app="$(queryAppMenu "$key")"
         local selected="off"
@@ -124,6 +129,19 @@ function show_apps_menu() {
         done
         dialog_options+=("$key" "$app" "$selected")
     done
+
+    # for key in "${!apps_in_group[@]}"; do
+    #     # local app="${apps_in_group[$key]}"
+    #     local app="$(queryAppMenu "$key")"
+    #     local selected="off"
+    #     for selected_app in "${selections[@]}"; do
+    #         if [[ "$selected_app" == "$key" ]]; then
+    #             selected="on"
+    #             break
+    #         fi
+    #     done
+    #     dialog_options+=("$key" "$app" "$selected")
+    # done
 
     export DIALOGRC="dialogrc"
     dialog --backtitle "Select Options" \
