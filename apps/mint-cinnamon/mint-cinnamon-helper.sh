@@ -6,12 +6,14 @@
 function startup_get_app_property() {
     local filename="${1}"
     local property="${2}"
-    local dekstop_filename="${HOME}/.config/autostart/${filename}.desktop"
+    local desktop_filename="${HOME}/.config/autostart/${filename}.desktop"
 
-    if command -v crudinia &> /dev/null; then
-        crudini --get "${dekstop_filename}" "Desktop Entry" "${property}"
-    else
-        grep -oP "(?<=^${property}=).*" "${dekstop_filename}"
+    if [ -f "$desktop_filename" ]; then
+        if command -v crudini &> /dev/null; then
+            crudini --get "${desktop_filename}" "Desktop Entry" "${property}"
+        else
+            grep -oP "(?<=^${property}=).*" "${desktop_filename}"
+        fi
     fi
 }
 

@@ -96,8 +96,14 @@ function perform_install() {
     # Markdown (.md) lint
     code --install-extension davidanson.vscode-markdownlint
 
-    # bash spellcheck
+    # bash shellcheck
     code --install-extension timonwong.shellcheck
+
+    # Code Spell Checker
+    code --install-extension streetsidesoftware.code-spell-checker
+
+    # Code Spell Checker - Brazilian Portuguese
+    # code --install-extension streetsidesoftware.code-spell-checker-portuguese-brazilian
 
     # bash ide
     mads-hartmann.bash-ide-vscode
