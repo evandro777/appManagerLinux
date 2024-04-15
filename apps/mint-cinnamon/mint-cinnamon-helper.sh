@@ -43,8 +43,9 @@ function startup_set_app_property() {
 #$3: filename
 function startup_enable_app() {
     local filename="${1}"
-    cp "/etc/xdg/autostart/${filename}.desktop" "${HOME}/.config/autostart/"
-    startup_set_app_property "${filename}" "X-GNOME-Autostart-enabled" true
+    rm "${HOME}/.config/autostart/${filename}.desktop" # Remove the user, doesn't need to set "X-GNOME-Autostart-enabled true", because the default is already enabled
+    # cp "/etc/xdg/autostart/${filename}.desktop" "${HOME}/.config/autostart/"
+    # startup_set_app_property "${filename}" "X-GNOME-Autostart-enabled" true
 }
 
 #Disable autostart
@@ -59,5 +60,17 @@ function startup_disable_app() {
 #$1: filename
 function startup_is_enable_app() {
     local filename="${1}"
-    startup_get_app_property "$filename" "X-GNOME-Autostart-enabled"
+    local property="X-GNOME-Autostart-enabled"
+    local desktop_filename_user="${HOME}/.config/autostart/${filename}.desktop"
+    local desktop_filename_global="/etc/xdg/autostart/${filename}.desktop"
+
+    if [ -f "$desktop_filename_user" ]; then # If home autostart is found > check property
+        if command -v crudini &> /dev/null; then
+            crudini --get "${desktop_filename_user}" "Desktop Entry" "${property}"
+        else
+            grep -oP "(?<=^${property}=).*" "${desktop_filename_user}"
+        fi
+    elif [ ! -f "${desktop_filename_global}" ]; then # If global desktop file is found > it is already an autostart app
+        echo "true"
+    fi
 }
