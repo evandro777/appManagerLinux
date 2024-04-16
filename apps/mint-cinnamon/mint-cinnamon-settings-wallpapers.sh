@@ -8,7 +8,7 @@ readonly APPLICATION_ID="mint-backgrounds-*"
 function set_wallpaper_slideshow() {
     background_folder="/usr/share/backgrounds"
 
-    background_config="/home/seven/.config/cinnamon/backgrounds/user-folders.lst"
+    background_config="${HOME}/.config/cinnamon/backgrounds/user-folders.lst"
 
     background_new_folder="${background_folder}/allmint"
     sudo mkdir -p "$background_new_folder"
