@@ -17,8 +17,8 @@ function set_wallpaper_slideshow() {
     sudo find linux* -name "*.??g" -exec ln -s -f $background_folder/{} allmint/ \;
     cd "$original_folder" || return
 
-    # Verify if folder is already in background_config file
-    if ! grep -Fxq "$background_new_folder" "$background_config"; then
+    # Verify if $background_config exists and folder is already in $background_config
+    if [ ! -e "$background_config" ] || ! grep -Fxq "$background_new_folder" "$background_config"; then
         echo "$background_new_folder" >> "$background_config"
     fi
 
@@ -30,7 +30,7 @@ function set_wallpaper_slideshow() {
 }
 
 function perform_install() {
-    # package_install "$APPLICATION_ID"
+    package_install "$APPLICATION_ID"
     if is_process_running "variety"; then
         echo -e "${RED}Skipping setting > ${NC}${YELLOW}Variety (wallpaper changer) is detected and it might conflict with cinnamon wallpaper rotation${NC}"
         exit 0
