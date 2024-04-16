@@ -6,7 +6,7 @@ readonly APPLICATION_ID="smplayer"
 readonly APPLICATION_PPA=ppa:rvm/smplayer
 
 function perform_install() {
-    sudo apt-get add-repository -y $APPLICATION_PPA
+    sudo add-apt-repository -y $APPLICATION_PPA
     package_update
     package_install "$APPLICATION_ID"
 

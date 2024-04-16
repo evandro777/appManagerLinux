@@ -5,7 +5,7 @@ readonly APPLICATION_NAME="VLC [distro repository]"
 readonly APPLICATION_ID="vlc"
 
 function perform_install() {
-    package_install "$APPLICATION_ID" --install-suggests
+    package_install $APPLICATION_ID vlc-plugin-fluidsynth fluid-soundfont-gm fluid-soundfont-gs
 
     if [[ "$*" == *"--set-preferred-app"* ]]; then
         echo "Setting preferred application for $APPLICATION_NAME"

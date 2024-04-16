@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 
 echo -e "${ORANGE}Installing RetroArch - Official PPA [+custom configs]${NC}"
 
-sudo apt-get add-repository -y ppa:libretro/stable
+sudo add-apt-repository -y ppa:libretro/stable
 sudo apt-get update
 sudo apt-get install -y -q retroarch
 

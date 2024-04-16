@@ -14,7 +14,7 @@ read -p "Press any key to continue"
 #WINE > OFFICIAL
 wget -nc https://dl.winehq.org/wine-builds/winehq.key
 sudo apt-key add winehq.key
-sudo apt-add-repository -y 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
+sudo add-apt-repository -y 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
 
 #Wine alternative repository (Official is breaking install using staging)
 

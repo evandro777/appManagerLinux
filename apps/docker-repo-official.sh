@@ -45,9 +45,6 @@ function perform_install() {
         "$(. /etc/os-release && echo "$(get_ubuntu_codename)")" stable" \
         | sudo tee "$APPLICATION_SOURCE_LIST" > /dev/null
 
-    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor --yes -o "$APPLICATION_KEYRING"
-    sudo sh -c 'echo "deb [arch=amd64 signed-by='$APPLICATION_KEYRING'] http://dl.google.com/linux/chrome/deb/ stable main" > '$APPLICATION_SOURCE_LIST
-
     package_update
     package_install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 

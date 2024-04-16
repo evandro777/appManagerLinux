@@ -109,81 +109,11 @@ function command_dependency() {
     }
 }
 
-# Get Last Id From Keybinding
-function get_keybinding_last_id() {
-    local list_id=$(dconf read /org/cinnamon/desktop/keybindings/custom-list)
-    if [ "$list_id" == "" ]; then
-        list_id="[]"
-    fi
-
-    # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
-    # Get first sequence
-    first_id=${list_id:2:10}                            # Get 10 first chars (except first 2)
-    first_id=$(echo "${first_id}" | sed 's/[^0-9]*//g') # Remove all except numbers
-
-    # Get last sequence
-    last_id=${list_id::-2}                            # Remove 2 last chars
-    last_id=${list_id: -7}                            # Get 7 last chars
-    last_id=$(echo "${last_id}" | sed 's/[^0-9]*//g') # Remove all except numbers
-
-    if ((first_id > last_id)); then
-        id=$first_id
-    else
-        id=$last_id
-    fi
-
-    if [ "$id" == "" ]; then
-        id="-1" # Force -1 (doesn't exist the id). So the next id will be 0
-    fi
-    echo "$id"
-}
-
-# Return string if keybinding is found
-#$1: keybinding (example: <Super>Print)
-function keybinding_exists() {
-    local key_binding="$1"
-    local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${key_binding}")
-    echo "$return"
-}
-
-# Return a new id to use with custom keybinding
-function get_new_keybinding_id() {
-    last_id=$(get_keybinding_last_id)
-    new_id=$(($last_id + 1))
-    new_custom_id="custom${new_id}"
-    echo "$new_custom_id"
-}
-
-# Set new custom keybinding
-# Example: set_new_keybinding "Teste" "flameshot gui" "'<Super>A'"
-# Warning: the third parameter must use "'"
-function set_new_keybinding() {
-    local name="${1}"
-    local command="${2}"
-    local keybinding="${3}"
-
-    # Check if custom-list is empty > create a dummy one
-    if [ -z "$(dconf read /org/cinnamon/desktop/keybindings/custom-list)" ]; then
-        dconf write /org/cinnamon/desktop/keybindings/custom-list "['__dummy__']"
-    fi
-
-    new_custom_id=$(get_new_keybinding_id)
-    if [ -z "$(keybinding_exists "$keybinding")" ]; then
-        set_list=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${new_custom_id}', /g")
-        dconf write /org/cinnamon/desktop/keybindings/custom-list "${set_list}"
-        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/ name "$name"
-        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/ command "$command"
-        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/ binding '['"$keybinding"']'
-    else
-        echo -e "Shortcut has already been using"
-    fi
-}
-
 # Check if a single package is installed
 function package_is_installed() {
     local package_name=$1
 
-    if dpkg -l | grep -q "ii.*${package_name} "; then
+    if dpkg -l | awk '$1 == "ii" && $2 == "'"${package_name}"'"' | grep -q .; then
         echo 1 # Package is installed
     else
         echo 0 # Package is not installed
@@ -210,21 +140,29 @@ function packages_is_installed() {
 
 # Function to update cache
 function package_update() {
-    echo "update"
-    # sudo apt-get update
+    echo "Update apt cache"
+    # Run apt-get update and redirect output to a variable
+    output=$(sudo apt-get update 2>&1)
+
+    # Check the return code of the previous command
+    if [ $? -ne 0 ]; then
+        # Display the output only if an error occurred
+        echo "$output"
+    fi
 }
 
 # Function to install packages
 function package_install() {
-    # echo "install"
-    sudo apt-get install -y -q "$@"
+    # Evaluate the arguments as a list of separate arguments.
+    # Example package_install "zsh zsh-autosuggestions", will be: sudo apt-get install -y -q "zsh" "zsh-autosuggestions"
+    eval "sudo apt-get install -y -q $*"
 }
 
 # Function to uninstall packages
 function package_uninstall() {
-    echo "Uninstall"
-    # sudo apt-get purge -y "$@"
-    # sudo apt-get autoremove -y
+    # Evaluate the arguments as a list of separate arguments
+    eval "sudo apt-get purge -y $*"
+    sudo apt-get autoremove -y
 }
 
 # Function to check if a flatpak is installed
@@ -240,13 +178,14 @@ function flatpak_is_installed() {
 
 # Function to install flatpak
 function flatpak_install() {
-    echo "install flatpak"
-    # flatpak install -y "$@"
+    # Evaluate the arguments as a list of separate arguments
+    eval "flatpak install -y $*"
 }
 
 # Function to uninstall packages
 function flatpak_uninstall() {
-    flatpak uninstall -y "$@"
+    # Evaluate the arguments as a list of separate arguments
+    eval "flatpak uninstall -y $*"
 }
 
 #Return a list of video mime types
@@ -282,8 +221,9 @@ function is_process_running() {
     local process_name=$1
 
     if pgrep "$process_name" > /dev/null; then
-        echo 1 #Process is running
+        return 0 #Process is running
+        echo 1
     else
-        echo 0 #Process not running
+        return 1 #Process not running
     fi
 }

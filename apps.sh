@@ -51,7 +51,7 @@ queryAppMenu() {
         if [ -n "$extra_actions" ]; then
             extra_options=" [Extra options: $extra_actions]"
         fi
-        echo -e "\Zb\Z1${status}\Zn $name?$extra_options"
+        echo -e "\Zb\Z2${status}\Zn $name?$extra_options"
     elif [ "$status" == "Uninstall" ]; then
         echo -e "\Zb\Z1${status}\Zn $name?"
     else

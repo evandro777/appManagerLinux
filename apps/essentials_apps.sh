@@ -44,7 +44,7 @@ echo -e "${YELLOW}Installing gnome settings${NC}"
 sudo apt-get install -y -q dconf-editor
 
 echo -e "${YELLOW}Installing mint meta (media) codecs${NC}"
-sudo apt-get install -y -q mint-meta-codecs --install-suggests
+sudo apt-get install -y -q mint-meta-codecs
 
 echo -e "${YELLOW}Installing .heic images support${NC}"
 sudo apt-get install -y -q heif-gdk-pixbuf

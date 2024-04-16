@@ -8,7 +8,7 @@ readonly APPLICATION_PACKAGES="zsh zsh-autosuggestions zsh-syntax-highlighting"
 function perform_install() {
     command_dependency "git" # Needed for installing oh-my-zsh and the powerlinetheme
 
-    package_install "$APPLICATION_PACKAGES"
+    package_install $APPLICATION_PACKAGES
 
     # SET AS DEFAULT SHELL
     chsh -s /bin/zsh
