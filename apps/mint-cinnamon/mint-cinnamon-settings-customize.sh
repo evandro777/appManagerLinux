@@ -11,8 +11,6 @@ EndSection'
 readonly LOGIN_SETTINGS_FILE="/etc/lightdm/slick-greeter.conf"
 
 function perform_install() {
-    echo -e "${YELLOW}Apply $APPLICATION_NAME...${NC}"
-
     echo "Cinnamon > Update Manager > show more informations"
     gsettings set com.linuxmint.updates show-size-column true
     gsettings set com.linuxmint.updates show-old-version-column true
@@ -136,8 +134,6 @@ function perform_install() {
 }
 
 function perform_uninstall() {
-    echo -e "${RED}Reset $APPLICATION_NAME...${NC}"
-
     gsettings reset-recursively com.linuxmint.updates
 
     gsettings reset-recursively org.x.editor.preferences.editor

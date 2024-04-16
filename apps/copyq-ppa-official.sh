@@ -11,7 +11,7 @@ function perform_install() {
     package_install "$APPLICATION_ID"
 
     echo "Enable CopyQ autostart"
-    copyq --start-server config autostart true
+    copyq --start-server config autostart true > /dev/null
 
     if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
         echo -e "${YELLOW}CopyQ Applying shortcut: CTRL + ALT + V${NC}"

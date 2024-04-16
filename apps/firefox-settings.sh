@@ -81,8 +81,6 @@ function remove_firefox_property() {
 }
 
 function perform_install() {
-    echo -e "${YELLOW}Applying $APPLICATION_NAME...${NC}"
-
     validate_firefox_running
 
     # New Firefox versions doesn't need this fix anymore #

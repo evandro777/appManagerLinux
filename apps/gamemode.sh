@@ -1,7 +1,7 @@
 #!/bin/bash
 
 readonly IS_APT_PACKAGE=1
-readonly APPLICATION_NAME="GameMode: temporary optimisations (+custom optimisations) [distro repository]"
+readonly APPLICATION_NAME="GameMode: temporary optimizations (+custom optimizations) [distro repository]"
 readonly APPLICATION_ID="gamemode"
 # Define possible file paths
 readonly FILE_PATHS=(
@@ -77,7 +77,7 @@ function perform_install() {
         fi
     done
 
-    echo -e "${YELLOW}Custom optimisations added to gamemode${NC}"
+    echo -e "${YELLOW}Custom optimizations added to gamemode${NC}"
 }
 
 function perform_uninstall() {

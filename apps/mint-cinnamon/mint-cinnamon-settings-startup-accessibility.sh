@@ -3,8 +3,6 @@
 readonly APPLICATION_NAME="Mint Cinnamon > Settings > Startup > Accessibility [Screen reader, screen keyboard, rename folders by language]"
 
 function perform_install() {
-    echo -e "${YELLOW}Enable $APPLICATION_NAME...${NC}"
-
     echo "Startup apps > Which applications to start at login"
     echo -e "${YELLOW}http://askubuntu.com/questions/414841/which-applications-to-start-at-login${NC}"
 
@@ -22,8 +20,6 @@ function perform_install() {
 }
 
 function perform_uninstall() {
-    echo -e "${RED}Disable $APPLICATION_NAME...${NC}"
-
     echo "Startup > Disable > Accessibility > AT SPI D-Bus Bus AT SPI stands for Assistive Technology Service Provider Interface: unwanted until you need the accessibility features"
     startup_disable_app "at-spi-dbus-bus"
 

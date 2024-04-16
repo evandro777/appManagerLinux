@@ -14,8 +14,6 @@ Comment[en_US]=IBus input method
 X-GNOME-Autostart-Delay=5'
 
 function perform_install() {
-    echo -e "${YELLOW}Enable startup $APPLICATION_NAME...${NC}"
-
     if [ -f "$APPLICATION_DESKTOP_FILE_LOCATION" ]; then
         echo "Redshift desktop entry file found. Changing properties for startup"
         startup_set_app_property "${APPLICATION_DESKTOP_FILE_NAME}" "Hidden" false
@@ -28,8 +26,6 @@ function perform_install() {
 }
 
 function perform_uninstall() {
-    echo -e "${RED}Disable startup $APPLICATION_NAME...${NC}"
-
     startup_set_app_property "${APPLICATION_DESKTOP_FILE_NAME}" "X-GNOME-Autostart-enabled" false
     startup_set_app_property "${APPLICATION_DESKTOP_FILE_NAME}" "Exec" "redshift-gtk"
 }

@@ -227,3 +227,73 @@ function is_process_running() {
         return 1 #Process not running
     fi
 }
+
+# Get Last Id From Keybinding
+function get_keybinding_last_id() {
+    local list_id=$(dconf read /org/cinnamon/desktop/keybindings/custom-list)
+    if [ "$list_id" == "" ]; then
+        list_id="[]"
+    fi
+
+    # Need to get first and last sequence, because sometimes the bigger id is the first one, sometimes is the last one
+    # Get first sequence
+    first_id=${list_id:2:10}                            # Get 10 first chars (except first 2)
+    first_id=$(echo "${first_id}" | sed 's/[^0-9]*//g') # Remove all except numbers
+
+    # Get last sequence
+    last_id=${list_id::-2}                            # Remove 2 last chars
+    last_id=${list_id: -7}                            # Get 7 last chars
+    last_id=$(echo "${last_id}" | sed 's/[^0-9]*//g') # Remove all except numbers
+
+    if ((first_id >= last_id)); then
+        id=$first_id
+    else
+        id=$last_id
+    fi
+
+    if [ "$id" == "" ]; then
+        id="-1" # Force -1 (doesn't exist the id). So the next id will be 0
+    fi
+    echo "$id"
+}
+
+# Return string if keybinding is found
+#$1: keybinding (example: <Super>Print)
+function keybinding_exists() {
+    local key_binding="$1"
+    local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${key_binding}")
+    echo "$return"
+}
+
+# Return a new id to use with custom keybinding
+function get_new_keybinding_id() {
+    last_id=$(get_keybinding_last_id)
+    new_id=$(($last_id + 1))
+    new_custom_id="custom${new_id}"
+    echo "$new_custom_id"
+}
+
+# Set new custom keybinding
+# Example: set_new_keybinding "Teste" "flameshot gui" "'<Super>A'"
+# Warning: the third parameter must use "'"
+function set_new_keybinding() {
+    local name="${1}"
+    local command="${2}"
+    local keybinding="${3}"
+
+    # Check if custom-list is empty > create a dummy one
+    if [ -z "$(dconf read /org/cinnamon/desktop/keybindings/custom-list)" ]; then
+        dconf write /org/cinnamon/desktop/keybindings/custom-list "['_dummy_']"
+    fi
+
+    new_custom_id=$(get_new_keybinding_id)
+    if [ -z "$(keybinding_exists "$keybinding")" ]; then
+        set_list=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${new_custom_id}', /g")
+        dconf write /org/cinnamon/desktop/keybindings/custom-list "${set_list}"
+        dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/name "'$name'"
+        dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/command "'$command'"
+        dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/binding '['"$keybinding"']'
+    else
+        echo -e "Shortcut has already been using"
+    fi
+}

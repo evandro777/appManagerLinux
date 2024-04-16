@@ -1,7 +1,7 @@
 #!/bin/bash
 
 readonly IS_APT_PACKAGE=1
-readonly APPLICATION_NAME="VS Code (+font ligatures +custom configs)[official repository]"
+readonly APPLICATION_NAME="*Custom extensions* VS Code (+font ligatures +custom configs)[official repository]"
 #stable: code, unstable: code-insiders
 readonly APPLICATION_ID="code"
 readonly APPLICATION_KEYRING=/etc/apt/keyrings/packages.microsoft.gpg
@@ -105,7 +105,7 @@ function perform_install() {
     # code --install-extension streetsidesoftware.code-spell-checker-portuguese-brazilian
 
     # bash ide
-    mads-hartmann.bash-ide-vscode
+    # code --install-extension mads-hartmann.bash-ide-vscode
 
     # Formats shell scripts, Dockerfiles, gitignore, dotenv, properties, hosts, .bats
     code --install-extension foxundermoon.shell-format

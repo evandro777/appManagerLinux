@@ -236,4 +236,5 @@ done
 # for key in "${!apps[@]}"; do
 #     echo "$key: ${apps[$key]}"
 # done
+# # OR: declare -p apps
 # exit
