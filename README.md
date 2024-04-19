@@ -1,4 +1,4 @@
-# appManagerLinux
+# App Batch Manager Linux
 
 [![made-with-bash](https://img.shields.io/badge/Bash-1f425f?logo=gnubash)](https://www.gnu.org/software/bash/)
 [![made-for-linux-mint](https://img.shields.io/badge/LinuxMint-1f425f?logo=linuxmint)](https://linuxmint.com/)
