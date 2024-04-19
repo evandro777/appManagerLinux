@@ -27,7 +27,7 @@ function perform_install() {
     gsettings set org.cinnamon.desktop.notifications bottom-notifications true
 
     ## THEME > Mint-Y-Dark
-    echo "Cinnamon > Mint-Y-Dark theme with transparency panel"
+    echo "Cinnamon > Theme > Mint-Y-Dark theme with transparency panel"
     mkdir -p "${HOME}/.themes/"
     cp -r /usr/share/themes/Mint-Y-Dark/ "$HOME/.themes/Mint-Y-Dark-Transparency/" # create a new theme based on original one
 
@@ -43,6 +43,9 @@ function perform_install() {
     gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y"
     #gsettings set org.cinnamon.theme name "Mint-Y-Dark" #original
     gsettings set org.cinnamon.theme name "Mint-Y-Dark-Transparency" #modified with panel transparency
+
+    echo "Cinnamon > Theme > Prefer dark mode"
+    gsettings set org.x.apps.portal color-scheme "prefer-dark"
 
     ## NOTEBOOK
     echo "Cinnamon > Notebook > Disable reverse rolling"

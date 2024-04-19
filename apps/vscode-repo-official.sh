@@ -27,6 +27,13 @@ readonly APPLICATION_CUSTOM_JSON_CONFIG=$(
         "editor.formatOnSave": true
     },
     "markdown.extension.list.indentationSize": "inherit",
+    "markdownlint.config": {
+        "default": true,
+        "MD013": false,
+        "MD007": {
+            "indent": 4
+        }
+    },
     "[shellscript]": {
         "editor.formatOnSave": true
     },
@@ -94,6 +101,9 @@ function perform_install() {
 
     # Markdown (.md) lint
     code --install-extension davidanson.vscode-markdownlint
+
+    # Markdown (.md) all-in-one
+    code --install-extension yzhang.markdown-all-in-one
 
     # bash shellcheck
     code --install-extension timonwong.shellcheck
