@@ -6,9 +6,6 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 
 echo -e "${YELLOW}Installing Essentials Apps${NC}"
 
-echo -e "${YELLOW}Installing Indicator CPU Frequency${NC}"
-sudo apt-get install -y -q indicator-cpufreq
-
 echo -e "${YELLOW}Installing Microsoft fonts${NC}"
 # Auto set yes to license
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections

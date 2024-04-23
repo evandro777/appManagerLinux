@@ -207,7 +207,7 @@ function apply_actions() {
     mkdir -p "${HOME}/.config/autostart/"
 
     echo "Installing essential apps"
-    ./apps/essentials_apps.sh
+    ./apps/essentials-apps.sh
 
     # Apply selections
     local read_selections="$(read_selections)"

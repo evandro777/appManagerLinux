@@ -270,7 +270,7 @@ apply_actions() {
     ##################################
     ##### APPS > DEFAULT INSTALL #####
     ##################################
-    ./apps/essentials_apps.sh
+    ./apps/essentials-apps.sh
 
     #ALREADY REMOVED IN LINUX MINT 20+
     #if [[ "$uninstallVirtualboxguest" == [yY] ]]; then
