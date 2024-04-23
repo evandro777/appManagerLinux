@@ -136,7 +136,9 @@ apps[dropbox, script]="./apps/dropbox.sh"
 apps[dropbox, category]="Office & Productivity"
 
 #Security & Privacy
-apps[keepassxc, script]="./apps/keepassxc-flatpak-official.sh"
+apps[keepassxc_flatpak, script]="./apps/keepassxc-flatpak-official.sh"
+apps[keepassxc_flatpak, category]="Security & Privacy"
+apps[keepassxc, script]="./apps/keepassxc.sh"
 apps[keepassxc, category]="Security & Privacy"
 apps[flatseal, script]="./apps/flatseal-flatpak-official.sh"
 apps[flatseal, category]="Security & Privacy"

@@ -217,8 +217,8 @@ function apply_actions() {
         if [ "$action" == "Install" ]; then
             install_dont_update="--dont-update"
         fi
-        ${apps["$app_id, script"]} "${action,,}" "$install_dont_update" "${apps["$app_id, extra_actions"]}"
-        # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" "${apps["$app_id, extra_actions"]}"
+        # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" -- "${apps["$app_id, extra_actions"]}"
+        ${apps["$app_id, script"]} "${action,,}" "$install_dont_update" -- ${apps["$app_id, extra_actions"]} #Don't quote extra_actions!
     done
 
     echo -e "${GREEN}Fixing broken packages${NC}"

@@ -1,12 +1,13 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="KeePassXC [official Flatpak]"
-readonly APPLICATION_ID="org.keepassxc.KeePassXC"
-readonly APPLICATION_PROP_PATH="${HOME}/.var/app/org.keepassxc.KeePassXC/config/keepassxc"
+readonly IS_APT_PACKAGE=1
+readonly APPLICATION_NAME="KeePassXC [distro repository]"
+readonly APPLICATION_ID="keepassxc"
+readonly APPLICATION_PROP_PATH="${HOME}/.config/keepassxc/"
 readonly APPLICATION_PROP_FILE="${APPLICATION_PROP_PATH}/keepassxc.ini"
 
 function perform_install() {
-    flatpak_install "$APPLICATION_ID"
+    package_install "$APPLICATION_ID"
 
     # Check if the file exists
     if [ ! -f "$APPLICATION_PROP_FILE" ]; then
@@ -37,11 +38,11 @@ function perform_install() {
 }
 
 function perform_uninstall() {
-    flatpak_uninstall "$APPLICATION_ID"
+    package_uninstall "$APPLICATION_ID"
 }
 
 function perform_check() {
-    flatpak_is_installed "$APPLICATION_ID"
+    package_is_installed "$APPLICATION_ID"
 }
 
 DIR="${BASH_SOURCE%/*}"

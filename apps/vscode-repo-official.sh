@@ -86,76 +86,79 @@ function perform_install() {
     jq --argjson orig "$APPLICATION_CUSTOM_JSON_CONFIG" '. + $orig' "$user_configs_settings" > "${HOME}/.config/Code/User/settings_temp.json"
     mv "${HOME}/.config/Code/User/settings_temp.json" "$user_configs_settings"
 
-    # Plugins
-    # highlight .env
-    code --install-extension mikestead.dotenv
+    # Access the associative array passed as a parameter
+    local -n params=$1
 
-    # PHPDoc
-    #code --install-extension neilbrayfield.php-docblocker
+    # Extensions
+    if [ "${params[base\-programming],,}" == "y" ]; then
+        echo "Installing extension for colorizing indentation: oderwat.indent-rainbow"
+        code --install-extension oderwat.indent-rainbow
+
+        # echo "Installing extension for highlight .env: mikestead.dotenv"
+        # code --install-extension mikestead.dotenv
+    fi
+
+    if [ "${params[editor],,}" == "y" ]; then
+        echo "Installing extension for markdown features (.md): yzhang.markdown-all-in-one"
+        code --install-extension yzhang.markdown-all-in-one
+
+        echo "Installing extension for markdown lint (.md): davidanson.vscode-markdownlint"
+        code --install-extension davidanson.vscode-markdownlint
+
+        echo "Installing extension for spell checking: streetsidesoftware.code-spell-checker"
+        code --install-extension streetsidesoftware.code-spell-checker
+
+        # Markdown table formatter (beautify)
+        # sudo -u $SUDO_USER -H code --install-extension shuworks.vscode-table-formatter
+    fi
+
+    if [ "${params[editor\-spellcheck\-ptbr],,}" == "y" ]; then
+        echo "Installing extension for spell checking (pt-br): streetsidesoftware.code-spell-checker-portuguese-brazilian"
+        code --install-extension streetsidesoftware.code-spell-checker-portuguese-brazilian
+    fi
+
+    if [ "${params[shell\-script],,}" == "y" ]; then
+        echo "Installing extension for shell script lint (.sh): timonwong.shellcheck"
+        code --install-extension timonwong.shellcheck
+
+        # Formats shell scripts, Dockerfiles, gitignore, dotenv, properties, hosts, .bats
+        echo "Installing extension for formating shell script, gitignore, doenvt, properties, hosts, bats: foxundermoon.shell-format"
+        code --install-extension foxundermoon.shell-format
+        # To disable formatOnSave for shellscript open user settings (CTRL + SHIFT + P => Type user settings):
+        # "[shellscript]": {
+        # 	"editor.formatOnSave": false
+        # },
+        # "shellformat.effectLanguages": [
+        # 	"dockerfile",
+        # 	"dotenv",
+        # 	"hosts",
+        # 	"jvmoptions",
+        # 	"ignore",
+        # 	"gitignore",
+        # 	"properties",
+        # 	"spring-boot-properties",
+        # 	"azcli",
+        # 	"bats"
+        # ]
+    fi
 
     # PHP INTELEPHENSE
     #code --install-extension bmewburn.vscode-intelephense-client
 
+    # PHPDoc
+    #code --install-extension neilbrayfield.php-docblocker
+
     # Code Runner
     #code --install-extension formulahendry.code-runner
 
-    # Markdown (.md) lint
-    code --install-extension davidanson.vscode-markdownlint
-
-    # Markdown (.md) all-in-one
-    code --install-extension yzhang.markdown-all-in-one
-
-    # bash shellcheck
-    code --install-extension timonwong.shellcheck
-
-    # Code Spell Checker
-    code --install-extension streetsidesoftware.code-spell-checker
-
-    # Code Spell Checker - Brazilian Portuguese
-    # code --install-extension streetsidesoftware.code-spell-checker-portuguese-brazilian
-
     # bash ide
     # code --install-extension mads-hartmann.bash-ide-vscode
-
-    # Formats shell scripts, Dockerfiles, gitignore, dotenv, properties, hosts, .bats
-    code --install-extension foxundermoon.shell-format
-    # To disable formatOnSave for shellscript open user settings (CTRL + SHIFT + P => Type user settings):
-    # "[shellscript]": {
-    # 	"editor.formatOnSave": false
-    # },
-    # "shellformat.effectLanguages": [
-    # 	"dockerfile",
-    # 	"dotenv",
-    # 	"hosts",
-    # 	"jvmoptions",
-    # 	"ignore",
-    # 	"gitignore",
-    # 	"properties",
-    # 	"spring-boot-properties",
-    # 	"azcli",
-    # 	"bats"
-    # ]
-
-    # Indentation more readable by colorizing
-    code --install-extension oderwat.indent-rainbow
-
-    # Markdown table formater (beautify)
-    # sudo -u $SUDO_USER -H code --install-extension shuworks.vscode-table-formatter
 
     # Local history
     # sudo -u $SUDO_USER -H code --install-extension xyz.local-history
 
     # Class import checker (if not using an import)
     # sudo -u $SUDO_USER -H code --install-extension marabesi.php-import-checker
-
-    # Highlight TODO:, FIXME:
-    # sudo -u $SUDO_USER -H code --install-extension wayou.vscode-todo-highlight
-
-    # highlight .htaccess
-    # sudo -u $SUDO_USER -H code --install-extension mrmlnc.vscode-apache
-
-    # VUE
-    # sudo -u $SUDO_USER -H code --install-extension octref.vetur
 
     echo -e "Applying Keybindings to VS Code${NC}"
 
@@ -187,6 +190,16 @@ function perform_uninstall() {
 
 function perform_check() {
     package_is_installed "$APPLICATION_ID"
+}
+
+function get_parameters() {
+    # Don't use echo before read, it's not going to work to set into a variable "app-menu-init.sh"
+    read -rp $'Install editor (markdown, spellcheck) extensions [y | n (default)]?: \n' editor
+    read -rp $'Install editor spellcheck "português brasileiro" extension [y | n (default)]?: \n' editor_spellcheck_ptbr
+    read -rp $'Install base programming extensions (.env highlight, color indentation) [y | n (default)]: \n' base_programming
+    read -rp $'Install shell script extensions [y | n (default)]: \n' shell_script
+
+    echo "--editor=$editor --editor-spellcheck-ptbr=$editor_spellcheck_ptbr --shell-script=$shell_script --base-programming=$base_programming"
 }
 
 DIR="${BASH_SOURCE%/*}"
