@@ -202,6 +202,14 @@ if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
     apps[mint_cinnamon_setting_privacy, category]="OS > Mint Cinnamon"
 fi
 
+# key="seven_conky, script"
+# get_parameters=$(${apps["$key"]} get-parameters)
+# # status=$(${apps["$key"]} get-parameters)
+# # "${apps["$key"]} get-parameters"
+# # echo "$status"
+# echo "$get_parameters"
+# exit
+
 # Loop for setting dynamically install status and default action
 for key in "${!apps[@]}"; do
     if [[ $key =~ ^([a-z_]+)[[:space:]]*,[[:space:]]*script$ ]]; then

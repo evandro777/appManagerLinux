@@ -164,6 +164,18 @@ function exit_script() {
 # Function to list selected items
 function apply_actions() {
     clear
+
+    echo -e "${YELLOW}Try to get custom parameters before starting (silent install)${NC}"
+    local read_selections="$(read_selections)"
+    for app_id in $read_selections; do
+        action="${apps["$app_id, status"]}"
+        if [ "$action" == "Install" ]; then
+            echo -e "${GREEN}${apps["$app_id, name"]}${NC}"
+            apps["${app_id}, extra_actions"]=$(${apps["$app_id, script"]} get-parameters)
+        fi
+        # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" -- "${apps["$app_id, extra_actions"]}"
+    done
+
     echo -e "${RED}${BOLD}${UNDER}Script started! It's recommended to close every other application, like browsers, players, and wait until it is completed!${NC}"
 
     # Log everything and show on terminal

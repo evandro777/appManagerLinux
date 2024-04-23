@@ -13,11 +13,12 @@ show_help() {
     local packageName="${1}"
 
     echo "Usage: $0 [install [options] | uninstall | check | help]"
-    echo "install     Install the ${packageName} package"
-    echo "uninstall   Uninstall the ${packageName} package"
-    echo "check       Check if the ${packageName} package is installed. 0: Not installed, 1: Installed, 2: Apply only (doesn't have uninstall), 3: Not available"
-    echo "name        Application name"
-    echo "help        Display this help message"
+    echo "install        Install the ${packageName} package"
+    echo "uninstall      Uninstall the ${packageName} package"
+    echo "check          Check if the ${packageName} package is installed. 0: Not installed, 1: Installed, 2: Apply only (doesn't have uninstall), 3: Not available"
+    echo "name           Application name"
+    echo "get-parameters Prompt and generate parameters for silent install"
+    echo "help           Display this help message"
     echo "Extra options:"
     echo "--dont-update => Do not execute apt-get update"
 }
@@ -62,7 +63,33 @@ case $1 in
         if [ -n "$IS_APT_PACKAGE" ] && [[ "$*" != *"--dont-update"* ]]; then
             package_update
         fi
-        perform_install "$@"
+
+        # Store the parameters in an associative array
+        declare -A install_params
+
+        # Variable to indicate when to start storing parameters
+        should_store=false
+
+        # Iterate over the command line arguments
+        for arg in "$@"; do
+            # Check if we should start storing parameters
+            if [[ "$arg" == "--" ]]; then
+                should_store=true
+            elif $should_store; then
+                # Remove the "--" from the beginning of the argument to get the key
+                key="${arg#--}"
+                # Split the key-value pair
+                key="${key%%=*}"
+                value="${arg#*=}"
+                # Remove quotes, if present, from the value
+                value="${value//\"/}"
+                # Store the key-value pair in the associative array
+                install_params["$key"]="$value"
+            fi
+        done
+
+        perform_install install_params
+        # perform_install "$@"
         ;;
     uninstall)
         echo -e "${RED}Uninstalling $APPLICATION_NAME...${NC}"
@@ -73,6 +100,11 @@ case $1 in
         ;;
     name)
         echo "$APPLICATION_NAME"
+        ;;
+    get-parameters)
+        if type get_parameters &> /dev/null; then
+            get_parameters
+        fi
         ;;
     help)
         if type -t overwrite_show_help > /dev/null; then

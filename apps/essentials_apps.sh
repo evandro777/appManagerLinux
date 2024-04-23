@@ -6,11 +6,6 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 
 echo -e "${YELLOW}Installing Essentials Apps${NC}"
 
-echo -e "${YELLOW}Installing Conky${NC}"
-sudo apt-get install -y -q conky conky-all
-#allow regular user to execute hddtemp without needing sudo (to get temperatures for conky)
-sudo chmod +s /usr/sbin/hddtemp
-
 echo -e "${YELLOW}Installing Indicator CPU Frequency${NC}"
 sudo apt-get install -y -q indicator-cpufreq
 
@@ -37,12 +32,6 @@ sudo apt-get install -y -q unrar
 echo -e "${YELLOW}Installing PIGZ [parallel implementation of gzip]. pigz takes advantage of both multiple CPUs and multiple CPU cores for higher compression and decompression speed${NC}"
 sudo apt-get install -y -q pigz
 
-echo -e "${YELLOW}Installing icoutils (.exe resource extractor, usefull for some automated install scripts)${NC}"
-sudo apt-get install -y -q icoutils
-
-echo -e "${YELLOW}Installing gnome settings${NC}"
-sudo apt-get install -y -q dconf-editor
-
 echo -e "${YELLOW}Installing mint meta (media) codecs${NC}"
 sudo apt-get install -y -q mint-meta-codecs
 
@@ -60,6 +49,12 @@ sudo apt-get install -y -q numlockx
 
 echo -e "${YELLOW}Installing API VA-API (Video Acceleration API) and VDPAU -> VA-API translator${NC}"
 sudo apt-get install -y -q va-driver-all libvdpau-va-gl1
+
+# echo -e "${YELLOW}Installing icoutils [wrestool] (.exe resource extractor, useful for some automated install scripts)${NC}"
+# sudo apt-get install -y -q icoutils
+
+# echo -e "${YELLOW}Installing gnome settings${NC}"
+# sudo apt-get install -y -q dconf-editor
 
 # echo -e "${YELLOW}Installing Os Query${NC}"
 # ./osquery.sh
