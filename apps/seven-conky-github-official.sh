@@ -40,7 +40,7 @@ function get_parameters() {
         weather_unit="metric"
     fi
 
-    read -rp $'Language [en (or empty): English, pt_br: Português Brasil, sp, es: Spanish] (get a complete list at: https://openweathermap.org/current#multi)?: \n' weather_language
+    read -rp $'Language [en (or empty): English, pt_br: Português Brasil, sp | es: Spanish] (get a complete list at: https://openweathermap.org/current#multi)?: \n' weather_language
     if [ -z "$weather_language" ]; then
         weather_language="en"
     fi
