@@ -297,3 +297,10 @@ function set_new_keybinding() {
         echo -e "Shortcut has already been using"
     fi
 }
+
+# Function to update the file and perform the replacement
+update_json_prop_file() {
+    # $1: The jq command to update the file
+    # $2: The path to the settings file
+    jq "$1" "$2" > temp.json && mv temp.json "$2"
+}

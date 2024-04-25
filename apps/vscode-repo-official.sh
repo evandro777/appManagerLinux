@@ -1,7 +1,7 @@
 #!/bin/bash
 
 readonly IS_APT_PACKAGE=1
-readonly APPLICATION_NAME="*Custom extensions* VS Code (+font ligatures +custom configs)[official repository]"
+readonly APPLICATION_NAME="VS Code (+font ligatures +custom configs +prompt extensions)[official repository]"
 #stable: code, unstable: code-insiders
 readonly APPLICATION_ID="code"
 readonly APPLICATION_KEYRING=/etc/apt/keyrings/packages.microsoft.gpg
@@ -17,30 +17,7 @@ readonly APPLICATION_CUSTOM_JSON_CONFIG=$(
     "editor.fontLigatures": true,
     "editor.lineHeight": 24,
     "editor.fontSize": 16,
-    "editor.stickyScroll.enabled": true,
-    "cSpell.language": "en,pt,pt_BR",
-    "cSpell.enableFiletypes": [
-        "shellscript"
-    ],
-    "[markdown]": {
-        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-        "editor.formatOnSave": true
-    },
-    "markdown.extension.list.indentationSize": "inherit",
-    "markdownlint.config": {
-        "default": true,
-        "MD013": false,
-        "MD007": {
-            "indent": 4
-        }
-    },
-    "[shellscript]": {
-        "editor.formatOnSave": true
-    },
-    "shellcheck.customArgs": [
-        "-x"
-    ],
-    "shellformat.flag": "--case-indent --space-redirects --indent 4 --binary-next-line"
+    "editor.stickyScroll.enabled": true
 }
 EOF
 )
@@ -94,6 +71,9 @@ function perform_install() {
         echo "Installing extension for colorizing indentation: oderwat.indent-rainbow"
         code --install-extension oderwat.indent-rainbow
 
+        echo "Installing extension for consistent coding styles: EditorConfig.EditorConfig"
+        code --install-extension EditorConfig.EditorConfig
+
         # echo "Installing extension for highlight .env: mikestead.dotenv"
         # code --install-extension mikestead.dotenv
     fi
@@ -101,12 +81,23 @@ function perform_install() {
     if [ "${params[editor],,}" == "y" ]; then
         echo "Installing extension for markdown features (.md): yzhang.markdown-all-in-one"
         code --install-extension yzhang.markdown-all-in-one
+        update_json_prop_file '.["markdown.extension.list.indentationSize"] = "inherit"' "${user_configs_settings}"
 
         echo "Installing extension for markdown lint (.md): davidanson.vscode-markdownlint"
         code --install-extension davidanson.vscode-markdownlint
+        update_json_prop_file '.["[markdown]"].editor.defaultFormatter = "DavidAnson.vscode-markdownlint" |
+            .["[markdown]"].editor.formatOnSave = true |
+            .["markdownlint.config"].default = true |
+            .["markdownlint.config"].MD013 = false |
+            .["markdownlint.config"].MD007 = {"indent": 4}' "${user_configs_settings}"
 
         echo "Installing extension for spell checking: streetsidesoftware.code-spell-checker"
         code --install-extension streetsidesoftware.code-spell-checker
+        # Check if "shellscript" is already present in cSpell.enableFiletypes
+        if ! jq '.["cSpell.enableFiletypes"] | index("shellscript")' "$user_configs_settings" | grep -q "null"; then
+            # If "shellscript" is not present, add it to the array
+            update_json_prop_file '.["cSpell.enableFiletypes"] += ["shellscript"]' "${user_configs_settings}"
+        fi
 
         # Markdown table formatter (beautify)
         # sudo -u $SUDO_USER -H code --install-extension shuworks.vscode-table-formatter
@@ -115,15 +106,20 @@ function perform_install() {
     if [ "${params[editor\-spellcheck\-ptbr],,}" == "y" ]; then
         echo "Installing extension for spell checking (pt-br): streetsidesoftware.code-spell-checker-portuguese-brazilian"
         code --install-extension streetsidesoftware.code-spell-checker-portuguese-brazilian
+        update_json_prop_file '.["cSpell.language"] = "en,pt,pt_BR"' "${user_configs_settings}"
     fi
 
     if [ "${params[shell\-script],,}" == "y" ]; then
         echo "Installing extension for shell script lint (.sh): timonwong.shellcheck"
         code --install-extension timonwong.shellcheck
+        update_json_prop_file '.["shellcheck.customArgs"] = ["-x"]' "${user_configs_settings}"
 
         # Formats shell scripts, Dockerfiles, gitignore, dotenv, properties, hosts, .bats
         echo "Installing extension for formating shell script, gitignore, doenvt, properties, hosts, bats: foxundermoon.shell-format"
         code --install-extension foxundermoon.shell-format
+        update_json_prop_file '.["[shellscript]"].editor.formatOnSave = true |
+            .["shellformat.flag"] = "--case-indent --space-redirects --indent 4 --binary-next-line"' "${user_configs_settings}"
+
         # To disable formatOnSave for shellscript open user settings (CTRL + SHIFT + P => Type user settings):
         # "[shellscript]": {
         # 	"editor.formatOnSave": false
