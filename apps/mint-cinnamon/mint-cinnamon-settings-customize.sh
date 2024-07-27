@@ -118,6 +118,9 @@ function perform_install() {
     gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Super>Page_Up"]'
     gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Super>Page_Down"]'
 
+    echo "Cinnamon > Disabling mouse middle-click paste > Avoid problems with sites like figma, diagrams. Which use middle-click to drag"
+    gsettings set org.gnome.desktop.interface gtk-enable-primary-paste false
+
     echo "Cinnamon > Disabling mouse acceleration"
     echo "${RED}If mouse movement is not good, try switching the acceleration${NC}"
     echo "${RED}System settings > Mouse and Touchpad: Switch acceleration type to 'Device default' or another${NC}"

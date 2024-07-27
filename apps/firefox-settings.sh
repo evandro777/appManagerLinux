@@ -128,6 +128,10 @@ function perform_install() {
     echo -e "Firefox > Privacy > Send websites a 'Do Not Track' request"
     set_firefox_property "privacy.donottrackheader.enabled" true
 
+    echo -e "Firefox > Usability > Disable middle mouse button paste [Avoid problems with sites like Figma, for moving through canva]"
+    echo "Reference: https://www.reddit.com/r/kde/comments/18oep2l/i_still_cant_disable_middle_mouse_button_to_paste/"
+    set_firefox_property "middlemouse.paste" false
+    
     echo -e "Firefox > Usability > Zooming only for the current tab"
     echo "Reference: https://kb.mozillazine.org/Browser.zoom.siteSpecific"
     echo "Reference: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserSettings/zoomSiteSpecific"
@@ -170,6 +174,7 @@ function perform_uninstall() {
     remove_firefox_property "privacy.annotate_channels.strict_list.enabled"
     remove_firefox_property "privacy.globalprivacycontrol.enabled"
     remove_firefox_property "privacy.donottrackheader.enabled"
+    remove_firefox_property "middlemouse.paste"
     remove_firefox_property "browser.zoom.siteSpecific"
     remove_firefox_property "layout.spellcheckDefault"
     remove_firefox_property "browser.download.useDownloadDir"
