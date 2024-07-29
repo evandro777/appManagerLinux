@@ -12,12 +12,17 @@ function perform_install() {
 }
 
 function perform_uninstall() {
-    package_uninstall "$APPLICATION_ID"
+    sudo apt-get purge -y "$APPLICATION_ID*"
+    sudo apt-get autoremove -y
     sudo add-apt-repository --remove "$APPLICATION_PPA"
 }
 
 function perform_check() {
-    package_is_installed "$APPLICATION_ID"
+    package_is_installed=$(package_is_installed "$APPLICATION_ID")
+    if [ "$package_is_installed" -eq 0 ]; then
+        package_is_installed=$(package_is_installed "libreoffice-core")
+    fi
+    echo "$package_is_installed"
 }
 
 DIR="${BASH_SOURCE%/*}"
