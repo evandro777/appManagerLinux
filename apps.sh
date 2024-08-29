@@ -142,6 +142,8 @@ apps[keepassxc, script]="./apps/keepassxc.sh"
 apps[keepassxc, category]="Security & Privacy"
 apps[flatseal, script]="./apps/flatseal-flatpak-official.sh"
 apps[flatseal, category]="Security & Privacy"
+apps[firewall_ufw, script]="./apps/firewall-ufw-status.sh"
+apps[firewall_ufw, category]="Security & Privacy"
 
 #File Sharing
 apps[qbittorrent, script]="./apps/qbittorrent-ppa-official.sh"
@@ -156,7 +158,7 @@ apps[firefox_setting, script]="./apps/firefox-settings.sh"
 apps[firefox_setting, category]="Web Browsers & Chat"
 apps[zoom, script]="./apps/zoom-deb-official.sh"
 apps[zoom, category]="Web Browsers & Chat"
-apps[discord, script]="./apps/discord-flatpak-unofficial.sh"
+apps[discord, script]="./apps/discord-flatpak-official.sh"
 apps[discord, category]="Web Browsers & Chat"
 
 #Development
@@ -174,7 +176,7 @@ apps[meld, script]="./apps/meld.sh"
 apps[meld, category]="Development"
 apps[docker, script]="./apps/docker-repo-official.sh"
 apps[docker, category]="Development"
-apps[insomnia, script]="./apps/insomnia-ppa-official.sh"
+apps[insomnia, script]="./apps/insomnia-repo-official.sh"
 apps[insomnia, category]="Development"
 
 #Games

@@ -1,19 +1,25 @@
 #!/bin/bash
 
 readonly APPLICATION_NAME="Mint Cinnamon > Settings > Startup > Redshift [Color temperature, Blue Light Filter]"
+readonly APPLICATION_ID="redshift-gtk"
 readonly APPLICATION_DESKTOP_FILE_NAME="redshift-gtk"
 readonly APPLICATION_DESKTOP_FILE_LOCATION="${HOME}/.config/autostart/${APPLICATION_DESKTOP_FILE_NAME}.desktop"
 readonly APPLICATION_DESKTOP_ENTRY='[Desktop Entry]
+Encoding=UTF-8
+Name=Redshift
+Comment=Color temperature adjustment tool
+Icon=redshift
+Exec=redshift-gtk -t 6000:4500
+Terminal=false
 Type=Application
-Exec=ibus-daemon --daemonize
-X-GNOME-Autostart-enabled=true
 NoDisplay=false
 Hidden=false
-Name[en_US]=IBus daemon
-Comment[en_US]=IBus input method
-X-GNOME-Autostart-Delay=5'
+StartupNotify=true
+X-GNOME-Autostart-Delay=3
+X-GNOME-Autostart-enabled=true'
 
 function perform_install() {
+    package_install "$APPLICATION_ID"
     if [ -f "$APPLICATION_DESKTOP_FILE_LOCATION" ]; then
         echo "Redshift desktop entry file found. Changing properties for startup"
         startup_set_app_property "${APPLICATION_DESKTOP_FILE_NAME}" "Hidden" false
@@ -26,14 +32,15 @@ function perform_install() {
 }
 
 function perform_uninstall() {
+    package_uninstall "$APPLICATION_ID"
     startup_set_app_property "${APPLICATION_DESKTOP_FILE_NAME}" "X-GNOME-Autostart-enabled" false
     startup_set_app_property "${APPLICATION_DESKTOP_FILE_NAME}" "Exec" "redshift-gtk"
 }
 
 function perform_check() {
-    package_is_installed=0
-    if [ "$(startup_is_enable_app ${APPLICATION_DESKTOP_FILE_NAME})" == "true" ]; then
-        package_is_installed=1
+    package_is_installed=$(package_is_installed "$APPLICATION_ID")
+    if [ "$package_is_installed" -eq 1 ] && [ "$(startup_is_enable_app ${APPLICATION_DESKTOP_FILE_NAME})" != "true" ]; then
+        package_is_installed=0
     fi
     echo "$package_is_installed"
 }

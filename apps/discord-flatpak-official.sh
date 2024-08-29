@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="Discord [unofficial Flatpak]"
+readonly APPLICATION_NAME="Discord [official Flatpak]"
 readonly APPLICATION_ID="com.discordapp.Discord"
 
 function perform_install() {

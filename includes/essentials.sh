@@ -61,33 +61,55 @@ readonly BGI_CYAN="\033[0;106m"   # Cyan
 readonly BGI_WHITE="\033[0;107m"  # White
 
 #Insert or update settings
-#Example: set_property "X-GNOME-Autostart-enabled" false "${HOME}/.config/autostart/mintwelcome.desktop"
+#Example: set_property "${HOME}/.config/autostart/mintwelcome.desktop" "X-GNOME-Autostart-enabled" false
+#Result: X-GNOME-Autostart-enabled=false
 #$1: file
 #$2: property
 #$3: value
 function set_property() {
     local file_location="${1}"
-    local property="${2}="
+    local property="${2}"
     local value="${property}=${3}"
-    search_replace_or_create "$property" "$value" "$file_location"
+
+    if ! grep -q "${property}" "${file_location}"; then
+        # Check if the file can be edited directly or needs sudo
+        if [ -w "${file_location}" ]; then
+            # Insert without sudo
+            echo "${value}" >> "${file_location}"
+        else
+            # Insert with sudo
+            echo "${value}" | sudo tee -a "${file_location}" > /dev/null
+        fi
+    else
+        # Update with or without sudo depending on the permission
+        if [ -w "${file_location}" ]; then
+            # Update without sudo
+            sed -i s/"${property}".*$/"${value}"/ "${file_location}"
+        else
+            # Update with sudo
+            sudo sed -i s/"${property}".*$/"${value}"/ "${file_location}"
+        fi
+    fi
 }
 
-#Search & Replace or create line
-#Example: search_replace_or_create "X-GNOME-Autostart-enabled=" "X-GNOME-Autostart-enabled=false" "${HOME}/.config/autostart/mintwelcome.desktop"
-#$1: param
-#$2: value
-#$3: file
-function search_replace_or_create() {
-    local param="${1}"
-    local value="${2}"
-    local file_location="${3}"
+#Remove settings
+#Example: remove_property "${HOME}/.config/autostart/mintwelcome.desktop" "X-GNOME-Autostart-enabled"
+#Result: Remove line which contains X-GNOME-Autostart-enabled=
+#$1: file
+#$2: property
+function remove_property() {
+    local file_location="${1}"
+    local property="${2}="
 
-    if ! grep -q "${param}" "${file_location}"; then
-        #insert
-        echo "${value}" >> "${file_location}"
-    else
-        #update
-        sed -i s/"${param}".*$/"${value}"/ "${file_location}"
+    if grep -q "${property}" "${file_location}"; then
+        # Check if the file can be edited directly or needs sudo
+        if [ -w "${file_location}" ]; then
+            # Remove without sudo
+            sed -i "/^${property}/d" "${file_location}"
+        else
+            # Remove with sudo
+            sudo sed -i "/^${property}/d" "${file_location}"
+        fi
     fi
 }
 

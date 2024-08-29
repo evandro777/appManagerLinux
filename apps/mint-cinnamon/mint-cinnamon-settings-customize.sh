@@ -17,6 +17,9 @@ function perform_install() {
     gsettings set com.linuxmint.updates show-origin-column true
     gsettings set com.linuxmint.updates autorefresh-hours 3
 
+    echo "Cinnamon > Software Manager > Allow unverified flatpaks"
+    gsettings set com.linuxmint.install allow-unverified-flatpaks true
+
     echo "Cinnamon > Setting maximum compression for file-roller"
     gsettings set org.gnome.FileRoller.General compression-level "maximum" # POSSIBLE VALUES: fast, normal, maximum
 
@@ -30,6 +33,10 @@ function perform_install() {
     echo "Cinnamon > Theme > Mint-Y-Dark theme with transparency panel"
     mkdir -p "${HOME}/.themes/"
     cp -r /usr/share/themes/Mint-Y-Dark/ "$HOME/.themes/Mint-Y-Dark-Transparency/" # create a new theme based on original one
+
+    echo "Cinnamon > Theme > Qt Apps > Force dark themes"
+    sudo apt-get install -y qt5-style-plugins
+    set_property "/etc/environment" "QT_QPA_PLATFORMTHEME" "gtk2"
 
     # Manually look for: .menu {
     # Change panel background color, and add transparency #Mint 20.x
@@ -141,6 +148,7 @@ function perform_install() {
 
 function perform_uninstall() {
     gsettings reset-recursively com.linuxmint.updates
+    gsettings reset-recursively com.linuxmint.install
 
     gsettings reset-recursively org.x.editor.preferences.editor
 
@@ -152,6 +160,8 @@ function perform_uninstall() {
     gsettings reset org.cinnamon.desktop.interface icon-theme
     gsettings reset org.cinnamon.desktop.wm.preferences theme
     gsettings reset org.cinnamon.theme name
+    remove_property "/etc/environment" "QT_QPA_PLATFORMTHEME"
+
     gsettings reset org.cinnamon.desktop.peripherals.touchpad natural-scroll
     gsettings reset-recursively org.cinnamon.settings-daemon.plugins.power
     gsettings reset-recursively org.nemo.preferences
