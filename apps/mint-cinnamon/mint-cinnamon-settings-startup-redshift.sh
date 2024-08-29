@@ -19,6 +19,16 @@ X-GNOME-Autostart-Delay=3
 X-GNOME-Autostart-enabled=true'
 
 function perform_install() {
+    echo "Redshift is not working anymore without extra configurations: https://www.linuxmint.com/rel_wilma.php"
+    echo "To work properly we have to manually set the location"
+    echo "Go to http://maps.google.com/ search your location > right mouse click > click on the first item which is coordinates and will be copied to clipboard"
+    echo "Create or edit the file: '~/.config/redshift.conf' and add these line below, change 'lat' with the first party of copied coordinates, and 'lon' with the last part"
+    echo "[redshift]"
+    echo "location-provider=manual"
+    echo ""
+    echo "[manual]"
+    echo "lat=40.6893129"
+    echo "lon=-74.0445531"
     package_install "$APPLICATION_ID"
     if [ -f "$APPLICATION_DESKTOP_FILE_LOCATION" ]; then
         echo "Redshift desktop entry file found. Changing properties for startup"
