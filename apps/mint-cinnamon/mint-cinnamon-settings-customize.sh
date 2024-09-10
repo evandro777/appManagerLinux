@@ -53,6 +53,7 @@ function perform_install() {
 
     echo "Cinnamon > Theme > Prefer dark mode"
     gsettings set org.x.apps.portal color-scheme "prefer-dark"
+    gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 
     ## NOTEBOOK
     echo "Cinnamon > Notebook > Disable reverse rolling"
@@ -160,6 +161,8 @@ function perform_uninstall() {
     gsettings reset org.cinnamon.desktop.interface icon-theme
     gsettings reset org.cinnamon.desktop.wm.preferences theme
     gsettings reset org.cinnamon.theme name
+    gsettings reset org.x.apps.portal color-scheme
+    gsettings reset org.gnome.desktop.interface color-scheme
     remove_property "/etc/environment" "QT_QPA_PLATFORMTHEME"
 
     gsettings reset org.cinnamon.desktop.peripherals.touchpad natural-scroll
