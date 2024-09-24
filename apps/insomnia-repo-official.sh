@@ -7,6 +7,7 @@ readonly APPLICATION_KEYRING=/usr/share/keyrings/kong-insomnia-archive-keyring.g
 readonly APPLICATION_SOURCE_LIST=/etc/apt/sources.list.d/kong-insomnia.list
 
 function perform_install() {
+    echo "${RED}At 2024-09-11 for Ubuntu 24 or Mint 22, this *official* install script isn't working!${NC}"
     # Official install instructions: https://docs.insomnia.rest/insomnia/install
     curl -1sLf 'https://packages.konghq.com/public/insomnia/setup.deb.sh' | sudo -E bash
     package_update
