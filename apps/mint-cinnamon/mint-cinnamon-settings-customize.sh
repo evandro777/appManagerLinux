@@ -32,18 +32,21 @@ function perform_install() {
     ## THEME > Mint-Y-Dark
     echo "Cinnamon > Theme > Mint-Y-Dark theme with transparency panel"
     mkdir -p "${HOME}/.themes/"
-    cp -r /usr/share/themes/Mint-Y-Dark/ "$HOME/.themes/Mint-Y-Dark-Transparency/" # create a new theme based on original one
+    cp -r /usr/share/themes/Mint-Y-Dark/* "$HOME/.themes/Mint-Y-Dark-Transparency/" # create a new theme based on original one
 
     echo "Cinnamon > Theme > Qt Apps > Force dark themes"
     sudo apt-get install -y qt5-style-plugins
     set_property "/etc/environment" "QT_QPA_PLATFORMTHEME" "gtk2"
 
-    # Manually look for: .menu {
+    # Manually look for: .panel-top, .panel-bottom, .panel-left, .panel-right {
     # Change panel background color, and add transparency #Mint 20.x
     sed -i s/"  background-color: rgba(48, 49, 48, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
 
     # Change panel background color, and add transparency #Mint 21.x
     sed -i s/"  background-color: rgba(47, 47, 47, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
+
+    # Change panel background color, and add transparency #Mint 22.x
+    sed -i s/"  background-color: rgba(26, 26, 26, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
 
     gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
     gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Yaru"
@@ -130,8 +133,8 @@ function perform_install() {
     gsettings set org.gnome.desktop.interface gtk-enable-primary-paste false
 
     echo "Cinnamon > Disabling mouse acceleration"
-    echo "${RED}If mouse movement is not good, try switching the acceleration${NC}"
-    echo "${RED}System settings > Mouse and Touchpad: Switch acceleration type to 'Device default' or another${NC}"
+    echo -e "${RED}If mouse movement is not good, try switching the acceleration${NC}"
+    echo -e "${RED}System settings > Mouse and Touchpad: Switch acceleration type to 'Device default' or another${NC}"
 
     echo "${DISABLE_MOUSE_ACCELERATION}" | sudo tee /usr/share/X11/xorg.conf.d/50-mouse-acceleration.conf > /dev/null
 

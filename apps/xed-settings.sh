@@ -34,7 +34,9 @@ function perform_uninstall() {
 function perform_check() {
     package_is_installed=0
     if [ -f "${THEME_DRACULA_FILE}" ]; then
-        package_is_installed=1
+        if [[ "$(gsettings get org.x.editor.preferences.editor scheme)" == "'dracula'" ]]; then
+            package_is_installed=1
+        fi
     fi
     echo $package_is_installed
 }

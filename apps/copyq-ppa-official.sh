@@ -14,8 +14,9 @@ function perform_install() {
     copyq --start-server config autostart true > /dev/null
 
     if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
-        echo -e "${YELLOW}CopyQ Applying shortcut: CTRL + ALT + V${NC}"
-        set_new_keybinding "CopyQ" "copyq menu" "'<Primary><Alt>v'"
+        echo -e "${YELLOW}CopyQ Applying shortcut: SUPER + v${NC}"
+        echo -e "${YELLOW}CopyQ Applying shortcut: CTRL + ALT + v${NC}"
+        set_new_keybinding "CopyQ" "copyq menu" "'<Primary><Alt>v', '<Super>v'"
     fi
 
 }

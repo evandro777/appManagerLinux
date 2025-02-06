@@ -9,7 +9,7 @@ Encoding=UTF-8
 Name=Redshift
 Comment=Color temperature adjustment tool
 Icon=redshift
-Exec=redshift-gtk -t 6000:4500
+Exec=sh -c "killall redshift; sleep 5; redshift-gtk -t 6000:4500"
 Terminal=false
 Type=Application
 NoDisplay=false
@@ -36,12 +36,12 @@ function perform_install() {
     echo "To use and get location: go to http://maps.google.com/ search your location > right mouse click > click on the first item which is coordinates and will be copied to clipboard"
     echo "At the .conf file, change 'lat' with the first party of copied coordinates, and 'lon' with the last part"
     echo "Comment dawn-time and dusk-time to use location"
-    
+
     # Check if the configuration file exists
     if [ ! -f "$APPLICATION_CONFIG_FILE_LOCATION" ]; then
         echo "$APPLICATION_CONFIG_FILE_CONTENTS" > "$APPLICATION_CONFIG_FILE_LOCATION"
     fi
-    
+
     package_install "$APPLICATION_ID"
     if [ -f "$APPLICATION_DESKTOP_FILE_LOCATION" ]; then
         echo "Redshift desktop entry file found. Changing properties for startup"

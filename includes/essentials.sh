@@ -303,14 +303,16 @@ function set_new_keybinding() {
     local command="${2}"
     local keybinding="${3}"
 
-    # Check if custom-list is empty > create a dummy one
-    if [ -z "$(dconf read /org/cinnamon/desktop/keybindings/custom-list)" ]; then
-        dconf write /org/cinnamon/desktop/keybindings/custom-list "['_dummy_']"
-    fi
-
     new_custom_id=$(get_new_keybinding_id)
     if [ -z "$(keybinding_exists "$keybinding")" ]; then
-        set_list=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${new_custom_id}', /g")
+        # Check if custom-list is empty
+        if [ -z "$(dconf read /org/cinnamon/desktop/keybindings/custom-list)" ]; then
+            # dconf write /org/cinnamon/desktop/keybindings/custom-list "['_dummy_']"
+            set_list="['$new_custom_id']"
+        else
+            set_list=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | sed -r "s/\[/['${new_custom_id}', /g")
+        fi
+
         dconf write /org/cinnamon/desktop/keybindings/custom-list "${set_list}"
         dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/name "'$name'"
         dconf write /org/cinnamon/desktop/keybindings/custom-keybindings/"${new_custom_id}"/command "'$command'"
