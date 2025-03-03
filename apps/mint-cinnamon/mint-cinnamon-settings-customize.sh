@@ -90,6 +90,8 @@ function perform_install() {
 
     ## SHORTCUTS
 
+    ## If you need to reset the all custom shortcuts, execute: dconf reset -f /org/cinnamon/desktop/keybindings/custom-keybindings/ && dconf reset /org/cinnamon/desktop/keybindings/custom-list
+
     echo "Cinnamon > Keyboard Shortcut > Special key to move and resize windows (avoid conflict with some apps): Super + Left click"
     gsettings set org.cinnamon.desktop.wm.preferences mouse-button-modifier "<Super>"
 

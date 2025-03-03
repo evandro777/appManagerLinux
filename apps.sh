@@ -192,6 +192,8 @@ apps[protonup_qt, script]="./apps/protonup-qt-flatpak-official.sh"
 apps[protonup_qt, category]="Games"
 apps[xpad_driver, script]="./apps/gamepad-xpad-driver-unofficial-git.sh"
 apps[xpad_driver, category]="Games"
+apps[sunshine, script]="./apps/sunshine-flatpak-official.sh"
+apps[sunshine, category]="Games"
 
 if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
     apps[mint_cinnamon_setting_startup_bluetooth, script]="./apps/mint-cinnamon/mint-cinnamon-settings-startup-bluetooth.sh"
