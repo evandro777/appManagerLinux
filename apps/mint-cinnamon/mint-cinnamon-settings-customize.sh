@@ -31,12 +31,8 @@ function perform_install() {
 
     ## THEME > Mint-Y-Dark
     echo "Cinnamon > Theme > Mint-Y-Dark theme with transparency panel"
-    mkdir -p "${HOME}/.themes/"
+    mkdir -p "${HOME}/.themes/Mint-Y-Dark-Transparency/"
     cp -r /usr/share/themes/Mint-Y-Dark/* "$HOME/.themes/Mint-Y-Dark-Transparency/" # create a new theme based on original one
-
-    echo "Cinnamon > Theme > Qt Apps > Force dark themes"
-    sudo apt-get install -y qt5-style-plugins
-    set_property "/etc/environment" "QT_QPA_PLATFORMTHEME" "gtk2"
 
     # Manually look for: .panel-top, .panel-bottom, .panel-left, .panel-right {
     # Change panel background color, and add transparency #Mint 20.x
@@ -53,6 +49,10 @@ function perform_install() {
     gsettings set org.cinnamon.desktop.wm.preferences theme "Mint-Y"
     #gsettings set org.cinnamon.theme name "Mint-Y-Dark" #original
     gsettings set org.cinnamon.theme name "Mint-Y-Dark-Transparency" #modified with panel transparency
+
+    echo "Cinnamon > Theme > Qt Apps > Force dark themes"
+    sudo apt-get install -y qt5-style-plugins
+    set_property "/etc/environment" "QT_QPA_PLATFORMTHEME" "gtk2"
 
     echo "Cinnamon > Theme > Prefer dark mode"
     gsettings set org.x.apps.portal color-scheme "prefer-dark"

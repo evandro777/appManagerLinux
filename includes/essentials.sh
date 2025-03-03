@@ -164,7 +164,7 @@ function packages_is_installed() {
 function package_update() {
     echo "Update apt cache"
     # Run apt-get update and redirect output to a variable
-    output=$(sudo apt-get update 2>&1)
+    output=$(sudo apt-get -q update 2>&1)
 
     # Check the return code of the previous command
     if [ $? -ne 0 ]; then
@@ -201,7 +201,7 @@ function flatpak_is_installed() {
 # Function to install flatpak
 function flatpak_install() {
     # Evaluate the arguments as a list of separate arguments
-    eval "flatpak install -y $*"
+    eval "flatpak install --quiet -y $*"
 }
 
 # Function to uninstall packages
