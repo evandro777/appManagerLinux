@@ -176,6 +176,7 @@ function apply_actions() {
         # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" "${apps["$app_id, extra_actions"]}"
     done
 
+    echo # Add a linebreak
     echo -e "${RED}${BOLD}${UNDER}Script started! It's recommended to close every other application, like browsers, players, and wait until it is completed!${NC}"
 
     # Log everything and show on terminal
