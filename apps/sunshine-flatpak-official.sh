@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="Sunshine [official Flatpak]"
+readonly APPLICATION_NAME="Sunshine GameStream (server for Moonlight) [official Flatpak]"
 readonly APPLICATION_ID="dev.lizardbyte.app.Sunshine"
 
 function perform_install() {
@@ -22,7 +22,7 @@ function perform_install() {
     echo -e "${RED}password:${NC} sunshine"
 
     echo -e "${RED}To add steam as an application, use this as command:${NC} flatpak-spawn --host /usr/games/steam -gamepadui"
-    
+
 }
 
 function perform_uninstall() {
