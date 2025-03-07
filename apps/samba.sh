@@ -51,11 +51,16 @@ function perform_install() {
     echo -e "${GREEN}    * Everyone on network can access, read & write: ${SHARE_FOLDER_PUBLIC}${NC}"
     echo -e "${GREEN}    * Logged user (${USER}) on network can access and read: ${SHARE_FOLDER_READ}${NC}"
     echo -e "${GREEN}    * Logged user (${USER}) on network can access, read & write: ${SHARE_FOLDER_WRITE}${NC}"
-    echo -e ""
+    echo
     echo -e "${YELLOW}The network login will be:${NC}"
     echo -e "${YELLOW}Username:${NC} ${USER}"
     echo -e "${YELLOW}Domain:${NC} WORKGROUP"
     echo -e "${YELLOW}Password:${NC} 'The password set for Samba'"
+    echo
+    echo -e "${GREEN}Your hostname on local network is \"$(hostname).local\"${NC}"
+
+    # To list local network computers with samba shared: avahi-browse -rt _smb._tcp
+    #     If you want a cleaner output: avahi-browse -rt _smb._tcp | grep -E "hostname|address" | awk -F'[][]' '{print $2}' | paste - - | awk '$2 ~ /^192\.168\./ || ($2 ~ /:/ && $2 !~ /^fe80:/ && $2 !~ /^::1$/ && $2 !~ /^127\./)'
 
 }
 
