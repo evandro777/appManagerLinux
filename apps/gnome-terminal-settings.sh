@@ -66,7 +66,7 @@ function create_dracula_profile() {
 function install_dracula_theme() {
     local profile_name="$1"
     dracula_folder="/tmp/gnome-terminal-dracula/"
-    wget --no-verbose --timestamping --directory-prefix="${dracula_folder}" https://github.com/dracula/gnome-terminal/archive/master.zip
+    wget --no-verbose --timestamping --directory-prefix="${dracula_folder}" "https://github.com/dracula/gnome-terminal/archive/master.zip"
     echo "Extracting ${dracula_folder}master.zip ..."
     unzip -o -q "${dracula_folder}master.zip" -d "${dracula_folder}"
 

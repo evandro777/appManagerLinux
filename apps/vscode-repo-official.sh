@@ -34,7 +34,7 @@ EOF
 
 function perform_install() {
     # VS Code repository official
-    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+    wget -qO- "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor > packages.microsoft.gpg
     sudo install -D -o root -g root -m 644 packages.microsoft.gpg "$APPLICATION_KEYRING"
     sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by='$APPLICATION_KEYRING'] https://packages.microsoft.com/repos/code stable main" > '$APPLICATION_SOURCE_LIST
     rm -f packages.microsoft.gpg

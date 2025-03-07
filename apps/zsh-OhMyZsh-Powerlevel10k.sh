@@ -17,7 +17,7 @@ function perform_install() {
     # Oh-My-Zsh
     echo -e "${YELLOW}Installing Oh-My-Zsh${NC}"
     #sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    wget --no-verbose https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
+    wget --no-verbose "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh" -O - | zsh
 
     # Powerlevel10k
     echo -e "${YELLOW}Installing Powerlevel10k${NC}"

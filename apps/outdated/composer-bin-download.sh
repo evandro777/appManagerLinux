@@ -8,7 +8,7 @@ echo -e "${ORANGE}Installing Composer - Bin Download${NC}"
 
 command -v php >/dev/null 2>&1 || { echo -e >&2 "php is required, but it's not installed.  ${ORANGE}Aborting.${NC}"; exit 1; }
 
-EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
+EXPECTED_SIGNATURE="$(wget -q -O - 'https://composer.github.io/installer.sig')"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 ACTUAL_SIGNATURE="$(php -r "echo hash_file('SHA384', 'composer-setup.php');")"
 

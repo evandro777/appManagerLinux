@@ -12,7 +12,7 @@ echo -e "${ORANGE}THIS INSTALL IS FOR 'focal' VERSION > UBUNTU 20.04 OR LINUX MI
 read -p "Press any key to continue"
 
 #WINE > OFFICIAL
-wget -nc https://dl.winehq.org/wine-builds/winehq.key
+wget -nc "https://dl.winehq.org/wine-builds/winehq.key"
 sudo apt-key add winehq.key
 sudo add-apt-repository -y 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
 
@@ -25,7 +25,7 @@ sudo add-apt-repository -y 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic
 # winehq-staging : Depends: wine-staging (= 4.18~bionic)
 #E: Unable to correct problems, you have held broken packages."
 
-#wget -O- -q https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/xUbuntu_18.04/Release.key | sudo apt-key add -
+#wget -O- -q "https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/xUbuntu_18.04/Release.key" | sudo apt-key add -
 #echo "deb http://download.opensuse.org/repositories/Emulators:/Wine:/Debian/xUbuntu_18.04 ./" | sudo tee /etc/apt/sources.list.d/wine-obs.list
 
 sudo apt-get update

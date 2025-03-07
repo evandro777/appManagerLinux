@@ -8,7 +8,7 @@ readonly APPLICATION_KEYRING=/etc/apt/keyrings/chrome.gpg
 readonly APPLICATION_SOURCE_LIST=/etc/apt/sources.list.d/google.list
 
 function perform_install() {
-    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor --yes -o "$APPLICATION_KEYRING"
+    wget -q -O - "https://dl.google.com/linux/linux_signing_key.pub" | sudo gpg --dearmor --yes -o "$APPLICATION_KEYRING"
     sudo sh -c 'echo "deb [arch=amd64 signed-by='$APPLICATION_KEYRING'] http://dl.google.com/linux/chrome/deb/ stable main" > '$APPLICATION_SOURCE_LIST
     package_update
     package_install "$APPLICATION_ID"

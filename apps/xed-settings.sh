@@ -8,7 +8,7 @@ function perform_install() {
     echo -e "${YELLOW}Applying $APPLICATION_NAME...${NC}"
     echo -e "${YELLOW}Installing dracula theme for XED${NC}"
     ## Download & create folder and overwrite file
-    sudo wget --no-verbose --timestamping --directory-prefix="${THEME_DRACULA_FOLDER}" https://raw.githubusercontent.com/dracula/gedit/master/dracula.xml
+    sudo wget --no-verbose --timestamping --directory-prefix="${THEME_DRACULA_FOLDER}" "https://raw.githubusercontent.com/dracula/gedit/master/dracula.xml"
     sudo cp "${THEME_DRACULA_FILE}" /usr/share/gtksourceview-4/styles/
 
     echo "Applying custom settings for XED"
