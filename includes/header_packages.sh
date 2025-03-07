@@ -67,24 +67,16 @@ case $1 in
         # Store the parameters in an associative array
         declare -A install_params
 
-        # Variable to indicate when to start storing parameters
-        should_store=false
-
-        # Iterate over the command line arguments
+        # Iterate over the command-line arguments
         for arg in "$@"; do
-            # Check if we should start storing parameters
-            if [[ "$arg" == "--" ]]; then
-                should_store=true
-            elif $should_store; then
-                # Remove the "--" from the beginning of the argument to get the key
-                key="${arg#--}"
-                # Split the key-value pair
-                key="${key%%=*}"
-                value="${arg#*=}"
-                # Remove quotes, if present, from the value
-                value="${value//\"/}"
-                # Store the key-value pair in the associative array
-                install_params["$key"]="$value"
+            # Check if the argument starts with "--" and contains "="
+            if [[ "$arg" == --*=* ]]; then
+                # Extract key and value
+                key="${arg#--}"         # Remove "--" from the beginning
+                key="${key%%=*}"        # Get only the key before "="
+                value="${arg#*=}"       # Get the value after "="
+                value="${value//\"/}"   # Remove quotes if present
+                install_params["$key"]="$value"  # Store in associative array
             fi
         done
 

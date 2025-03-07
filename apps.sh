@@ -150,6 +150,8 @@ apps[qbittorrent, script]="./apps/qbittorrent-ppa-official.sh"
 apps[qbittorrent, category]="File Sharing"
 apps[transmission, script]="./apps/transmission.sh"
 apps[transmission, category]="File Sharing"
+apps[samba, script]="./apps/samba.sh"
+apps[samba, category]="File Sharing"
 
 #Web Browsers & Chat
 apps[chrome, script]="./apps/chrome-repo-official.sh"

@@ -60,7 +60,7 @@ readonly BGI_PURPLE="\033[10;95m" # Purple
 readonly BGI_CYAN="\033[0;106m"   # Cyan
 readonly BGI_WHITE="\033[0;107m"  # White
 
-#Insert or update settings
+#Insert or update settings. Alternative to crudini, which insert spaces between equal, example: " = "
 #Example: set_property "${HOME}/.config/autostart/mintwelcome.desktop" "X-GNOME-Autostart-enabled" false
 #Result: X-GNOME-Autostart-enabled=false
 #$1: file

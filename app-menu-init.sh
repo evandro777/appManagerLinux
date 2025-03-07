@@ -173,7 +173,7 @@ function apply_actions() {
             echo -e "${GREEN}${apps["$app_id, name"]}${NC}"
             apps["${app_id}, extra_actions"]=$(${apps["$app_id, script"]} get-parameters)
         fi
-        # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" -- "${apps["$app_id, extra_actions"]}"
+        # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" "${apps["$app_id, extra_actions"]}"
     done
 
     echo -e "${RED}${BOLD}${UNDER}Script started! It's recommended to close every other application, like browsers, players, and wait until it is completed!${NC}"
@@ -217,8 +217,8 @@ function apply_actions() {
         if [ "$action" == "Install" ]; then
             install_dont_update="--dont-update"
         fi
-        # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" -- "${apps["$app_id, extra_actions"]}"
-        ${apps["$app_id, script"]} "${action,,}" "$install_dont_update" -- ${apps["$app_id, extra_actions"]} #Don't quote extra_actions!
+        # echo "DEBUG > ${apps["$app_id, script"]}" "${action,,}" "$install_dont_update" "${apps["$app_id, extra_actions"]}"
+        ${apps["$app_id, script"]} "${action,,}" "$install_dont_update" ${apps["$app_id, extra_actions"]} #Don't quote extra_actions!
     done
 
     echo -e "${GREEN}Fixing broken packages${NC}"
