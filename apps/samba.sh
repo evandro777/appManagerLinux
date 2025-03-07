@@ -86,7 +86,7 @@ function perform_check() {
 function get_parameters() {
     # Don't use echo before read, it's not going to work to set into a variable "app-menu-init.sh"
     while true; do
-        read -rsp $'Type a password for Samba user ('$USER'): ' password
+        read -rsp $'Type a password for ⚠️Samba user⚠️ ('$USER'): ' password
         echo # Add a linebreak
         if [[ -n "$password" ]]; then
             break # Exit loop if password is not empty
@@ -156,7 +156,7 @@ function create_samba_user() {
         password="${params[samba\-password]}"
     else
         while true; do
-            read -rsp $'Type a password for Samba user ('$USER'): ' password
+            read -rsp $'Type a password for ⚠️Samba user⚠️ ('$USER'): ' password
             echo # Add a linebreak
             if [[ -n "$password" ]]; then
                 break # Exit loop if password is not empty
