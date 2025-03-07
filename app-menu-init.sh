@@ -185,9 +185,15 @@ function apply_actions() {
     #########################
     ##### UPDATE DISTRO #####
     #########################
+    # Force unattended mode, avoiding choices dialog. More explaining: <https://www.cyberciti.biz/faq/explain-debian_frontend-apt-get-variable-for-ubuntu-debian/>
+    export NEEDRESTART_MODE=a
+    export DEBIAN_FRONTEND=noninteractive
+    ## Questions that you really, really need to see (or else). ##
+    export DEBIAN_PRIORITY=critical
+
     echo -e "${GREEN}Update/Refresh APT keys${NC}"
     sudo apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com
-    sudo apt-get update 2>&1 | grep "NO_PUBKEY" | awk '{print $NF}' | while read key; do gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" && gpg --export --armor "$key" | sudo apt-key add -; done
+    sudo apt-get update -y -q 2>&1 | grep "NO_PUBKEY" | awk '{print $NF}' | while read key; do gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" && gpg --export --armor "$key" | sudo apt-key add -; done
 
     #Update softwares (from repositories) [+intelligently handle the dependencies] [UPDATE ALSO DISTRO IF AVAILABLE]
     #sudo apt-get update #Already executed in "Update/Refresh APT keys"
@@ -197,8 +203,8 @@ function apply_actions() {
     for K in $(APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key list | grep expired\|expirado | cut -d'/' -f2 | cut -d' ' -f1); do sudo apt-key adv --recv-keys --keyserver keys.gnupg.net "$K"; done
 
     echo -e "${GREEN}Distro upgrade${NC}"
-    sudo apt-get update
-    sudo apt-get dist-upgrade -y -u
+    sudo apt-get update -y -q
+    sudo apt-get -y -q -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" full-upgrade
 
     echo -e "${GREEN}Flatpak upgrade${NC}"
     flatpak update -y
@@ -222,16 +228,16 @@ function apply_actions() {
     done
 
     echo -e "${GREEN}Fixing broken packages${NC}"
-    sudo apt-get install -f
+    sudo apt-get install -f -y -q
 
     echo -e "${GREEN}Autoremove apt-get cache downloads${NC}"
     echo 'DPkg::Post-Invoke {"/bin/rm -f /var/cache/apt/archives/*.deb || true";};' | sudo tee /etc/apt/apt.conf.d/clean
 
     #CLEAN APP CACHE
     echo -e "${GREEN}Cleaning Up${NC}"
-    sudo apt-get autoremove -y
-    sudo apt-get autoclean -y
-    sudo apt-get clean -y
+    sudo apt-get autoremove -y -q
+    sudo apt-get autoclean -y -q
+    sudo apt-get clean -y -q
     flatpak uninstall --unused -y
 
     #GENERATE KEYGEN FOR SSH

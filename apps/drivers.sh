@@ -39,7 +39,7 @@ function perform_install() {
     if [ -n "$installed_nvidia_version" ]; then
         echo -e "${YELLOW}Installing VDPAU API (Video Decode and Presentation API for Unix) and uninstall translator VDPAU -> VA-API (not necessary for Nvidia)${NC}"
         package_install "$APPLICATION_ID"
-        sudo apt-get purge -y libvdpau-va-gl1
+        sudo apt-get purge -y -q libvdpau-va-gl1
 
         # If patches are applied
         if [ "$(is_patches_applied)" -eq 1 ]; then

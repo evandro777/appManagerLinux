@@ -51,7 +51,7 @@ function perform_install() {
     gsettings set org.cinnamon.theme name "Mint-Y-Dark-Transparency" #modified with panel transparency
 
     echo "Cinnamon > Theme > Qt Apps > Force dark themes"
-    sudo apt-get install -y qt5-style-plugins
+    sudo apt-get install -y -q qt5-style-plugins
     set_property "/etc/environment" "QT_QPA_PLATFORMTHEME" "gtk2"
 
     echo "Cinnamon > Theme > Prefer dark mode"

@@ -164,7 +164,7 @@ function packages_is_installed() {
 function package_update() {
     echo "Update apt cache"
     # Run apt-get update and redirect output to a variable
-    output=$(sudo apt-get -q update 2>&1)
+    output=$(sudo apt-get -y -q update 2>&1)
 
     # Check the return code of the previous command
     if [ $? -ne 0 ]; then
@@ -183,8 +183,8 @@ function package_install() {
 # Function to uninstall packages
 function package_uninstall() {
     # Evaluate the arguments as a list of separate arguments
-    eval "sudo apt-get purge -y $*"
-    sudo apt-get autoremove -y
+    eval "sudo apt-get purge -y -q $*"
+    sudo apt-get autoremove -y -q
 }
 
 # Function to check if a flatpak is installed
