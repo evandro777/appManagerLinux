@@ -58,6 +58,12 @@ function perform_install() {
     echo -e "${YELLOW}Password:${NC} 'The password set for Samba'"
     echo
     echo -e "${GREEN}Your hostname on local network is \"$(hostname).local\"${NC}"
+    echo
+    echo -e "${RED}Useful information:${NC}"
+    echo -e "${GREEN}Folder that keep usershare config files: /var/lib/samba/usershares/${NC}"
+    echo -e "${YELLOW}If only Public folder is working, might be a problem with user, execute these commands below:${NC}"
+    echo 'net usershare add Write "${HOME}/Network share/Write" "Read and Write Shared Folder" "$(sudo net getlocalsid | awk ''{print $NF}'')-$(id -u):F"'
+    echo 'net usershare add Read "${HOME}/Network share/Read" "Read-Only Shared Folder" "$(sudo net getlocalsid | awk ''{print $NF}'')-$(id -u):R"'
 
     # To list local network computers with samba shared: avahi-browse -rt _smb._tcp
     #     If you want a cleaner output: avahi-browse -rt _smb._tcp | grep -E "hostname|address" | awk -F'[][]' '{print $2}' | paste - - | awk '$2 ~ /^192\.168\./ || ($2 ~ /:/ && $2 !~ /^fe80:/ && $2 !~ /^::1$/ && $2 !~ /^127\./)'
@@ -118,7 +124,7 @@ function create_folders_and_sharing() {
     mkdir -p "$SHARE_FOLDER_PUBLIC"
     sudo chmod 777 "$SHARE_FOLDER_PUBLIC"
     net usershare add Public "$SHARE_FOLDER_PUBLIC" "Public Shared Folder" "Everyone:F" guest_ok=y
-    set_share_permissions "public" "0664" "0775"
+    # Share permissions file: "0664" dir: "0775". Doesn't work with usershare
 
     echo "Creating and setting permissions on folder ${YELLOW}$SHARE_FOLDER_READ${NC}"
     echo "This folder only authenticated users can access: read only"
@@ -126,34 +132,18 @@ function create_folders_and_sharing() {
     sudo chmod 755 "$SHARE_FOLDER_READ"
     sudo chown "$USER:sambashare" "$SHARE_FOLDER_READ"
     net usershare add Read "$SHARE_FOLDER_READ" "Read-Only Shared Folder" "$USER:R"
-    # set_share_permissions "read" "0444" "0555" #doesn't work
+    # Share permissions file: "0444" dir: "0555". Doesn't work with usershare
 
     echo "Creating and setting permissions on folder ${YELLOW}$SHARE_FOLDER_WRITE${NC}"
     echo "This folder only authenticated users can access: read and write"
     mkdir -p "$SHARE_FOLDER_WRITE"
     sudo chmod 770 "$SHARE_FOLDER_WRITE"
     sudo chown "$USER:sambashare" "$SHARE_FOLDER_WRITE"
-    net usershare add Write "$SHARE_FOLDER_WRITE" "Write-Only Shared Folder" "$USER:F"
-    set_share_permissions "write" "0664" "0775"
+    net usershare add Write "$SHARE_FOLDER_WRITE" "Read and Write Shared Folder" "$USER:F"
+    # Share permissions file: "0664" dir: "0775". Doesn't work with usershare
 
     echo "Set sharing icon for ${SHARE_FOLDER_PARENT}"
     gio set "${SHARE_FOLDER_PARENT}" metadata::custom-icon-name folder-publicshare
-}
-
-# Function to set share permissions
-set_share_permissions() {
-    local SHARE_NAME="$1"
-    local CREATE_MASK="$2"
-    local DIR_MASK="$3"
-
-    # Define the path to the share file
-    local SHARE_FILE="/var/lib/samba/usershares/$SHARE_NAME"
-
-    # Check if the share file exists
-    if [[ -f "$SHARE_FILE" ]]; then
-        set_property "$SHARE_FILE" create_mask "$CREATE_MASK"
-        set_property "$SHARE_FILE" directory_mask "$DIR_MASK"
-    fi
 }
 
 function create_samba_user() {
