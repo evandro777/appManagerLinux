@@ -46,7 +46,8 @@ if [ $# -eq 0 ]; then
         if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
             echo -e "${YELLOW}Installing $APPLICATION_NAME...${NC}"
             package_update
-            perform_install
+            declare -A install_params # Force even an empty parameter to avoid problem is scripts that are checking parameters
+            perform_install install_params
         else
             echo "No action taken. Exiting."
             exit 1
