@@ -71,7 +71,9 @@ function perform_install() {
 }
 
 function perform_uninstall() {
-    package_uninstall "$APPLICATION_ID"
+    echo "Samba is installed by default and can be difficult to reinstall properly. Skipping uninstall for safety. If you insist, execute:"
+    echo "sudo apt-get purge samba"
+    # package_uninstall "$APPLICATION_ID"
 
     echo "Folders will not be removed for safety"
 
