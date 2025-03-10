@@ -17,8 +17,13 @@ function set_wallpaper_slideshow() {
     sudo find linux* -name "*.??g" -exec ln -s -f $background_folder/{} allmint/ \;
     cd "$original_folder" || return
 
-    # Verify if $background_config exists and folder is already in $background_config
-    if [ ! -e "$background_config" ] || ! grep -Fxq "$background_new_folder" "$background_config"; then
+    # Ensure the config file exists and has the default first line
+    if [ ! -e "$background_config" ]; then
+        echo "$HOME/Pictures" > "$background_config"
+    fi
+
+    # Verify if folder is already in $background_config
+    if ! grep -Fxq "$background_new_folder" "$background_config"; then
         echo "$background_new_folder" >> "$background_config"
     fi
 

@@ -165,7 +165,13 @@ function exit_script() {
 function apply_actions() {
     clear
 
-    echo -e "${YELLOW}Try to get custom parameters before starting (silent install)${NC}"
+    echo -e "${YELLOW}Get and set custom parameters before starting (unattended mode, silent install)${NC}"
+    # Force unattended mode (silent install), avoiding choices dialog. More explaining: <https://www.cyberciti.biz/faq/explain-debian_frontend-apt-get-variable-for-ubuntu-debian/>
+    export NEEDRESTART_MODE=a
+    export DEBIAN_FRONTEND=noninteractive
+    ## Questions that you really, really need to see (or else). ##
+    export DEBIAN_PRIORITY=critical
+
     local read_selections="$(read_selections)"
     for app_id in $read_selections; do
         action="${apps["$app_id, status"]}"
@@ -186,12 +192,6 @@ function apply_actions() {
     #########################
     ##### UPDATE DISTRO #####
     #########################
-    # Force unattended mode, avoiding choices dialog. More explaining: <https://www.cyberciti.biz/faq/explain-debian_frontend-apt-get-variable-for-ubuntu-debian/>
-    export NEEDRESTART_MODE=a
-    export DEBIAN_FRONTEND=noninteractive
-    ## Questions that you really, really need to see (or else). ##
-    export DEBIAN_PRIORITY=critical
-
     echo -e "${GREEN}Update/Refresh APT keys${NC}"
     sudo apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com
     sudo apt-get update -y -q 2>&1 | grep "NO_PUBKEY" | awk '{print $NF}' | while read key; do gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" && gpg --export --armor "$key" | sudo apt-key add -; done
@@ -248,8 +248,10 @@ function apply_actions() {
         ssh-keygen -t rsa -N "" -f "${sshFile}"
     fi
 
-    echo -e "\nTime elapsed: $SECONDS seconds"
-    echo -e "\nIt's recommended to restart computer"
+    echo
+    echo -e "Time elapsed: $SECONDS seconds"
+    echo
+    echo -e "${RED}It's recommended to restart computer${NC}"
     read -r -p "Press any key to continue"
 }
 

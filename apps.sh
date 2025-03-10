@@ -204,14 +204,14 @@ if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
     apps[cinnamon_set_start_bluetooth, category]="OS > Mint Cinnamon"
     apps[cinnamon_set_start_accessibility, script]="./apps/mint-cinnamon/mint-cinnamon-settings-startup-accessibility.sh"
     apps[cinnamon_set_start_accessibility, category]="OS > Mint Cinnamon"
-    apps[cinnamon_set_wallpaper, script]="./apps/mint-cinnamon/mint-cinnamon-settings-wallpapers.sh"
-    apps[cinnamon_set_wallpaper, category]="OS > Mint Cinnamon"
     apps[cinnamon_set_start_redshift, script]="./apps/mint-cinnamon/mint-cinnamon-settings-startup-redshift.sh"
     apps[cinnamon_set_start_redshift, category]="OS > Mint Cinnamon"
     apps[cinnamon_set_customize, script]="./apps/mint-cinnamon/mint-cinnamon-settings-customize.sh"
     apps[cinnamon_set_customize, category]="OS > Mint Cinnamon"
     apps[cinnamon_set_privacy, script]="./apps/mint-cinnamon/mint-cinnamon-settings-privacy-remember-recent-files.sh"
     apps[cinnamon_set_privacy, category]="OS > Mint Cinnamon"
+    apps[cinnamon_set_wallpaper, script]="./apps/mint-cinnamon/mint-cinnamon-settings-wallpapers.sh"
+    apps[cinnamon_set_wallpaper, category]="OS > Mint Cinnamon"
 fi
 
 # key="seven_conky, script"

@@ -201,7 +201,7 @@ function flatpak_is_installed() {
 # Function to install flatpak
 function flatpak_install() {
     # Evaluate the arguments as a list of separate arguments
-    eval "flatpak install --quiet -y $*"
+    eval "flatpak install --noninteractive -y $*"
 }
 
 # Function to uninstall packages
