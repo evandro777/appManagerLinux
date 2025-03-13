@@ -135,7 +135,7 @@ function command_dependency() {
 function package_is_installed() {
     local package_name=$1
 
-    if dpkg -l | awk '$1 == "ii" && $2 == "'"${package_name}"'"' | grep -q .; then
+    if dpkg -l | awk '$1=="ii" {print $2}' | sed 's/:.*//' | grep -qx "${package_name}"; then
         echo 1 # Package is installed
     else
         echo 0 # Package is not installed

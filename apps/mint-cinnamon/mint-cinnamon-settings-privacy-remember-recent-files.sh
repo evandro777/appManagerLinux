@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="Mint Cinnamon > Settings > Privacy > Remember recently accessed files"
+readonly APPLICATION_NAME="Mint Cinnamon > Settings > Privacy > Forget recently accessed files"
 
 function perform_install() {
     echo -e "${YELLOW}Enable $APPLICATION_NAME...${NC}"

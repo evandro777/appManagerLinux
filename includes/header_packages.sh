@@ -39,7 +39,7 @@ if [ $# -eq 0 ]; then
             echo "No action taken. Exiting."
             exit 1
         fi
-    elif [ "$(perform_check)" -eq 0 ]; then
+    elif [ "$(perform_check)" -eq 0 ] || [ "$(perform_check)" -eq 2 ]; then
         # Package is not installed, ask if the user wants to install
         echo -e -n "Do you want to ${GREEN}install${NC} $APPLICATION_NAME? (Y/N): "
         read -r answer

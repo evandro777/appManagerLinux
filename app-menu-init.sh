@@ -208,7 +208,7 @@ function apply_actions() {
     sudo apt-get -y -q -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" full-upgrade
 
     echo -e "${GREEN}Flatpak upgrade${NC}"
-    flatpak update -y
+    flatpak update --noninteractive -y
 
     #AUTOSTART > CREATE CUSTOM FOLDER WITH DEFAULT USER PERMISSION
     mkdir -p "${HOME}/.config/autostart/"

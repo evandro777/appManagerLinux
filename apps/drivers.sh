@@ -1,7 +1,7 @@
 #!/bin/bash
 
 readonly APPLICATION_NAME="Drivers (doesn't have uninstall script!) & Nvidia + API VA-API + API VDPAU + patches (NVENC + NVFBC) [unofficial Git / don't auto update]"
-readonly APPLICATION_ID="vdpau-driver-alla"
+readonly APPLICATION_ID="vdpau-driver-all"
 readonly SEARCH_DRIVERS="$(ubuntu-drivers devices)"
 
 function is_patches_applied() {
