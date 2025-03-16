@@ -91,8 +91,12 @@ if ! grep -q "export HISTTIMEFORMAT=" "$bashrc"; then # Check if not already set
 fi
 
 echo -e "${GREEN}Faster startup > GRUB${NC}"
-sudo sed -i '/GRUB_TIMEOUT=/ s/10/3/' /etc/default/grub
-sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"quiet splash"/"noplymouth"/' /etc/default/grub
+GRUB_CONFIG_LOCATION=/etc/default/grub
+set_property "$GRUB_CONFIG_LOCATION" "GRUB_TIMEOUT" 3
+# Usually this property does not exist, so crudini create it near the other property. But crudini creates with spaces between " = "
+crudini --set "$GRUB_CONFIG_LOCATION" "" "GRUB_RECORDFAIL_TIMEOUT" "5"
+set_property "$GRUB_CONFIG_LOCATION" "GRUB_RECORDFAIL_TIMEOUT" 5 # Fix the spaces that crudini created
+set_property "$GRUB_CONFIG_LOCATION" "GRUB_CMDLINE_LINUX_DEFAULT" '"noplymouth"'
 sudo update-grub
 
 echo -e "${GREEN}Faster startup > Disable NetworkManager-wait-online${NC}"
