@@ -9,7 +9,8 @@ function perform_install() {
     echo -e "${RED}Game Activity:${NC} This flatpak version of Discord cannot scan running processes to detect running games. There is currently no workaround or solution for this limitation."
     echo -e "Default sandbox permissions for this package limit Discord to only certain directories, so you can't access your entire Home directory. Currently, this limits which file directories you can attach files from and impacts drag and drop functionality."
     echo -e "To work around this now, you can change sandbox permissions of installed flatpak applications to give Discord broader file system access, allowing file attachments from more locations."
-    sudo flatpak override --filesystem=home "$APPLICATION_ID"
+    # sudo flatpak override --filesystem=home "$APPLICATION_ID"
+    flatpak override --user --filesystem=home "$APPLICATION_ID"
 }
 
 function perform_uninstall() {

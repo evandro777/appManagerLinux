@@ -93,9 +93,9 @@ fi
 echo -e "${GREEN}Faster startup > GRUB${NC}"
 GRUB_CONFIG_LOCATION=/etc/default/grub
 set_property "$GRUB_CONFIG_LOCATION" "GRUB_TIMEOUT" 3
-# Usually this property does not exist, so crudini create it near the other property. But crudini creates with spaces between " = "
-crudini --set "$GRUB_CONFIG_LOCATION" "" "GRUB_RECORDFAIL_TIMEOUT" "5"
-set_property "$GRUB_CONFIG_LOCATION" "GRUB_RECORDFAIL_TIMEOUT" 5 # Fix the spaces that crudini created
+# Usually GRUB_RECORDFAIL_TIMEOUT does not exist, so crudini create it near the other property. But crudini creates with spaces between " = "
+crudini --set "$GRUB_CONFIG_LOCATION" "" "GRUB_RECORDFAIL_TIMEOUT" 3
+set_property "$GRUB_CONFIG_LOCATION" "GRUB_RECORDFAIL_TIMEOUT" 3 # Fix the spaces that crudini created
 set_property "$GRUB_CONFIG_LOCATION" "GRUB_CMDLINE_LINUX_DEFAULT" '"noplymouth"'
 sudo update-grub
 

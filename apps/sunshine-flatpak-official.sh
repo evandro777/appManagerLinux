@@ -4,12 +4,34 @@ readonly APPLICATION_NAME="Sunshine GameStream (server for Moonlight) [official 
 readonly APPLICATION_ID="dev.lizardbyte.app.Sunshine"
 readonly SUNSHINE_CONFIG_DIR="$HOME/.var/app/dev.lizardbyte.app.Sunshine/config/sunshine"
 readonly SUNSHINE_APPS_FILE="$SUNSHINE_CONFIG_DIR/apps.json"
+readonly SUNSHINE_JSON_CONFIG=$(cat <<EOF
+{
+    "env": {
+        "PATH": "\$(PATH):\$(HOME)\/.local\/bin"
+    },
+    "apps": [
+        {
+            "name": "Desktop",
+            "image-path": "desktop.png"
+        },
+        {
+            "name": "Steam Big Picture",
+            "cmd": "flatpak-spawn --host steam -gamepadui",
+            "image-path": "steam.png"
+        }
+    ]
+}
+EOF
+)
 
 function perform_install() {
     flatpak_install "$APPLICATION_ID"
 
-    echo "Applying config to avoid screen tearing and micro stuttering on flatpak"
-    sudo flatpak override --socket=session-bus "$APPLICATION_ID"
+    echo "Executing extra steps, according to: https://flathub.org/apps/dev.lizardbyte.app.Sunshine"
+    flatpak run --command=additional-install.sh "$APPLICATION_ID"
+
+    echo "Applying config to avoid micro stuttering and screen tearing on host using flatpak"
+    flatpak override --user --socket=session-bus "dev.lizardbyte.app.Sunshine"
 
     create_update_app_steam
 
@@ -49,14 +71,14 @@ function perform_check() {
 
 function create_update_app_steam() {
     echo "Creating/update Steam App entry"
-    if [ -f "$SUNSHINE_APPS_FILE" ]; then
-        NEW_APP='{"name": "Steam Big Picture", "cmd": "flatpak-spawn --host steam -gamepadui", "image-path": "steam.png"}'
 
-        # Update JSON, overwriting if already has an input
-        jq --indent 4 --argjson newApp "$NEW_APP" '
-        .apps |= map(if .name == $newApp.name then $newApp else . end)
-        | if .apps | map(.name) | index($newApp.name) then . else .apps += [$newApp] end
-        ' "$SUNSHINE_APPS_FILE" > "$SUNSHINE_APPS_FILE.tmp" && mv "$SUNSHINE_APPS_FILE.tmp" "$SUNSHINE_APPS_FILE"
+    mkdir -p "$SUNSHINE_CONFIG_DIR"
+
+    # if file doesn't exist
+    if [ ! -f "$SUNSHINE_APPS_FILE" ]; then
+        echo "$SUNSHINE_JSON_CONFIG" > "$SUNSHINE_APPS_FILE"
+    else
+        jq --indent 4 --argjson new_config "$SUNSHINE_JSON_CONFIG" '. * $new_config' "$SUNSHINE_APPS_FILE" > tmp_config.json && mv tmp_config.json "$SUNSHINE_APPS_FILE"
     fi
 }
 

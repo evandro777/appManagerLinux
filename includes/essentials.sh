@@ -207,7 +207,7 @@ function flatpak_install() {
 # Function to uninstall packages
 function flatpak_uninstall() {
     # Evaluate the arguments as a list of separate arguments
-    eval "flatpak uninstall -y $*"
+    eval "flatpak uninstall -y --noninteractive --delete-data $*"
 }
 
 #Return a list of video mime types
