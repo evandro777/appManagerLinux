@@ -116,6 +116,12 @@ function perform_install() {
     echo "Cinnamon > Keyboard Shortcut > Media > Previous: ALT + SUPER + u"
     gsettings set org.cinnamon.desktop.keybindings.media-keys previous '["XF86AudioPrev", "<Alt><Super>KP_4", "<Alt><Super>u"]'
 
+    echo "Cinnamon > Keyboard Shortcut > Removing shortcut for workspace > <Control><Shift><Alt>Up|Down > Conflict with VS Code Duplicate Lines (Copy lines up|down)"
+    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up '["<Super><Shift>Page_Up"]'
+    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down '["<Super><Shift>Page_Down"]'
+    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Super>Page_Up"]'
+    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Super>Page_Down"]'
+
     echo "Cinnamon > Keyboard Shortcut > New > System Monitor: CTRL + SHIFT + ESC"
     set_new_keybinding "System Monitor" "gnome-system-monitor" "'<Primary><Shift>Escape'"
 
@@ -124,12 +130,6 @@ function perform_install() {
 
     echo "Cinnamon > Keyboard Shortcut > New > System Info: SUPER + Pause"
     set_new_keybinding "System Info" "cinnamon-settings info" "'<Super>Pause'"
-
-    echo "Cinnamon > Keyboard Shortcut > Removing shortcut for workspace > <Control><Shift><Alt>Up|Down > Conflict with VS Code Duplicate Lines (Copy lines up|down)"
-    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up '["<Super><Shift>Page_Up"]'
-    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down '["<Super><Shift>Page_Down"]'
-    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Super>Page_Up"]'
-    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Super>Page_Down"]'
 
     echo "Cinnamon > Disabling mouse middle-click paste > Avoid problems with sites like figma, diagrams. Which use middle-click to drag"
     gsettings set org.gnome.desktop.interface gtk-enable-primary-paste false
@@ -177,9 +177,13 @@ function perform_uninstall() {
     gsettings reset org.cinnamon.desktop.wm.preferences mouse-button-modifier
     gsettings reset-recursively org.cinnamon.desktop.keybindings
     gsettings reset-recursively org.gnome.desktop.wm.keybindings
+
+    remove_keybinding "System Monitor" "gnome-system-monitor"
+    remove_keybinding "xkill" "xkill"
+    remove_keybinding "System Info" "cinnamon-settings info"
+
     gsettings reset-recursively org.gnome.desktop.peripherals.mouse
     gsettings reset-recursively org.cinnamon.desktop.peripherals.mouse
-
     sudo rm -f /usr/share/X11/xorg.conf.d/50-mouse-acceleration.conf
 
     sudo crudini --set "${LOGIN_SETTINGS_FILE}" Greeter activate-numlock "false"

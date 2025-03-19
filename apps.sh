@@ -116,6 +116,8 @@ apps[gnome_terminal_settings, script]="./apps/gnome-terminal-settings.sh"
 apps[gnome_terminal_settings, category]="OS & Utilities"
 apps[ibus, script]="./apps/ibus.sh"
 apps[ibus, category]="OS & Utilities"
+apps[smile, script]="./apps/smile-flatpak-official.sh"
+apps[smile, category]="OS & Utilities"
 apps[settings_fstab_noatime, script]="./apps/settings-fstab-noatime.sh"
 apps[settings_fstab_noatime, category]="OS & Utilities"
 

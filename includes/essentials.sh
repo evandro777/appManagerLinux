@@ -322,6 +322,41 @@ function set_new_keybinding() {
     fi
 }
 
+function remove_keybinding() {
+    local name="$1"
+    local command="$2"
+
+    # Get the list of custom keybindings
+    local keybindings_list=$(dconf read /org/cinnamon/desktop/keybindings/custom-list | tr -d "[]'" | tr ',' '\n')
+
+    new_list=""
+    for keybinding_id in $keybindings_list; do
+        # Remove extra spaces
+        keybinding_id=$(echo "$keybinding_id" | xargs)
+
+        # Get the name and command of the current keybinding
+        local current_name=$(dconf read /org/cinnamon/desktop/keybindings/custom-keybindings/${keybinding_id}/name | tr -d "'")
+        local current_command=$(dconf read /org/cinnamon/desktop/keybindings/custom-keybindings/${keybinding_id}/command | tr -d "'")
+
+        if [[ "$current_name" == "$name" && "$current_command" == "$command" ]]; then
+            # Remove the keybinding settings
+            dconf reset -f /org/cinnamon/desktop/keybindings/custom-keybindings/${keybinding_id}/
+            echo "Keyboard shortcut for '$name' removed successfully."
+            continue
+        fi
+
+        # Append remaining keybindings to new_list
+        if [[ -z "$new_list" ]]; then
+            new_list="'$keybinding_id'"
+        else
+            new_list="$new_list, '$keybinding_id'"
+        fi
+    done
+
+    # Update the keybinding list
+    dconf write /org/cinnamon/desktop/keybindings/custom-list "[$new_list]"
+}
+
 # Function to update the file and perform the replacement
 update_json_prop_file() {
     # $1: The jq command to update the file

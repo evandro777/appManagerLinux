@@ -18,12 +18,14 @@ function perform_install() {
         echo -e "${YELLOW}CopyQ Applying shortcut: CTRL + ALT + v${NC}"
         set_new_keybinding "CopyQ" "copyq menu" "'<Primary><Alt>v', '<Super>v'"
     fi
-
 }
 
 function perform_uninstall() {
     package_uninstall "$APPLICATION_ID"
     sudo add-apt-repository --remove $APPLICATION_PPA
+    if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
+        remove_keybinding "CopyQ" "copyq menu"
+    fi
 }
 
 function perform_check() {

@@ -25,6 +25,9 @@ function perform_install() {
 
 function perform_uninstall() {
     package_uninstall "$APPLICATION_ID"
+   if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
+        remove_keybinding "Flameshot" "flameshot gui"
+   fi
 }
 
 function perform_check() {
