@@ -154,6 +154,10 @@ apps[transmission, script]="./apps/transmission.sh"
 apps[transmission, category]="File Sharing"
 apps[samba, script]="./apps/samba.sh"
 apps[samba, category]="File Sharing"
+apps[syncthing, script]="./apps/syncthing-repo-official.sh"
+apps[syncthing, category]="File Sharing"
+apps[syncthing_tray, script]="./apps/syncthing_tray-flatpak-official.sh"
+apps[syncthing_tray, category]="File Sharing"
 
 #Web Browsers & Chat
 apps[chrome, script]="./apps/chrome-repo-official.sh"

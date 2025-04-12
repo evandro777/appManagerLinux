@@ -2,9 +2,10 @@
 
 readonly APPLICATION_NAME="Sunshine GameStream (server for Moonlight) [official Flatpak]"
 readonly APPLICATION_ID="dev.lizardbyte.app.Sunshine"
-readonly SUNSHINE_CONFIG_DIR="$HOME/.var/app/dev.lizardbyte.app.Sunshine/config/sunshine"
-readonly SUNSHINE_APPS_FILE="$SUNSHINE_CONFIG_DIR/apps.json"
-readonly SUNSHINE_JSON_CONFIG=$(cat <<EOF
+readonly APPLICATION_CONFIG_DIR="$HOME/.var/app/$APPLICATION_ID/config/sunshine"
+readonly SUNSHINE_APPS_FILE="$APPLICATION_CONFIG_DIR/apps.json"
+readonly SUNSHINE_JSON_CONFIG=$(
+    cat << EOF
 {
     "env": {
         "PATH": "\$(PATH):\$(HOME)\/.local\/bin"
@@ -31,7 +32,7 @@ function perform_install() {
     flatpak run --command=additional-install.sh "$APPLICATION_ID"
 
     echo "Applying config to avoid micro stuttering and screen tearing on host using flatpak"
-    flatpak override --user --socket=session-bus "dev.lizardbyte.app.Sunshine"
+    flatpak override --user --socket=session-bus "$APPLICATION_ID"
 
     create_update_app_steam
 
@@ -60,7 +61,7 @@ function perform_uninstall() {
     if command -v ufw &> /dev/null; then
         echo "UFW firewall detected. Removing exception rules"
         sudo ufw status numbered | grep "Sunshine: All" | awk -F'[][]' '{print $2}' | sort -nr | while read -r rule; do
-          yes | sudo ufw delete "$rule"
+            yes | sudo ufw delete "$rule"
         done
     fi
 }
@@ -72,7 +73,7 @@ function perform_check() {
 function create_update_app_steam() {
     echo "Creating/update Steam App entry"
 
-    mkdir -p "$SUNSHINE_CONFIG_DIR"
+    mkdir -p "$APPLICATION_CONFIG_DIR"
 
     # if file doesn't exist
     if [ ! -f "$SUNSHINE_APPS_FILE" ]; then
