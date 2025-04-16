@@ -61,9 +61,9 @@ function perform_install() {
     echo
     echo -e "${RED}Useful information:${NC}"
     echo -e "${GREEN}Folder that keep usershare config files: /var/lib/samba/usershares/${NC}"
-    echo -e "${YELLOW}If only Public folder is working, might be a problem with user, execute these commands below:${NC}"
-    echo 'net usershare add Write "${HOME}/Network share/Write" "Read and Write Shared Folder" "$(sudo net getlocalsid | awk ''{print $NF}'')-$(id -u):F"'
-    echo 'net usershare add Read "${HOME}/Network share/Read" "Read-Only Shared Folder" "$(sudo net getlocalsid | awk ''{print $NF}'')-$(id -u):R"'
+    echo -e "${YELLOW}If only Public folder is working, might be a problem with user or hostname, execute these commands below:${NC}"
+    echo 'net usershare add Write "${HOME}/Network share/Write" "Read and Write Shared Folder" "$(sudo net getlocalsid | awk '"'"'{print $NF}'"'"')-$(id -u):F"'
+    echo 'net usershare add Read "${HOME}/Network share/Read" "Read-Only Shared Folder" "$(sudo net getlocalsid | awk '"'"'{print $NF}'"'"')-$(id -u):R"'
 
     # To list local network computers with samba shared: avahi-browse -rt _smb._tcp
     #     If you want a cleaner output: avahi-browse -rt _smb._tcp | grep -E "hostname|address" | awk -F'[][]' '{print $2}' | paste - - | awk '$2 ~ /^192\.168\./ || ($2 ~ /:/ && $2 !~ /^fe80:/ && $2 !~ /^::1$/ && $2 !~ /^127\./)'
@@ -215,13 +215,11 @@ function set_samba_conf() {
     echo "Disable ntlm auth > Useful for security reasons"
     sudo crudini --set "$SAMBA_CONF" "global" "ntlm auth" "no"
 
-
     #Compatibility
     echo "Disable unix extensions. Useful for better compatibility with windows. Enable Samba to better serve UNIX CIFS clients by supporting features such as symbolic links, hard links, etc. No current use to Windows clients"
     sudo crudini --set "$SAMBA_CONF" "global" "unix extensions" "no"
     echo "Set unix charset: UTF-8 > Useful for better compatibility"
     sudo crudini --set "$SAMBA_CONF" "global" "unix charset" "UTF-8"
-
 
     #Avoid permissions problem
     echo "Set guest account: $USER > Useful for anonymous access to public folder"
