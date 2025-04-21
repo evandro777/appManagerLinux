@@ -14,7 +14,7 @@ function perform_install() {
 function perform_uninstall() {
     sudo apt-get purge -y -q "$APPLICATION_ID*"
     sudo apt-get autoremove -y -q
-    sudo add-apt-repository --remove "$APPLICATION_PPA"
+    sudo add-apt-repository --remove --yes "$APPLICATION_PPA"
 }
 
 function perform_check() {

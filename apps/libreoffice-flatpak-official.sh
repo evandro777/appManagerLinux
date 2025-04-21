@@ -7,7 +7,8 @@ function perform_install() {
     flatpak_install --system "$APPLICATION_ID"
 
     echo -e "${YELLOW}Libreoffice > Force setting dark mode [flatpak bug: https://github.com/flathub/org.libreoffice.LibreOffice/issues/130]${NC}"
-    flatpak override --user --env=GTK_THEME=Mint-Y-Dark org.libreoffice.LibreOffice
+    # It seems to not need anymore:
+    # flatpak override --user --env=GTK_THEME=Mint-Y-Dark org.libreoffice.LibreOffice
 }
 
 function perform_uninstall() {

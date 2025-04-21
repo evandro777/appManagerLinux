@@ -25,7 +25,7 @@ function perform_install() {
 
 function perform_uninstall() {
     package_uninstall "$APPLICATION_ID"
-    sudo add-apt-repository --remove $APPLICATION_PPA
+    sudo add-apt-repository --remove --yes $APPLICATION_PPA
 }
 
 function perform_check() {

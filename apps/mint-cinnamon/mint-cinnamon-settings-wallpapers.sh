@@ -6,11 +6,13 @@ readonly APPLICATION_ID="mint-backgrounds-*"
 #Set wallpaper slideshow, create folder unifying all mint wallpapers for slideshow
 #$3: filename
 function set_wallpaper_slideshow() {
+    background_config_dir="${HOME}/.config/cinnamon/backgrounds/"
+    background_config="${background_config_dir}user-folders.lst"
+    sudo mkdir -p "$background_config_dir"
+
     background_folder="/usr/share/backgrounds"
-
-    background_config="${HOME}/.config/cinnamon/backgrounds/user-folders.lst"
-
     background_new_folder="${background_folder}/allmint"
+
     sudo mkdir -p "$background_new_folder"
     original_folder="${PWD}"
     cd "$background_folder" || return
