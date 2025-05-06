@@ -12,17 +12,16 @@ sudo add-apt-repository -y ppa:libretro/stable
 sudo apt-get update
 sudo apt-get install -y -q retroarch
 
+readonly APPLICATION_CONFIG_DIR="$HOME/.config/retroarch/"
+readonly RETROARCH_CONFIG_SHADERS_DIR="${APPLICATION_CONFIG_DIR}shaders/"
+
 # Base URL for RetroArch cores
-CORES_BASE_URL="https://buildbot.libretro.com/nightly/linux/x86_64/latest/"
+readonly RETROARCH_CORES_BASE_URL="https://buildbot.libretro.com/nightly/linux/x86_64/latest/"
 
 # Base URL for RetroArch assets
-ASSETS_BASE_URL="https://buildbot.libretro.com/assets/"
-ASSETS_FRONTEND_BASE_URL="${ASSETS_BASE_URL}/frontend/"
-ASSETS_SYSTEM_BASE_URL="${ASSETS_BASE_URL}/system/"
-
-# Destination directory for RetroArch cores and assets
-RETROARCH_DIR="$HOME/.config/retroarch/"
-SHADERS_BASE_DIR="${RETROARCH_DIR}shaders/"
+readonly RETROARCH_ASSETS_BASE_URL="https://buildbot.libretro.com/assets/"
+readonly RETROARCH_ASSETS_FRONTEND_BASE_URL="${RETROARCH_ASSETS_BASE_URL}/frontend/"
+readonly RETROARCH_ASSETS_SYSTEM_BASE_URL="${RETROARCH_ASSETS_BASE_URL}/system/"
 
 ASSET_FILES=(
     "assets/assets.zip"
@@ -36,14 +35,14 @@ ASSET_FILES=(
 )
 
 for FILE in ${ASSET_FILES[@]}; do
-    FILE_PATH="$RETROARCH_DIR/$FILE"
+    FILE_PATH="$APPLICATION_CONFIG_DIR/$FILE"
     DIR_PATH="${FILE_PATH%.*}"
 
     # Download asset file
-    curl -L -o "$FILE_PATH" "$ASSETS_FRONTEND_BASE_URL/$FILE"
+    curl -L -o "$FILE_PATH" "$RETROARCH_ASSETS_FRONTEND_BASE_URL/$FILE"
 
     # Extract asset file
-    unzip "$FILE_PATH" -d "$DIR_PATH"
+    unzip -q "$FILE_PATH" -d "$DIR_PATH"
 
     # Remove zip file
     rm "$FILE_PATH"
@@ -151,9 +150,9 @@ CORES_LIST=(
 IFS=$'\n' # Internal Field Separator > Change the default (space) to new line separator
 for CORE in ${CORES_LIST[@]}; do
     echo "Downloading core: ${ORANGE}${CORE}${NC}"
-    curl -L -o "${RETROARCH_DIR}cores/$CORE.zip" "${CORES_BASE_URL}${CORE}_libretro.so.zip"
-    unzip -o "${RETROARCH_DIR}cores/$CORE.zip" -d "${RETROARCH_DIR}cores/"
-    rm "${RETROARCH_DIR}cores/${CORE}.zip"
+    curl -L -o "${APPLICATION_CONFIG_DIR}cores/$CORE.zip" "${RETROARCH_CORES_BASE_URL}${CORE}_libretro.so.zip"
+    unzip -q -o "${APPLICATION_CONFIG_DIR}cores/$CORE.zip" -d "${APPLICATION_CONFIG_DIR}cores/"
+    rm "${APPLICATION_CONFIG_DIR}cores/${CORE}.zip"
 
     # Start retroarch loading the core to generate default config file for the core
     case $CORE in
@@ -182,21 +181,22 @@ CORES_SYSTEM_LIST=(
 IFS=$'\n' # Internal Field Separator > Change the default (space) to new line separator
 for CORE in ${CORES_SYSTEM_LIST[@]}; do
     echo -e "Downloading core system: ${ORANGE}${CORE}${NC}"
-    curl -L -o "${RETROARCH_DIR}system/$CORE.zip" "${ASSETS_SYSTEM_BASE_URL}${CORE}.zip"
-    unzip -o "${RETROARCH_DIR}system/$CORE.zip" -d "${RETROARCH_DIR}system/"
-    rm "${RETROARCH_DIR}system/${CORE}.zip"
+    curl -L -o "${APPLICATION_CONFIG_DIR}system/$CORE.zip" "${RETROARCH_ASSETS_SYSTEM_BASE_URL}${CORE}.zip"
+    unzip -q -o "${APPLICATION_CONFIG_DIR}system/$CORE.zip" -d "${APPLICATION_CONFIG_DIR}system/"
+    rm "${APPLICATION_CONFIG_DIR}system/${CORE}.zip"
 done
 
 echo -e "Core systems download and extraction completed!"
 
-echo -e "Some cores need to manually install bios roms into system folder:"
-echo -e "Playstation [swanstation and mednafen_psx_hw]"
-echo -e "Lynx [mednafen_lynx]: lynxboot.img"
+echo -e "${RED}Some cores need to manually install bios roms into system folder '${APPLICATION_CONFIG_DIR}system/':${NC}"
+echo -e "${RED}Playstation (swanstation and mednafen_psx_hw) into root system folder${NC}"
+echo -e "${RED}Lynx (mednafen_lynx): lynxboot.img${NC}"
+echo -e "${RED}3DO (Opera) into root system folder${NC}"
 
 # Copying / Symlink to selected shaders
 
 # Create the destination directory
-SHADERS_DIR="${SHADERS_BASE_DIR}shaders_slang/"
+SHADERS_DIR="${RETROARCH_CONFIG_SHADERS_DIR}shaders_slang/"
 DEST_SHADERS_SELECTION_DIR="${SHADERS_DIR}seven_selection"
 DEST_SHADERS_DIR="$DEST_SHADERS_SELECTION_DIR/shaders"
 mkdir -p "$DEST_SHADERS_SELECTION_DIR"
@@ -298,19 +298,20 @@ done
 echo -e "Applying retroarch base configurations"
 
 # Change default configurations
-RETROARCH_CONFIG_FILE="${RETROARCH_DIR}retroarch.cfg"
-crudini --set "$RETROARCH_CONFIG_FILE" "" "input_exit_emulator" '"nul"' # Remove ESC as exit emulator > conflicts with ScummVM
+RETROARCH_CONFIG_FILE="${APPLICATION_CONFIG_DIR}retroarch.cfg"
+crudini --set "$RETROARCH_CONFIG_FILE" "" "input_exit_emulator" '"nul"'          # Remove ESC as exit emulator > conflicts with ScummVM
+crudini --set "$RETROARCH_CONFIG_FILE" "" "menu_swap_ok_cancel_buttons" '"true"' # OK button: A | Cancel button: B
 crudini --set "$RETROARCH_CONFIG_FILE" "" "fps_show" '"true"'
 crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_enable" '"true"'
 crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_remember_last_dir" '"true"'
 crudini --set "$RETROARCH_CONFIG_FILE" "" "video_driver" '"vulcan"'
 
 echo -e "Applying configurations: 3DO > Opera"
-3DO_OPERA_CONFIG_FILE="${RETROARCH_DIR}config/Opera/Opera.opt"
-crudini --set "$3DO_OPERA_CONFIG_FILE" "" "opera_high_resolution" '"enabled"'
+OPERA_3DO_CONFIG_FILE="${APPLICATION_CONFIG_DIR}config/Opera/Opera.opt"
+crudini --set "$OPERA_3DO_CONFIG_FILE" "" "opera_high_resolution" '"enabled"'
 
 echo -e "Applying configurations: Playstation > SwanStation"
-PS_SWANSTATION_CONFIG_FILE="${RETROARCH_DIR}config/SwanStation/SwanStation.opt"
+PS_SWANSTATION_CONFIG_FILE="${APPLICATION_CONFIG_DIR}config/SwanStation/SwanStation.opt"
 crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CDROM_LoadImagePatches" '"true"'
 crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CDROM_PreCacheCHD" '"true"'
 crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CPU_FastmemRewrite" '"true"'
@@ -332,7 +333,7 @@ crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_TextureReplacements_
 crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_TextureReplacements_PreloadTextures" '"true"'
 
 echo -e "Applying configurations: Playstation > Beetle PSX HW"
-PS_BEETLE_PSX_HW_CONFIG_FILE="${RETROARCH_DIR}config/Beetle PSX HW/Beetle PSX HW.opt"
+PS_BEETLE_PSX_HW_CONFIG_FILE="${APPLICATION_CONFIG_DIR}config/Beetle PSX HW/Beetle PSX HW.opt"
 crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_adaptive_smoothing" '"enabled"'
 crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_cd_access_method" '"precache"'
 crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_dither_mode" '"disabled"'
@@ -348,9 +349,9 @@ crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_replace_textures
 crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_track_textures" '"enabled"'
 
 echo -e "Applying configurations: ScummVM"
-SCUMMVM_CONFIG_FILE="${RETROARCH_DIR}/system/scummvm.ini"
-crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "themepath" "${RETROARCH_DIR}system/scummvm/theme"
-crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "extrapath" "${RETROARCH_DIR}system/scummvm/extra"
+SCUMMVM_CONFIG_FILE="${APPLICATION_CONFIG_DIR}/system/scummvm.ini"
+crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "themepath" "${APPLICATION_CONFIG_DIR}system/scummvm/theme"
+crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "extrapath" "${APPLICATION_CONFIG_DIR}system/scummvm/extra"
 crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gui_theme" "scummmodern"
 crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "opl_driver" "nuked"
 crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gm_device" "fluidsynth"
@@ -359,6 +360,6 @@ crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "mt32_device" "mt32"
 crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "speech_mute" "false"
 crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "subtitles" "true"
 crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "fullscreen" "true"
-crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "soundfont" "${RETROARCH_DIR}system/scummvm/extra/Roland_SC-55.sf2"
+crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "soundfont" "${APPLICATION_CONFIG_DIR}system/scummvm/extra/Roland_SC-55.sf2"
 
 # echo -e "${RED}RetroArch: To fix black boxes icons. Start RetroArch > Main Menu > Online Updater > Update Assets${NC}"

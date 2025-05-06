@@ -204,6 +204,10 @@ apps[moonlight, script]="./apps/moonlight-flatpak-official.sh"
 apps[moonlight, category]="Games"
 apps[sunshine, script]="./apps/moonlight-flatpak-official.sh"
 apps[sunshine, category]="Games"
+apps[retroarch_flatpak, script]="./apps/retroarch-flatpak-official.sh"
+apps[retroarch_flatpak, category]="Games"
+# apps[retroarch_ppa, script]="./apps/retroarch-ppa-official.sh"
+# apps[retroarch_ppa, category]="Games"
 
 if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
     apps[cinnamon_set_start_bluetooth, script]="./apps/mint-cinnamon/mint-cinnamon-settings-startup-bluetooth.sh"
