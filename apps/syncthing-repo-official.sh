@@ -53,7 +53,7 @@ function change_default_shared_folder() {
 
     if [ ! -f "$SYNCTHING_CONFIG_FILE" ]; then
         echo "Creating Syncthing config file..."
-        syncthing -generate="$SYNCTHING_CONFIG_FILE"
+        syncthing generate
     fi
 
     # Edit config.xml > change default folder
