@@ -204,10 +204,21 @@ function set_samba_conf() {
     #Performance
     echo "Enable sendfile > Improve performance. Might have problems sharing NFS, CIFS or old SMB versions"
     sudo crudini --set "$SAMBA_CONF" "global" "use sendfile" "yes"
+    echo "Set min receivefile size: 16384 > Can improve performance for writing big files."
+    sudo crudini --set "$SAMBA_CONF" "global" "min receivefile size" "16384"
+
+    echo "Set aio read size: 1 and aio write size = 1 > Enables AIO for all operations, even small ones. Can reduce latency and improve parallelism in disk access. Useful on servers with SSDs/NVMe."
+    echo "⚠️ May be useless (or even cause overhead) on slow HDDs or systems with high CPU load."
+    sudo crudini --set "$SAMBA_CONF" "global" "aio read size" "1"
+    sudo crudini --set "$SAMBA_CONF" "global" "aio write size" "1"
+
+    echo "Enable strict allocate > Forces Samba to allocate full disk space immediately when creating files. Prevents disk fragmentation. May improve sequential write performance. May delay creation of large files"
+    sudo crudini --set "$SAMBA_CONF" "global" "strict allocate" "yes"
+
     echo "Disable strict locking > Improve performance. Avoid unnecessary file blocking"
     sudo crudini --set "$SAMBA_CONF" "global" "strict locking" "no"
 
-    #Security
+    #Security & Performance
     echo "Set client min protocol: SMB3 > Useful for security and performance reasons. Windows 8+"
     sudo crudini --set "$SAMBA_CONF" "global" "client min protocol" "SMB3" #avoid SMB1 for security and performance reasons
     echo "Set server min protocol: SMB3 > Useful for security and performance reasons. Windows 8+"
@@ -216,8 +227,8 @@ function set_samba_conf() {
     sudo crudini --set "$SAMBA_CONF" "global" "ntlm auth" "no"
 
     #Compatibility
-    echo "Disable unix extensions. Useful for better compatibility with windows. Enable Samba to better serve UNIX CIFS clients by supporting features such as symbolic links, hard links, etc. No current use to Windows clients"
-    sudo crudini --set "$SAMBA_CONF" "global" "unix extensions" "no"
+    # echo "Disable unix extensions. Useful for better compatibility with windows. Enable Samba to better serve UNIX CIFS clients by supporting features such as symbolic links, hard links, etc. No current use to Windows clients"
+    # sudo crudini --set "$SAMBA_CONF" "global" "unix extensions" "no"
     echo "Set unix charset: UTF-8 > Useful for better compatibility"
     sudo crudini --set "$SAMBA_CONF" "global" "unix charset" "UTF-8"
 

@@ -9,14 +9,14 @@ function perform_install() {
     # Not automatically pasting bug: https://github.com/mijorus/smile/issues/78
     if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
         echo -e "${YELLOW}Smile Applying shortcut: SUPER + .${NC}"
-        set_new_keybinding "Smile" "flatpak run it.mijorus.smile" "'<Super>period'"
+        set_new_keybinding "Smile" "flatpak run $APPLICATION_ID" "'<Super>period'"
     fi
 }
 
 function perform_uninstall() {
     flatpak_uninstall "$APPLICATION_ID"
     if [ "$DESKTOP_SESSION" == "cinnamon" ]; then
-        remove_keybinding "Smile" "flatpak run it.mijorus.smile"
+        remove_keybinding "Smile" "flatpak run $APPLICATION_ID"
     fi
 }
 
