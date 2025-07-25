@@ -210,6 +210,8 @@ apps[retroarch_flatpak, script]="./apps/retroarch-flatpak-official.sh"
 apps[retroarch_flatpak, category]="Games"
 # apps[retroarch_ppa, script]="./apps/retroarch-ppa-official.sh"
 # apps[retroarch_ppa, category]="Games"
+apps[es_de, script]="./apps/es_de-appimage-official.sh"
+apps[es_de, category]="Games"
 
 if [[ $DESKTOP_SESSION == "cinnamon" ]]; then
     apps[cinnamon_set_start_bluetooth, script]="./apps/mint-cinnamon/mint-cinnamon-settings-startup-bluetooth.sh"
