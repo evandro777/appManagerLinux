@@ -1,15 +1,17 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="ES-DE Emulation Station [official AppImage]"
+readonly APPLICATION_NAME="ES-DE Emulation Station + ROM runner [official AppImage + official GitHub]"
 readonly APPLICATION_GITLAB_API_URL="https://gitlab.com/api/v4/projects/18817634/releases" # IMPORTANT: The project ID 18817634 is for "ES-DE / ES-DE Frontend"
 readonly APPLICATION_GITLAB_APPIMAGE_NAME="ES-DE_x64.AppImage"
 readonly APPLICATION_FILE_NAME="esde"
 readonly APPLICATION_INSTALL_PATH="$HOME/AppImages/$APPLICATION_FILE_NAME.appimage"
 readonly APPLICATION_ICON_PATH="$HOME/AppImages/.icons/$APPLICATION_FILE_NAME.svg"
 readonly APPLICATION_DESKTOP_FILE_LOCATION="$HOME/.local/share/applications/$APPLICATION_FILE_NAME.desktop"
+readonly APPLICATION_ROM_CLONE_RUNNER_PATH="/opt/rom-clone-runner"
 readonly LATEST_RELEASE_INFO=$(wget -qO- "$APPLICATION_GITLAB_API_URL" | jq -r '.[0]') # Get the first (latest) release object
 readonly LATEST_VERSION_FULL=$(echo "$LATEST_RELEASE_INFO" | jq -r '.name')
 readonly LATEST_VERSION=$(echo "$LATEST_VERSION_FULL" | grep -oP 'ES-DE\s+\K[\d\.]+') # Extract the version (e.g., "3.3.0") from the release name "ES-DE 3.3.0 / 3.3.0-48"
+readonly APP_IMAGE_CONFIG_DESTINATION_FILE="$HOME/ES-DE/custom_systems/es_systems.xml"
 readonly APPLICATION_DESKTOP_ENTRY='[Desktop Entry]
 Name=ES-DE
 GenericName=Gaming Frontend
@@ -25,7 +27,8 @@ Hidden=false'
 
 function perform_install() {
     download_and_install
-    copy_config_files_from_appImage
+    copy_config_files_from_app_image
+    install_rom_wrapper
     echo "Creating Desktop Entry"
     echo "${APPLICATION_DESKTOP_ENTRY}" | tee -a "${APPLICATION_DESKTOP_FILE_LOCATION}" > /dev/null
 }
@@ -96,13 +99,12 @@ function download_and_install() {
     echo "You can run ES-DE using the command: $APPLICATION_INSTALL_PATH"
 }
 
-function copy_config_files_from_appImage() {
+function copy_config_files_from_app_image() {
     readonly APP_IMAGE_ICON_ORIGIN_FILE="usr/share/icons/hicolor/scalable/apps/org.es_de.frontend.svg"
     # Create installation directory if not exists
     mkdir -p "$(dirname "$APPLICATION_ICON_PATH")"
 
     readonly APP_IMAGE_CONFIG_ORIGIN_FILE="usr/share/es-de/resources/systems/linux/es_systems.xml"
-    readonly APP_IMAGE_CONFIG_DESTINATION_FILE="$HOME/ES-DE/custom_systems/es_systems.xml"
     WORK_DIR_TMP=$(mktemp -d)
 
     # Create destination directory if it does not exist
@@ -119,6 +121,14 @@ function copy_config_files_from_appImage() {
 
     # Optional cleanup
     rm -rf "$WORK_DIR_TMP"
+}
+
+function install_rom_wrapper() {
+    echo "Installing ROM Wrapper"
+    sudo git clone https://github.com/evandro777/rom-clone-runner.git "${APPLICATION_ROM_CLONE_RUNNER_PATH}"
+    sudo ln -s "${APPLICATION_ROM_CLONE_RUNNER_PATH}/rom_runner_wrapper.sh" "/bin/rom_runner_wrapper"
+    sudo ln -s "${APPLICATION_ROM_CLONE_RUNNER_PATH}/rom_manager.sh" "/bin/rom_manager"
+    "$APPLICATION_ROM_CLONE_RUNNER_PATH/apply_rom_runner_in_es-de.sh" "$APP_IMAGE_CONFIG_DESTINATION_FILE"
 }
 
 DIR="${BASH_SOURCE%/*}"

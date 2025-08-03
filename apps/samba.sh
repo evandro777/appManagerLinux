@@ -149,7 +149,7 @@ function create_folders_and_sharing() {
 }
 
 function create_samba_user() {
-    # Verifica se o usuário já existe no Samba
+    # Check if user already exists in samba
     if sudo pdbedit -L | grep -q "^$USER:"; then
         echo "User '$USER' already exists in Samba. Updating password..."
     else
