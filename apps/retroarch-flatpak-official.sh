@@ -1,19 +1,30 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="Retroarch (emulators + custom configs) [official Flatpak]"
+readonly APPLICATION_NAME="Retroarch (emulators + custom configs) [not ready] [official Flatpak]"
 readonly APPLICATION_ID="org.libretro.RetroArch"
 
-readonly APPLICATION_CONFIG_DIR="$HOME/.var/app/$APPLICATION_ID/config/retroarch/"
-readonly RETROARCH_CONFIG_SHADERS_DIR="${APPLICATION_CONFIG_DIR}shaders/"
-readonly RETROARCH_CONFIG_SYSTEM_DIR="${APPLICATION_CONFIG_DIR}system/"
+readonly APPLICATION_CONFIG_DIR="$HOME/.var/app/$APPLICATION_ID/config/retroarch"
+readonly RETROARCH_CONFIG_SHADERS_DIR="${APPLICATION_CONFIG_DIR}/shaders"
+readonly RETROARCH_CONFIG_SYSTEM_DIR="${APPLICATION_CONFIG_DIR}/system"
 
 # Base URL for RetroArch cores
 readonly RETROARCH_CORES_BASE_URL="https://buildbot.libretro.com/nightly/linux/x86_64/latest/"
 
 # Base URL for RetroArch assets
-readonly RETROARCH_ASSETS_BASE_URL="https://buildbot.libretro.com/assets/"
-readonly RETROARCH_ASSETS_FRONTEND_BASE_URL="${RETROARCH_ASSETS_BASE_URL}frontend/"
-readonly RETROARCH_ASSETS_SYSTEM_BASE_URL="${RETROARCH_ASSETS_BASE_URL}system/"
+readonly RETROARCH_ASSETS_BASE_URL="https://buildbot.libretro.com/assets"
+readonly RETROARCH_ASSETS_FRONTEND_BASE_URL="${RETROARCH_ASSETS_BASE_URL}/frontend"
+readonly RETROARCH_ASSETS_SYSTEM_BASE_URL="${RETROARCH_ASSETS_BASE_URL}/system"
+
+# Flatpak Sandbox
+readonly FLATPAK_SANDBOX_SHARED_DIR="$(flatpak info --show-location org.libretro.RetroArch)"
+readonly FLATPAK_SANDBOX_SHADERS_DIR="$FLATPAK_SANDBOX_SHARED_DIR/files/share/libretro/shaders"
+
+# Shaders
+readonly SHADER_CRT=$(
+    cat << 'EOF'
+#reference "../../shaders/seven_selection/crt@fakelottes.slangp"
+EOF
+)
 
 function perform_install() {
     flatpak_install "$APPLICATION_ID"
@@ -21,11 +32,20 @@ function perform_install() {
     echo "Give access to /tmp folder, useful for scripts that automatically extracts file"
     flatpak override --user --filesystem=/tmp "org.libretro.RetroArch"
 
-    # Flatpak already has all assets and shaders packed: https://github.com/flathub/org.libretro.RetroArch/issues/184
-    # update_assets
-    # create_preferred_shaders
+    echo "First execution to create config folder"
+    (flatpak run $APPLICATION_ID &)
+    sleep 3
+    killall retroarch
 
     update_cores
+
+    # Flatpak already has all assets and shaders packed: https://github.com/flathub/org.libretro.RetroArch/issues/184
+    # update_assets
+
+    echo "Copying shaders from Flatpak sandbox to config folder"
+    cp -rT "$FLATPAK_SANDBOX_SHADERS_DIR" "$RETROARCH_CONFIG_SHADERS_DIR"
+    create_preferred_shaders
+
     apply_configurations
 
     echo -e "Config location: $APPLICATION_CONFIG_DIR"
@@ -54,11 +74,11 @@ function update_assets() {
     )
 
     for FILE in ${ASSET_FILES[@]}; do
-        FILE_PATH="${APPLICATION_CONFIG_DIR}${FILE}"
+        FILE_PATH="${APPLICATION_CONFIG_DIR}/${FILE}"
         DIR_PATH="${FILE_PATH%.*}"
 
         # Download asset file
-        wget --no-verbose --output-document="$FILE_PATH" "${RETROARCH_ASSETS_FRONTEND_BASE_URL}${FILE}"
+        wget --no-verbose --output-document="$FILE_PATH" "${RETROARCH_ASSETS_FRONTEND_BASE_URL}/${FILE}"
 
         # Extract asset file
         unzip -q "$FILE_PATH" -d "$DIR_PATH"
@@ -71,107 +91,13 @@ function update_assets() {
 }
 
 create_preferred_shaders() {
-    # Copying / Symlink to selected shaders
-
-    # Create the destination directory
-    SHADERS_DIR="${RETROARCH_CONFIG_SHADERS_DIR}shaders_slang/"
-    DEST_SHADERS_SELECTION_DIR="${SHADERS_DIR}seven_selection"
-    DEST_SHADERS_DIR="$DEST_SHADERS_SELECTION_DIR/shaders"
-    mkdir -p "$DEST_SHADERS_SELECTION_DIR"
+    echo "Creating shaders directory: ${RETROARCH_CONFIG_SHADERS_DIR}/shaders_slang/seven_selection"
+    SHADERS_DIR="${RETROARCH_CONFIG_SHADERS_DIR}/shaders_slang"
+    DEST_SHADERS_DIR="${SHADERS_DIR}/seven_selection"
     mkdir -p "$DEST_SHADERS_DIR"
 
-    echo -e "${ORANGE}Symlinking selected shaders into '$DEST_SHADERS_SELECTION_DIR'${NC}"
-
-    # Define the desired shader files
-    SHADER_FILES=(
-        "anti-aliasing/advanced-aa"
-        "crt/crt-guest-advanced"
-        "crt/crt-aperture"
-        "crt/crt-easymode"
-        "crt/crt-royale"
-        "crt/crt-royale-fake-bloom"
-        "crt/crt-yo6-KV-M1420B-sharp"
-        "crt/yeetron"
-        "crt/zfast-crt"
-        "denoisers/crt-fast-bilateral-super-xbr"
-        "dithering/cbod_v1"
-        "dithering/mdapt"
-        "eagle/super-2xsai-fix-pixel-shift"
-        "handheld/dot"
-        "handheld/retro-v2"
-        "handheld/retro-v3"
-        "handheld/zfast-lcd"
-        "hqx/hq4x"
-        "nnedi3/nnedi3-nns64-2x-nns32-4x-rgb"
-        "ntsc/ntsc-256px-svideo-scanline"
-        "omniscale/omniscale"
-        "presets/crt-royale-ntsc-svide"
-        "presets/crt-royale-xm29plus"
-        "presets/retro-v2+gba-color"
-        "presets/retro-v2+image-adjustment"
-        "presets/retro-v2+psp-color"
-        "reshade/bsnes-gamma-ramp"
-        "scalefx/scalefx"
-        "scalenx/epx"
-        "scalenx/scale3x"
-        "sharpen/super-xbr-super-res"
-        "windowed/lanczos3-fast"
-        "xbr/xbr-lv3-sharp"
-        "xbr/xbr-lv2"
-        "xbr/xbr-lv3"
-        "xbr/other presets/xbr-lv3-multipass"
-        "xbr/other presets/xbr-lv3-9x-standalone"
-        "xbr/other presets/xbr-lv3-standalone"
-        "xbr/other presets/xbr-hybrid"
-        "xbrz/4xbrz-linear"
-        "xsal/4xsal-level2-crt"
-        "xsal/4xsal-level2-hq"
-        "xsoft/4xsoftSdB"
-    )
-
-    # Loop through the desired files and symlink them to the destination directory
-    for FILE in "${SHADER_FILES[@]}"; do
-        FILE="$FILE.slangp"
-        # Get the file name from the path
-        FILENAME=$(basename "$FILE")
-
-        # Check if the file exists
-        if [ -f "${SHADERS_DIR}$FILE" ]; then
-            # Create the destination path for the shader file
-            DEST_PATH="$DEST_SHADERS_SELECTION_DIR/$FILENAME"
-
-            # Create the symbolic link to the destination directory
-            ln -s -f "${SHADERS_DIR}$FILE" "$DEST_PATH"
-
-            # Print a message indicating the file was symlinked
-            # echo -e "${GREEN}Symlinked${NC} $FILE to $DEST_PATH"
-
-            # Get the path of the shaders directory for this shader file
-            SHADERS_PATH="$(dirname "$FILE")/shaders"
-
-            # Check if the shaders directory for this shader file has already been symlinked
-            if ! [[ " ${SYMLINKED_SHADERS[@]} " =~ " ${SHADERS_PATH} " ]]; then
-                # Add the shaders directory to the array of symlinked shader folders
-                SYMLINKED_SHADERS+=("$SHADERS_PATH")
-
-                # Create a symlink for each file and directory in the shaders directory for this shader file
-                # echo -e "${ORANGE}Symlinking all files and folders inside subfolder '$SHADERS_PATH'${NC}"
-                find "${SHADERS_DIR}$SHADERS_PATH" -mindepth 1 -print0 | while IFS= read -r -d $'\0' SHADER_FILE; do
-                    # Get the file name from the path
-                    SHADER_FILENAME=$(basename "$SHADER_FILE")
-
-                    # Create the destination path for the shader file
-                    DEST_SHADER_PATH="$DEST_SHADERS_DIR/$SHADER_FILENAME"
-
-                    # Create the symbolic link to the destination directory
-                    ln -s -f "$SHADER_FILE" "$DEST_SHADER_PATH"
-                done
-            fi
-        else
-            # Print a message indicating the file was not found
-            echo -e "${RED}$FILE${NC} not found in $SHADERS_DIR"
-        fi
-    done
+    echo "Cloning shaders selection repository into: ${DEST_SHADERS_DIR}"
+    git clone --depth=1 https://github.com/evandro777/shaders-selection.git "${DEST_SHADERS_DIR}"
 }
 
 function update_cores() {
@@ -275,9 +201,9 @@ function update_cores() {
     IFS=$'\n' # Internal Field Separator > Change the default (space) to new line separator
     for CORE in ${CORES_LIST[@]}; do
         echo -e "Downloading core: ${ORANGE}${CORE}${NC}"
-        wget --no-verbose --output-document="${APPLICATION_CONFIG_DIR}cores/$CORE.zip" "${RETROARCH_CORES_BASE_URL}${CORE}_libretro.so.zip"
-        unzip -q -o "${APPLICATION_CONFIG_DIR}cores/$CORE.zip" -d "${APPLICATION_CONFIG_DIR}cores/"
-        rm "${APPLICATION_CONFIG_DIR}cores/${CORE}.zip"
+        wget --no-verbose --output-document="${APPLICATION_CONFIG_DIR}/cores/$CORE.zip" "${RETROARCH_CORES_BASE_URL}${CORE}_libretro.so.zip"
+        unzip -q -o "${APPLICATION_CONFIG_DIR}/cores/$CORE.zip" -d "${APPLICATION_CONFIG_DIR}/cores/"
+        rm "${APPLICATION_CONFIG_DIR}/cores/${CORE}.zip"
 
         # Start retroarch loading the core to generate default config file for the core
         case $CORE in
@@ -305,7 +231,7 @@ function update_cores() {
 
     patch_temp_folder="/tmp/retroarch_system/"
     # git clone --depth=1 --branch RetroArch https://github.com/Abdess/retroarch_system.git "${patch_temp_folder}"
-    # mv -f "${patch_temp_folder}system/"* "${RETROARCH_CONFIG_SYSTEM_DIR}" 2> /dev/null
+    # mv -f "${patch_temp_folder}system/"* "${RETROARCH_CONFIG_SYSTEM_DIR}/" 2> /dev/null
     git clone --depth=1 https://github.com/Abdess/retroarch_system.git "${patch_temp_folder}"
 
     declare -A mapping=(
@@ -320,11 +246,11 @@ function update_cores() {
 
     for downloaded_core_path in "${!mapping[@]}"; do
         system_subfolder_path="${mapping[$downloaded_core_path]}"
-        mv -f "${patch_temp_folder}${downloaded_core_path}"* "${RETROARCH_CONFIG_SYSTEM_DIR}${system_subfolder_path}" 2> /dev/null
+        mv -f "${patch_temp_folder}${downloaded_core_path}"* "${RETROARCH_CONFIG_SYSTEM_DIR}/${system_subfolder_path}" 2> /dev/null
     done
 
     # New ps1 bios from psp
-    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}PSXONPSP660.BIN" "https://github.com/Abdess/retroarch_system/blob/Other/Sony%20-%20PlayStation/PSXONPSP660.BIN"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}/PSXONPSP660.bin" "https://github.com/Abdess/retroarch_system/raw/refs/heads/Other/Sony%20-%20PlayStation/PSXONPSP660.BIN"
 
     # Core system files for specific cores
     CORES_SYSTEM_LIST=(
@@ -337,14 +263,14 @@ function update_cores() {
     IFS=$'\n' # Internal Field Separator > Change the default (space) to new line separator
     for CORE in ${CORES_SYSTEM_LIST[@]}; do
         echo -e "Downloading core system: ${ORANGE}${CORE}${NC}"
-        wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}${CORE}.zip" "${RETROARCH_ASSETS_SYSTEM_BASE_URL}${CORE}.zip"
-        unzip -q -o "${RETROARCH_CONFIG_SYSTEM_DIR}${CORE}.zip" -d "${RETROARCH_CONFIG_SYSTEM_DIR}"
-        rm "${RETROARCH_CONFIG_SYSTEM_DIR}${CORE}.zip"
+        wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}/${CORE}.zip" "${RETROARCH_ASSETS_SYSTEM_BASE_URL}/${CORE}.zip"
+        unzip -q -o "${RETROARCH_CONFIG_SYSTEM_DIR}/${CORE}.zip" -d "${RETROARCH_CONFIG_SYSTEM_DIR}/"
+        rm "${RETROARCH_CONFIG_SYSTEM_DIR}/${CORE}.zip"
     done
 
     echo -e "Core systems download and extraction completed!"
 
-    echo -e "${RED}Some cores need to manually install bios roms into system folder '${RETROARCH_CONFIG_SYSTEM_DIR}':${NC}"
+    echo -e "${RED}Some cores need to manually install bios roms into system folder '${RETROARCH_CONFIG_SYSTEM_DIR}/':${NC}"
     echo -e "${RED}MAME into {system folder}/mame/bios${NC}"
     echo -e "${RED}Commodore - Amiga (PUAE) into {system folder} => capsimg.so${NC}"
 
@@ -358,26 +284,82 @@ function apply_configurations() {
     echo -e "Applying retroarch base configurations"
 
     # Change default configurations
-    RETROARCH_CONFIG_FILE="${APPLICATION_CONFIG_DIR}retroarch.cfg"
+    RETROARCH_CONFIG_FILE="${APPLICATION_CONFIG_DIR}/retroarch.cfg"
     crudini --set "$RETROARCH_CONFIG_FILE" "" "input_exit_emulator" '"nul"'          # Remove ESC as exit emulator > conflicts with ScummVM
     crudini --set "$RETROARCH_CONFIG_FILE" "" "menu_swap_ok_cancel_buttons" '"true"' # OK button: A | Cancel button: B
     crudini --set "$RETROARCH_CONFIG_FILE" "" "fps_show" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_enable" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_remember_last_dir" '"true"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "auto_shaders_enable" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_driver" '"vulkan"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_frame_delay_auto" '"true"' # Reduce input lag
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "input_poll_type_behavior" '"0"'  # Reduce input lag
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_fullscreen" '"true"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_dir" '"'"$RETROARCH_CONFIG_SHADERS_DIR"'"'
+
+    echo -e "Applying configurations: Genesis Plus GX > Mega Drive, Mega-CD, Master System, Game Gear, SG-1000"
+    GENESIS_PLUS_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Genesis Plus GX"
+    GENESIS_PLUS_CONFIG_FILE="${GENESIS_PLUS_CONFIG_DIR}/Genesis Plus GX.opt"
+    crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_left_border" '"left border"'
+    crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_ym2413" '"enabled"'
+    crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_ym2413_core" '"nuked"'
+    crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_ym2612" '"mame (enhanced ym3438)"'
+    crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_audio_filter" '"low-pass"'
+    echo "$SHADER_CRT" > "${GENESIS_PLUS_CONFIG_DIR}/Genesis Plus GX.slangp"
+
+    echo -e "Applying configurations: PicoDrive > Sega 32x, Mega Drive, Master System"
+    PICO_DRIVE_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/PicoDrive"
+    PICO_DRIVE_CONFIG_FILE="${PICO_DRIVE_CONFIG_DIR}/PicoDrive.opt"
+    crudini --set "$PICO_DRIVE_CONFIG_FILE" "" "picodrive_audio_filter" '"low-pass"'
+    crudini --set "$PICO_DRIVE_CONFIG_FILE" "" "picodrive_fm_filter" '"on"'
+    crudini --set "$PICO_DRIVE_CONFIG_FILE" "" "picodrive_sprlim" '"enabled"'
+    echo "$SHADER_CRT" > "${PICO_DRIVE_CONFIG_DIR}/PicoDrive.slangp"
+
+    echo -e "Applying configurations: SNES > Snes9x"
+    SNES_9x_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Snes9x"
+    SNES_9x_CONFIG_FILE="${SNES_9x_CONFIG_DIR}/Snes9x.opt"
+    echo "$SHADER_CRT" > "${SNES_9x_CONFIG_DIR}/Snes9x.slangp"
+
+    echo -e "Applying configurations: SNES > bsnes-hd beta"
+    BSNES_HD_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/bsnes-hd beta"
+    BSNES_HD_CONFIG_FILE="${BSNES_HD_CONFIG_DIR}/bsnes-hd beta.opt"
+    echo "$SHADER_CRT" > "${BSNES_HD_CONFIG_DIR}/bsnes-hd beta.slangp"
+
+    echo -e "Applying configurations: SNES > bsnes-mercury"
+    BSNES_MERCURY_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/bsnes-mercury"
+    BSNES_MERCURY_CONFIG_FILE="${BSNES_MERCURY_CONFIG_DIR}/bsnes-mercury.opt"
+    echo "$SHADER_CRT" > "${BSNES_MERCURY_CONFIG_DIR}/bsnes-mercury.slangp"
+
+    echo -e "Applying configurations: Arcade > FinalBurn Neo"
+    FINAL_BURN_NEO_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/FinalBurn Neo"
+    FINAL_BURN_NEO_CONFIG_FILE="${FINAL_BURN_NEO_CONFIG_DIR}/FinalBurn Neo.opt"
+    echo "$SHADER_CRT" > "${FINAL_BURN_NEO_CONFIG_DIR}/FinalBurn Neo.slangp"
+
+    echo -e "Applying configurations: Arcade > MAME"
+    MAME_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/MAME"
+    MAME_CONFIG_FILE="${MAME_CONFIG_DIR}/MAME.opt"
+    echo "$SHADER_CRT" > "${MAME_CONFIG_DIR}/MAME.slangp"
+
+    echo -e "Applying configurations: NES > Mesen"
+    MESEN_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Mesen"
+    MESEN_CONFIG_FILE="${MESEN_CONFIG_DIR}/Mesen.opt"
+    echo "$SHADER_CRT" > "${MESEN_CONFIG_DIR}/Mesen.slangp"
 
     echo -e "Applying configurations: 3DO > Opera"
-    OPERA_3DO_CONFIG_FILE="${APPLICATION_CONFIG_DIR}config/Opera/Opera.opt"
+    OPERA_3DO_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Opera"
+    OPERA_3DO_CONFIG_FILE="${OPERA_3DO_CONFIG_DIR}/Opera.opt"
     crudini --set "$OPERA_3DO_CONFIG_FILE" "" "opera_high_resolution" '"enabled"'
+    echo "$SHADER_CRT" > "${OPERA_3DO_CONFIG_DIR}/Opera.slangp"
 
     echo -e "Applying configurations: Playstation > SwanStation"
-    PS_SWANSTATION_CONFIG_FILE="${APPLICATION_CONFIG_DIR}config/SwanStation/SwanStation.opt"
+    PS_SWANSTATION_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/SwanStation"
+    PS_SWANSTATION_CONFIG_FILE="${PS_SWANSTATION_CONFIG_DIR}/SwanStation.opt"
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CDROM_LoadImagePatches" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CDROM_PreCacheCHD" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CPU_FastmemRewrite" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CPU_RecompilerICache" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_ChromaSmoothing24Bit" '"true"'
-    crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_DownsampleMode" '"Box"'
+    crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_DownsampleMode" '"Adaptive"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_MSAA" '"8"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_PGXPColorCorrection" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_PGXPDepthBuffer" '"true"'
@@ -385,15 +367,18 @@ function apply_configurations() {
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_PGXPPreserveProjFP" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_PGXPVertexCache" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_Renderer" '"Vulkan"'
-    crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_ResolutionScale" '"5"'
+    crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_ResolutionScale" '"2"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_TrueColor" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_UseSoftwareRendererForReadbacks" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_GPU_WidescreenHack" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_TextureReplacements_EnableVRAMWriteReplacements" '"true"'
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_TextureReplacements_PreloadTextures" '"true"'
+    echo "$SHADER_CRT" > "${PS_SWANSTATION_CONFIG_DIR}/SwanStation.slangp"
 
     echo -e "Applying configurations: Playstation > Beetle PSX HW"
-    PS_BEETLE_PSX_HW_CONFIG_FILE="${APPLICATION_CONFIG_DIR}config/Beetle PSX HW/Beetle PSX HW.opt"
+    PS_BEETLE_PSX_HW_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Beetle PSX HW"
+    PS_BEETLE_PSX_HW_CONFIG_FILE="${PS_BEETLE_PSX_HW_CONFIG_DIR}/Beetle PSX HW.opt"
+    crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_override_bios" '"psxonpsp"'
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_adaptive_smoothing" '"enabled"'
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_cd_access_method" '"precache"'
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_dither_mode" '"disabled"'
@@ -407,11 +392,24 @@ function apply_configurations() {
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_renderer" '"hardware_vk"'
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_replace_textures" '"enabled"'
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_track_textures" '"enabled"'
+    crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_internal_resolution" '"2x"'
+    PS_BEETLE_PSX_HW_CONFIG_OVERRIDE_FILE="${APPLICATION_CONFIG_DIR}/config/Beetle PSX HW/Beetle PSX HW.cfg"
+    crudini --set "$PS_BEETLE_PSX_HW_CONFIG_OVERRIDE_FILE" "" "fastforward_frameskip" '"false"'    # Disable fastforward "SPACE BAR" > Breaks emulator
+    crudini --set "$PS_BEETLE_PSX_HW_CONFIG_OVERRIDE_FILE" "" "run_ahead_enabled" '"false"'        # Disable run ahead > Breaks emulator
+    crudini --set "$PS_BEETLE_PSX_HW_CONFIG_OVERRIDE_FILE" "" "preemptive_frames_enable" '"false"' # Disable preemptive frames > Breaks emulator
+    echo "$SHADER_CRT" > "${PS_BEETLE_PSX_HW_CONFIG_DIR}/Beetle PSX HW.slangp"
+
+    echo -e "Applying configurations: Saturn > Beetle Saturn"
+    BEETLE_SATURN_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Beetle Saturn"
+    BEETLE_SATURN_CONFIG_FILE="${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.opt"
+    crudini --set "$BEETLE_SATURN_CONFIG_FILE" "" "beetle_saturn_cdimagecache" '"enabled"'
+    crudini --set "$BEETLE_SATURN_CONFIG_FILE" "" "beetle_saturn_midsync" '"enabled"'
+    echo "$SHADER_CRT" > "${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.slangp"
 
     echo -e "Applying configurations: ScummVM"
-    SCUMMVM_CONFIG_FILE="${RETROARCH_CONFIG_SYSTEM_DIR}scummvm.ini"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "themepath" "${RETROARCH_CONFIG_SYSTEM_DIR}scummvm/theme"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "extrapath" "${RETROARCH_CONFIG_SYSTEM_DIR}scummvm/extra"
+    SCUMMVM_CONFIG_FILE="${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm.ini"
+    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "themepath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/theme"
+    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "extrapath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gui_theme" "scummmodern"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "opl_driver" "nuked"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gm_device" "fluidsynth"
@@ -420,7 +418,7 @@ function apply_configurations() {
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "speech_mute" "false"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "subtitles" "true"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "fullscreen" "true"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "soundfont" "${RETROARCH_CONFIG_SYSTEM_DIR}scummvm/extra/Roland_SC-55.sf2"
+    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "soundfont" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra/Roland_SC-55.sf2"
 }
 
 DIR="${BASH_SOURCE%/*}"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 readonly IS_APT_PACKAGE=1
-readonly APPLICATION_NAME="Retroarch (emulators + custom configs) [official PPA]"
+readonly APPLICATION_NAME="Retroarch (emulators + custom configs) [not ready] [official PPA]"
 readonly APPLICATION_ID="retroarch"
 readonly APPLICATION_PPA="ppa:libretro/stable"
 
@@ -20,6 +20,10 @@ function perform_install() {
     sudo add-apt-repository -y $APPLICATION_PPA
     package_update
     package_install "$APPLICATION_ID"
+
+    (retroarch &)
+    sleep 3
+    killall retroarch
 
     update_assets
     create_preferred_shaders
