@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="Retroarch (emulators + custom configs) [not ready] [official Flatpak]"
+readonly APPLICATION_NAME="Retroarch (emulators + improvements configs) [official Flatpak]"
 readonly APPLICATION_ID="org.libretro.RetroArch"
 
 readonly APPLICATION_CONFIG_DIR="$HOME/.var/app/$APPLICATION_ID/config/retroarch"
@@ -22,12 +22,13 @@ readonly FLATPAK_SANDBOX_SHADERS_DIR="$FLATPAK_SANDBOX_SHARED_DIR/files/share/li
 # Shaders
 readonly SHADER_CRT=$(
     cat << 'EOF'
-#reference "../../shaders/seven_selection/crt@fakelottes.slangp"
+#reference "../../shaders/seven-selection/crt@fakelottes.slangp"
 EOF
 )
 
 function perform_install() {
     flatpak_install "$APPLICATION_ID"
+    echo "This script manager to set configurations to better visual and audio quality, requiring a better PC, not recommended to use with retropie"
 
     echo "Give access to /tmp folder, useful for scripts that automatically extracts file"
     flatpak override --user --filesystem=/tmp "org.libretro.RetroArch"
@@ -91,13 +92,13 @@ function update_assets() {
 }
 
 create_preferred_shaders() {
-    echo "Creating shaders directory: ${RETROARCH_CONFIG_SHADERS_DIR}/shaders_slang/seven_selection"
-    SHADERS_DIR="${RETROARCH_CONFIG_SHADERS_DIR}/shaders_slang"
-    DEST_SHADERS_DIR="${SHADERS_DIR}/seven_selection"
+    echo "Creating shaders directory: ${RETROARCH_CONFIG_SHADERS_DIR}/shaders_slang/seven-selection"
+    DEST_SHADERS_DIR="${RETROARCH_CONFIG_SHADERS_DIR}/seven-selection"
     mkdir -p "$DEST_SHADERS_DIR"
 
     echo "Cloning shaders selection repository into: ${DEST_SHADERS_DIR}"
     git clone --depth=1 https://github.com/evandro777/shaders-selection.git "${DEST_SHADERS_DIR}"
+    git -C "${DEST_SHADERS_DIR}" pull origin master # If already exists, try to update
 }
 
 function update_cores() {
@@ -196,6 +197,9 @@ function update_cores() {
 
         # MSX, Sega SG-1000, SC-3000, SF-7000 and ColecoVision emulator > Discontinued: Can be played with FinalBurn Neo, but need to download other type of roms
         # "bluemsx"
+
+        # NeoGeo CD
+        "neocd"
     )
 
     IFS=$'\n' # Internal Field Separator > Change the default (space) to new line separator
@@ -242,15 +246,13 @@ function update_cores() {
         ["NEC - PC-98"]="np2kai/"
         ["Nintendo - Famicom Disk System"]=""
         ["Commodore - Amiga"]=""
+        ["SNK - NeoGeo CD"]="neocd/"
     )
 
     for downloaded_core_path in "${!mapping[@]}"; do
         system_subfolder_path="${mapping[$downloaded_core_path]}"
         mv -f "${patch_temp_folder}${downloaded_core_path}"* "${RETROARCH_CONFIG_SYSTEM_DIR}/${system_subfolder_path}" 2> /dev/null
     done
-
-    # New ps1 bios from psp
-    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}/PSXONPSP660.bin" "https://github.com/Abdess/retroarch_system/raw/refs/heads/Other/Sony%20-%20PlayStation/PSXONPSP660.BIN"
 
     # Core system files for specific cores
     CORES_SYSTEM_LIST=(
@@ -267,6 +269,16 @@ function update_cores() {
         unzip -q -o "${RETROARCH_CONFIG_SYSTEM_DIR}/${CORE}.zip" -d "${RETROARCH_CONFIG_SYSTEM_DIR}/"
         rm "${RETROARCH_CONFIG_SYSTEM_DIR}/${CORE}.zip"
     done
+
+    # ScummVM extras plus
+    RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR="${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/CM32L_CONTROL.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/CM32L_CONTROL.ROM"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/CM32L_PCM.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/CM32L_PCM.ROM"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/MT32_CONTROL.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/MT32_CONTROL.ROM"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/MT32_PCM.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/MT32_PCM.ROM"
+
+    # New ps1 bios from psp
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}/PSXONPSP660.bin" "https://github.com/Abdess/retroarch_system/raw/refs/heads/Other/Sony%20-%20PlayStation/PSXONPSP660.BIN"
 
     echo -e "Core systems download and extraction completed!"
 
@@ -288,13 +300,15 @@ function apply_configurations() {
     crudini --set "$RETROARCH_CONFIG_FILE" "" "input_exit_emulator" '"nul"'          # Remove ESC as exit emulator > conflicts with ScummVM
     crudini --set "$RETROARCH_CONFIG_FILE" "" "menu_swap_ok_cancel_buttons" '"true"' # OK button: A | Cancel button: B
     crudini --set "$RETROARCH_CONFIG_FILE" "" "fps_show" '"true"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_driver" '"vulkan"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_adaptive_vsync" '"true"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_frame_delay_auto" '"true"'  # Reduce input lag
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "input_poll_type_behavior" '"0"'   # Reduce input lag
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_max_swapchain_images" '"2"' # Reduce input lag
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_fullscreen" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_enable" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_remember_last_dir" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "auto_shaders_enable" '"true"'
-    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_driver" '"vulkan"'
-    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_frame_delay_auto" '"true"' # Reduce input lag
-    crudini --set "$RETROARCH_CONFIG_FILE" "" "input_poll_type_behavior" '"0"'  # Reduce input lag
-    crudini --set "$RETROARCH_CONFIG_FILE" "" "video_fullscreen" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_dir" '"'"$RETROARCH_CONFIG_SHADERS_DIR"'"'
 
     echo -e "Applying configurations: Genesis Plus GX > Mega Drive, Mega-CD, Master System, Game Gear, SG-1000"
@@ -333,12 +347,18 @@ function apply_configurations() {
     echo -e "Applying configurations: Arcade > FinalBurn Neo"
     FINAL_BURN_NEO_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/FinalBurn Neo"
     FINAL_BURN_NEO_CONFIG_FILE="${FINAL_BURN_NEO_CONFIG_DIR}/FinalBurn Neo.opt"
+    crudini --set "$FINAL_BURN_NEO_CONFIG_FILE" "" "fbneo-allow-patched-romsets" '"disabled"' # Disabled to use with retroachievements hardcore mode
     echo "$SHADER_CRT" > "${FINAL_BURN_NEO_CONFIG_DIR}/FinalBurn Neo.slangp"
 
     echo -e "Applying configurations: Arcade > MAME"
     MAME_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/MAME"
     MAME_CONFIG_FILE="${MAME_CONFIG_DIR}/MAME.opt"
     echo "$SHADER_CRT" > "${MAME_CONFIG_DIR}/MAME.slangp"
+
+    echo -e "Applying configurations: NeoGeo CD > neocd"
+    NEOCD_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/NeoCD"
+    NEOCD_CONFIG_FILE="${NEOCD_CONFIG_DIR}/NeoCD.opt"
+    echo "$SHADER_CRT" > "${NEOCD_CONFIG_DIR}/NeoCD.slangp"
 
     echo -e "Applying configurations: NES > Mesen"
     MESEN_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Mesen"
@@ -411,14 +431,19 @@ function apply_configurations() {
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "themepath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/theme"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "extrapath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gui_theme" "scummmodern"
+    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gui_scale" "125"
+    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "music_driver" "auto"
+    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "native_mt32" "false"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "opl_driver" "nuked"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gm_device" "fluidsynth"
+    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "fluidsynth_misc_interpolation" "7th"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "multi_midi" "true"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "mt32_device" "mt32"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "speech_mute" "false"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "subtitles" "true"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "fullscreen" "true"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "soundfont" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra/Roland_SC-55.sf2"
+    echo "$SHADER_CRT" > "${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.slangp"
 }
 
 DIR="${BASH_SOURCE%/*}"

@@ -5,7 +5,8 @@ readonly APPLICATION_NAME="Syncthing [official repository]"
 readonly APPLICATION_ID="syncthing"
 readonly APPLICATION_KEYRING=/etc/apt/keyrings/syncthing-archive-keyring.gpg
 readonly APPLICATION_SOURCE_LIST=/etc/apt/sources.list.d/syncthing.list
-readonly SYNCTHING_SYNC_FOLDER="$HOME/Syncthing"
+readonly SYNCTHING_SYNC_FOLDER_ROOT="$HOME/Syncthing"
+readonly SYNCTHING_SYNC_FOLDER_DEFAULT="$SYNCTHING_SYNC_FOLDER_ROOT/Default"
 readonly SYNCTHING_CONFIG_DIR="$HOME/.local/state/syncthing"
 readonly SYNCTHING_CONFIG_FILE="$SYNCTHING_CONFIG_DIR/config.xml"
 
@@ -48,19 +49,20 @@ function perform_check() {
 }
 
 function change_default_shared_folder() {
-    mv "$HOME/Sync" "$SYNCTHING_SYNC_FOLDER"
-    mkdir -p "$SYNCTHING_SYNC_FOLDER"
+    mkdir -p "$SYNCTHING_SYNC_FOLDER_DEFAULT"
+    mv "$HOME/Sync" "$SYNCTHING_SYNC_FOLDER_DEFAULT"
 
     if [ ! -f "$SYNCTHING_CONFIG_FILE" ]; then
         echo "Creating Syncthing config file..."
         syncthing generate
     fi
 
-    # Edit config.xml > change default folder
-    sed -i "s|<folder id=\"default\" label=\"Default Folder\" path=\"[^\"]*\"|<folder id=\"default\" label=\"Default Folder\" path=\"$SYNCTHING_SYNC_FOLDER\"|" "$SYNCTHING_CONFIG_FILE"
+    # Edit config.xml > change defaults folder
+    sed -i "s|<folder id=\"default\" label=\"Default Folder\" path=\"[^\"]*\"|<folder id=\"default\" label=\"Default Folder\" path=\"$SYNCTHING_SYNC_FOLDER_DEFAULT\"|" "$SYNCTHING_CONFIG_FILE"
+    sed -i "s|<folder id=\"\" label=\"\" path=\"~*\"|<folder id=\"\" label=\"\" path=\"$SYNCTHING_SYNC_FOLDER_ROOT\"|" "$SYNCTHING_CONFIG_FILE"
 
-    echo "Set sharing icon for ${SYNCTHING_SYNC_FOLDER}"
-    gio set "${SYNCTHING_SYNC_FOLDER}" metadata::custom-icon-name syncthing
+    echo "Set sharing icon for ${SYNCTHING_SYNC_FOLDER_ROOT}"
+    gio set "${SYNCTHING_SYNC_FOLDER_ROOT}" metadata::custom-icon-name syncthing
 }
 
 DIR="${BASH_SOURCE%/*}"

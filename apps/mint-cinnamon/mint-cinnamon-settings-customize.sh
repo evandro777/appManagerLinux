@@ -29,6 +29,9 @@ function perform_install() {
     echo "Cinnamon > Notifications on the bottom side of the screen"
     gsettings set org.cinnamon.desktop.notifications bottom-notifications true
 
+    echo "Cinnamon > Screensaver lock delay: 1 minute"
+    gsettings set org.cinnamon.desktop.screensaver lock-delay "uint32 60"
+
     ## THEME > Mint-Y-Dark
     echo "Cinnamon > Theme > Mint-Y-Dark theme with transparency panel"
     mkdir -p "${HOME}/.themes/Mint-Y-Dark-Transparency/"
@@ -41,8 +44,11 @@ function perform_install() {
     # Change panel background color, and add transparency #Mint 21.x
     sed -i s/"  background-color: rgba(47, 47, 47, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
 
-    # Change panel background color, and add transparency #Mint 22.x
+    # Change panel background color, and add transparency #Mint 22.1
     sed -i s/"  background-color: rgba(26, 26, 26, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
+
+    # Change panel background color, and add transparency #Mint 22.2
+    sed -i s/"  background-color: rgba(29, 29, 33, 0.99);"$/"  background-color: rgba(0, 0, 0, 0.2);"/ "$HOME/.themes/Mint-Y-Dark-Transparency/cinnamon/cinnamon.css"
 
     gsettings set org.cinnamon.desktop.interface gtk-theme "Mint-Y-Dark"
     gsettings set org.cinnamon.desktop.interface icon-theme "Mint-Y-Yaru"

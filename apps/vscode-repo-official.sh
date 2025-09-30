@@ -13,11 +13,12 @@ readonly APPLICATION_CUSTOM_JSON_CONFIG=$(
     "editor.minimap.enabled": false,
     "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'Noto Color Emoji', 'monospace', 'Droid Sans Fallback'",
     "terminal.integrated.fontFamily": "'MesloLGS NF'",
-    "window.titleBarStyle": "custom",
     "editor.fontLigatures": true,
     "editor.lineHeight": 24,
     "editor.fontSize": 16,
-    "editor.stickyScroll.enabled": true
+    "editor.stickyScroll.enabled": true,
+    "redhat.telemetry.enabled": true,
+    "window.titleBarStyle": "custom"
 }
 EOF
 )
@@ -96,7 +97,7 @@ function perform_install() {
         # Check if "shellscript" is already present in cSpell.enableFiletypes
         if ! jq '.["cSpell.enableFiletypes"] | index("shellscript")' "$user_configs_settings" | grep -q "null"; then
             # If "shellscript" is not present, add it to the array
-            update_json_prop_file '.["cSpell.enableFiletypes"] += ["shellscript"]' "${user_configs_settings}"
+            update_json_prop_file '.["cSpell.enableFiletypes"] = {"shellscript": true}' "${user_configs_settings}"
         fi
 
         # Markdown table formatter (beautify)
