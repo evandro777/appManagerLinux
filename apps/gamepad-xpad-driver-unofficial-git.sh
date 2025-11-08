@@ -10,6 +10,7 @@ function perform_install() {
     echo -e "More information at: https://github.com/paroj/xpad"
     echo -e "Alternative to use 8bitdo with xinput without installing: https://gist.github.com/ammuench/0dcf14faf4e3b000020992612a2711e2"
     echo -e "To identify plugged usb gamepad and peripherals, execute: lsusb"
+    echo -e "Secure boot must be turned off"
 
     perform_uninstall
 
@@ -17,7 +18,7 @@ function perform_install() {
     sudo git clone --depth=1 https://github.com/paroj/xpad.git "/usr/src/${APPLICATION_ID}-${APPLICATION_VERSION}"
 
     echo -e "Installing new driver"
-    sudo dkms install -m "$APPLICATION_ID" -v "$APPLICATION_VERSION"
+    sudo dkms install -m "$APPLICATION_ID" -v "$APPLICATION_VERSION" --force
 }
 
 function perform_uninstall() {
@@ -25,7 +26,7 @@ function perform_uninstall() {
     sudo rm -rf "/usr/src/${APPLICATION_ID}-${APPLICATION_VERSION}"
 
     echo -e "Removing alterady installed driver"
-    sudo dkms remove -m "$APPLICATION_ID" -v "$APPLICATION_VERSION"
+    sudo dkms remove -m "$APPLICATION_ID" -v "$APPLICATION_VERSION" --all
 }
 
 function perform_check() {

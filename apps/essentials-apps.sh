@@ -76,12 +76,6 @@ if ! grep -q "fs.inotify.max_user_watches" "${FILE_SYSCTL}"; then # Check if not
     sudo sh -c "echo 'fs.inotify.max_user_watches=524288' >> ${FILE_SYSCTL}"
 fi
 
-echo -e "${YELLOW}Increasing vm.max_map_count${NC}"
-echo 'Having the default vm.max_map_count size limit of 65530 maps can be too little for some games. Increasing to 2147483642'
-printf "vm.max_map_count = 2147483642" | sudo tee /etc/sysctl.d/80-gamecompatibility.conf > /dev/null
-
-sudo sysctl --system
-
 echo -e "${GREEN}Show timestamp in terminal history${NC}"
 bashrc="${HOME}/.bashrc"
 if ! grep -q "export HISTTIMEFORMAT=" "$bashrc"; then # Check if not already set
@@ -96,7 +90,7 @@ set_property "$GRUB_CONFIG_LOCATION" "GRUB_TIMEOUT" 3
 # Usually GRUB_RECORDFAIL_TIMEOUT does not exist, so crudini create it near the other property. But crudini creates with spaces between " = "
 sudo crudini --set "$GRUB_CONFIG_LOCATION" "" "GRUB_RECORDFAIL_TIMEOUT" 3
 set_property "$GRUB_CONFIG_LOCATION" "GRUB_RECORDFAIL_TIMEOUT" 3 # Fix the spaces that crudini created
-set_property "$GRUB_CONFIG_LOCATION" "GRUB_CMDLINE_LINUX_DEFAULT" '"noplymouth"'
+# set_property "$GRUB_CONFIG_LOCATION" "GRUB_CMDLINE_LINUX_DEFAULT" '"noplymouth"' # Remove splash screen
 sudo update-grub
 
 echo -e "${GREEN}Faster startup > Disable NetworkManager-wait-online${NC}"

@@ -309,8 +309,44 @@ function apply_configurations() {
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_enable" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_remember_last_dir" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "auto_shaders_enable" '"true"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "audio_driver" '"alsa"' # Low latency
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "audio_resampler" '"sinc"' # Best quality & more CPU
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "audio_resampler_quality" '"5"' # Highest
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_shader_dir" '"'"$RETROARCH_CONFIG_SHADERS_DIR"'"'
 
+    echo -e "Applying configurations: Mupen64Plus-Next > Nintendo 64"
+    MUPEN64PLUS_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Mupen64Plus-Next"
+    MUPEN64PLUS_CONFIG_DIR="${GENESIS_PLUS_CONFIG_DIR}/Mupen64Plus-Next.opt"
+    # Main
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-cpucore" '"cached_interpreter"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-rsp-plugin" '"hle"' # hle: default
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-rdp-plugin" '"gliden64"' # gliden64: default
+
+    # GLideN64
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-169screensize" '"1920x1080"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-43screensize" '"1920x1440"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-BackgroundMode" '"Stripped"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyAuxToRDRAM" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyColorToRDRAM" '"TripleBuffer"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyDepthToRDRAM" '"FromMem"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableEnhancedHighResStorage" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableEnhancedTextureStorage" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableHWLighting" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableLODEmulation" '"False"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableNativeResFactor" '"4"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableTexCoordBounds" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-FrameDuping" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-FXAA" '"1"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-MultiSampling" '"4"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-txHiresEnable" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-txHiresFullAlphaChannel" '"True"'
+
+    # ParaLLEI-RDP
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-downscaling" '"1/4"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-super-sampled-read-back" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-upscaling" '"4x"'
+
+    echo "$SHADER_CRT" > "${GENESIS_PLUS_CONFIG_DIR}/Mupen64Plus-Next.slangp"
     echo -e "Applying configurations: Genesis Plus GX > Mega Drive, Mega-CD, Master System, Game Gear, SG-1000"
     GENESIS_PLUS_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Genesis Plus GX"
     GENESIS_PLUS_CONFIG_FILE="${GENESIS_PLUS_CONFIG_DIR}/Genesis Plus GX.opt"

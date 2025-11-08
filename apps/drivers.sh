@@ -1,7 +1,6 @@
 #!/bin/bash
 
-readonly APPLICATION_NAME="Drivers (doesn't have uninstall script!) & Nvidia + API VA-API + API VDPAU + patches (NVENC + NVFBC) [unofficial Git / don't auto update]"
-readonly APPLICATION_ID="vdpau-driver-all"
+readonly APPLICATION_NAME="Drivers (doesn't have uninstall script!)"
 readonly SEARCH_DRIVERS="$(ubuntu-drivers devices)"
 
 function is_patches_applied() {
@@ -32,14 +31,19 @@ if [ -n "$installed_nvidia_version" ] && [ -n "$recommended_nvidia_version" ]; t
 fi
 
 function perform_install() {
+    sudo apt-get install -y -q vainfo
     if [ "$is_latest_nvidia_driver_installed" -eq 0 ]; then
         echo -e "${YELLOW}Installing recommended (tested) driver${NC}"
         sudo ubuntu-drivers install
     fi
     if [ -n "$installed_nvidia_version" ]; then
+        echo "Nvidia + API VA-API + API VDPAU + patches (NVENC + NVFBC) [unofficial Git / don't auto update]"
         echo -e "${YELLOW}Installing VDPAU API (Video Decode and Presentation API for Unix) and uninstall translator VDPAU -> VA-API (not necessary for Nvidia)${NC}"
-        package_install "$APPLICATION_ID"
+        package_install "vdpau-driver-all"
         sudo apt-get purge -y -q libvdpau-va-gl1
+
+        echo "Installing nvidia-vaapi-driver. VA-API implementation that uses NVDEC as a backend. This implementation is specifically designed to be used by Firefox for accelerated decode of web content, and may not operate correctly in other applications"
+        sudo apt-get install -y -q nvidia-vaapi-driver
 
         # If patches are applied
         if [ "$(is_patches_applied)" -eq 1 ]; then
@@ -60,6 +64,18 @@ function perform_install() {
             sudo bash "${PATCH_TEMP_FOLDER}"/patch-fbc.sh
             sudo bash "${PATCH_TEMP_FOLDER}"/patch-fbc.sh -f
         fi
+    elif lspci | grep -qi 'VGA.*Intel'; then
+        echo "Intel GPU detected - installing VAAPI drivers..."
+        sudo apt-get install -y -q intel-gpu-tools intel-media-va-driver-non-free i965-va-driver-shaders
+
+        # Optional: set environment variable for Intel VAAPI
+        # if ! grep -q "LIBVA_DRIVER_NAME" /etc/environment; then
+        #     echo "LIBVA_DRIVER_NAME=iHD" | sudo tee -a /etc/environment
+        # fi
+
+        echo "VAAPI driver installation complete."
+        echo "Testing..."
+        vainfo | grep -i "Driver version"
     fi
 }
 
@@ -68,11 +84,10 @@ function perform_install() {
 # }
 
 function perform_check() {
-    if [ -z "$recommended_drivers" ]; then
-        # Force status "3", status for "not available" (doesn't have any app/driver to install or is already installed)
-        package_is_installed=3
-    else
-        package_is_installed=$(package_is_installed "$APPLICATION_ID")
+    # Force status "3", status for "not available" (doesn't have any app/driver to install or is already installed)
+    package_is_installed=3
+    if [ -n "$recommended_drivers" ]; then
+        package_is_installed=$(package_is_installed "vdpau-driver-all")
         if [ "$package_is_installed" -eq 1 ]; then
             if [ "$(package_is_installed vdpau-driver-all)" -eq 0 ]; then
                 package_is_installed=0
@@ -88,6 +103,14 @@ function perform_check() {
         # Force status "2", status for "apply only" that only apply and doesn't have uninstall script
         elif [ "$package_is_installed" -eq 0 ]; then
             package_is_installed=2
+        fi
+    elif lspci | grep -qi 'VGA.*Intel'; then
+        if [ "$(package_is_installed intel-gpu-tools)" -eq 0 ]; then
+            package_is_installed=0
+        elif [ "$(package_is_installed intel-media-va-driver-non-free)" -eq 0 ]; then
+            package_is_installed=0
+        elif [ "$(package_is_installed i965-va-driver-shaders)" -eq 0 ]; then
+            package_is_installed=0
         fi
     fi
 

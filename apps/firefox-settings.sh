@@ -131,7 +131,7 @@ function perform_install() {
     echo -e "Firefox > Usability > Disable middle mouse button paste [Avoid problems with sites like Figma, for moving through canva]"
     echo "Reference: https://www.reddit.com/r/kde/comments/18oep2l/i_still_cant_disable_middle_mouse_button_to_paste/"
     set_firefox_property "middlemouse.paste" false
-    
+
     echo -e "Firefox > Usability > Zooming only for the current tab"
     echo "Reference: https://kb.mozillazine.org/Browser.zoom.siteSpecific"
     echo "Reference: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserSettings/zoomSiteSpecific"
@@ -157,6 +157,14 @@ function perform_install() {
     set_firefox_property "browser.theme.content-theme" 0
     set_firefox_property "extensions.activeThemeID" "firefox-compact-dark"
 
+    if command -v vainfo &>/dev/null; then
+        if ! vainfo 2>/dev/null | grep -E "VAProfileAV1.*VAEntrypointVLD"; then
+            echo -e "Firefox > Disable AV1 videos to force hardware acceleration"
+            set_firefox_property "media.av1.enabled" false
+        fi
+    fi
+
+    # media.hardware-video-decoding.force-enabled
 }
 
 function perform_uninstall() {
@@ -182,6 +190,7 @@ function perform_uninstall() {
     remove_firefox_property "browser.tabs.inTitlebar"
     remove_firefox_property "browser.theme.content-theme"
     remove_firefox_property "extensions.activeThemeID"
+    remove_firefox_property "media.av1.enabled"
 }
 
 function perform_check() {
