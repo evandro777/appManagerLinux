@@ -319,19 +319,21 @@ function apply_configurations() {
     MUPEN64PLUS_CONFIG_DIR="${GENESIS_PLUS_CONFIG_DIR}/Mupen64Plus-Next.opt"
     # Main
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-cpucore" '"cached_interpreter"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-rsp-plugin" '"hle"' # hle: default
+#    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-rsp-plugin" '"parallel"' # hle: default. parallel: bug in some games > Resident Evil 2)
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-rdp-plugin" '"gliden64"' # gliden64: default
 
     # GLideN64
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-169screensize" '"1920x1080"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-43screensize" '"1920x1440"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-BackgroundMode" '"Stripped"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-CorrectTexrectCoords" '"Auto"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyAuxToRDRAM" '"True"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyColorToRDRAM" '"TripleBuffer"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyDepthToRDRAM" '"FromMem"'
+#    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyDepthToRDRAM" '"FromMem"' # software: default. FromMem: bug in some games (Super Smash Bros.)
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableEnhancedHighResStorage" '"True"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableEnhancedTextureStorage" '"True"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableHWLighting" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableInaccurateTextureCoordinates" '"True"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableLODEmulation" '"False"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableNativeResFactor" '"4"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableTexCoordBounds" '"True"'
@@ -345,8 +347,8 @@ function apply_configurations() {
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-downscaling" '"1/4"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-super-sampled-read-back" '"True"'
     crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-upscaling" '"4x"'
-
     echo "$SHADER_CRT" > "${GENESIS_PLUS_CONFIG_DIR}/Mupen64Plus-Next.slangp"
+
     echo -e "Applying configurations: Genesis Plus GX > Mega Drive, Mega-CD, Master System, Game Gear, SG-1000"
     GENESIS_PLUS_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Genesis Plus GX"
     GENESIS_PLUS_CONFIG_FILE="${GENESIS_PLUS_CONFIG_DIR}/Genesis Plus GX.opt"
@@ -355,6 +357,7 @@ function apply_configurations() {
     crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_ym2413_core" '"nuked"'
     crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_ym2612" '"mame (enhanced ym3438)"'
     crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_audio_filter" '"low-pass"'
+    crudini --set "$GENESIS_PLUS_CONFIG_FILE" "" "genesis_plus_gx_cd_precache" '"enabled"'
     echo "$SHADER_CRT" > "${GENESIS_PLUS_CONFIG_DIR}/Genesis Plus GX.slangp"
 
     echo -e "Applying configurations: PicoDrive > Sega 32x, Mega Drive, Master System"
@@ -365,49 +368,54 @@ function apply_configurations() {
     crudini --set "$PICO_DRIVE_CONFIG_FILE" "" "picodrive_sprlim" '"enabled"'
     echo "$SHADER_CRT" > "${PICO_DRIVE_CONFIG_DIR}/PicoDrive.slangp"
 
-    echo -e "Applying configurations: SNES > Snes9x"
+    echo -e "Applying configurations: Snes9x > SNES"
     SNES_9x_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Snes9x"
     SNES_9x_CONFIG_FILE="${SNES_9x_CONFIG_DIR}/Snes9x.opt"
+    # crudini --set "$SNES_9x_CONFIG_FILE" "" "snes9x_overclock_cycles" '"compatible"' # Speed up heavy games > Break some games (Super Mario World with MSU-1 patch)
+    crudini --set "$SNES_9x_CONFIG_FILE" "" "snes9x_overclock_superfx" '"200%"' # Speed up slow games
+    crudini --set "$SNES_9x_CONFIG_FILE" "" "snes9x_overscan" '"auto"' # Cut black borders automatically
     echo "$SHADER_CRT" > "${SNES_9x_CONFIG_DIR}/Snes9x.slangp"
 
-    echo -e "Applying configurations: SNES > bsnes-hd beta"
+    echo -e "Applying configurations: bsnes-hd beta > SNES"
     BSNES_HD_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/bsnes-hd beta"
     BSNES_HD_CONFIG_FILE="${BSNES_HD_CONFIG_DIR}/bsnes-hd beta.opt"
     echo "$SHADER_CRT" > "${BSNES_HD_CONFIG_DIR}/bsnes-hd beta.slangp"
 
-    echo -e "Applying configurations: SNES > bsnes-mercury"
+    echo -e "Applying configurations: bsnes-mercury > SNES"
     BSNES_MERCURY_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/bsnes-mercury"
     BSNES_MERCURY_CONFIG_FILE="${BSNES_MERCURY_CONFIG_DIR}/bsnes-mercury.opt"
     echo "$SHADER_CRT" > "${BSNES_MERCURY_CONFIG_DIR}/bsnes-mercury.slangp"
 
-    echo -e "Applying configurations: Arcade > FinalBurn Neo"
+    echo -e "Applying configurations: FinalBurn Neo > Arcade"
     FINAL_BURN_NEO_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/FinalBurn Neo"
     FINAL_BURN_NEO_CONFIG_FILE="${FINAL_BURN_NEO_CONFIG_DIR}/FinalBurn Neo.opt"
     crudini --set "$FINAL_BURN_NEO_CONFIG_FILE" "" "fbneo-allow-patched-romsets" '"disabled"' # Disabled to use with retroachievements hardcore mode
+    crudini --set "$FINAL_BURN_NEO_CONFIG_FILE" "" "fbneo-lowpass-filter" '"enabled"' # Better audio
     echo "$SHADER_CRT" > "${FINAL_BURN_NEO_CONFIG_DIR}/FinalBurn Neo.slangp"
 
-    echo -e "Applying configurations: Arcade > MAME"
+    echo -e "Applying configurations: MAME > Arcade"
     MAME_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/MAME"
     MAME_CONFIG_FILE="${MAME_CONFIG_DIR}/MAME.opt"
+    crudini --set "$MAME_CONFIG_FILE" "" "mame_altres" '"1920x1080"'
     echo "$SHADER_CRT" > "${MAME_CONFIG_DIR}/MAME.slangp"
 
-    echo -e "Applying configurations: NeoGeo CD > neocd"
+    echo -e "Applying configurations: neocd > NeoGeo CD"
     NEOCD_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/NeoCD"
     NEOCD_CONFIG_FILE="${NEOCD_CONFIG_DIR}/NeoCD.opt"
     echo "$SHADER_CRT" > "${NEOCD_CONFIG_DIR}/NeoCD.slangp"
 
-    echo -e "Applying configurations: NES > Mesen"
+    echo -e "Applying configurations: Mesen > NES"
     MESEN_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Mesen"
     MESEN_CONFIG_FILE="${MESEN_CONFIG_DIR}/Mesen.opt"
     echo "$SHADER_CRT" > "${MESEN_CONFIG_DIR}/Mesen.slangp"
 
-    echo -e "Applying configurations: 3DO > Opera"
+    echo -e "Applying configurations: Opera > 3DO"
     OPERA_3DO_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Opera"
     OPERA_3DO_CONFIG_FILE="${OPERA_3DO_CONFIG_DIR}/Opera.opt"
     crudini --set "$OPERA_3DO_CONFIG_FILE" "" "opera_high_resolution" '"enabled"'
     echo "$SHADER_CRT" > "${OPERA_3DO_CONFIG_DIR}/Opera.slangp"
 
-    echo -e "Applying configurations: Playstation > SwanStation"
+    echo -e "Applying configurations: SwanStation > Playstation"
     PS_SWANSTATION_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/SwanStation"
     PS_SWANSTATION_CONFIG_FILE="${PS_SWANSTATION_CONFIG_DIR}/SwanStation.opt"
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_CDROM_LoadImagePatches" '"true"'
@@ -431,7 +439,7 @@ function apply_configurations() {
     crudini --set "$PS_SWANSTATION_CONFIG_FILE" "" "swanstation_TextureReplacements_PreloadTextures" '"true"'
     echo "$SHADER_CRT" > "${PS_SWANSTATION_CONFIG_DIR}/SwanStation.slangp"
 
-    echo -e "Applying configurations: Playstation > Beetle PSX HW"
+    echo -e "Applying configurations: Beetle PSX HW > Playstation"
     PS_BEETLE_PSX_HW_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Beetle PSX HW"
     PS_BEETLE_PSX_HW_CONFIG_FILE="${PS_BEETLE_PSX_HW_CONFIG_DIR}/Beetle PSX HW.opt"
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_FILE" "" "beetle_psx_hw_override_bios" '"psxonpsp"'
@@ -455,14 +463,14 @@ function apply_configurations() {
     crudini --set "$PS_BEETLE_PSX_HW_CONFIG_OVERRIDE_FILE" "" "preemptive_frames_enable" '"false"' # Disable preemptive frames > Breaks emulator
     echo "$SHADER_CRT" > "${PS_BEETLE_PSX_HW_CONFIG_DIR}/Beetle PSX HW.slangp"
 
-    echo -e "Applying configurations: Saturn > Beetle Saturn"
+    echo -e "Applying configurations: Beetle Saturn > Saturn"
     BEETLE_SATURN_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Beetle Saturn"
     BEETLE_SATURN_CONFIG_FILE="${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.opt"
     crudini --set "$BEETLE_SATURN_CONFIG_FILE" "" "beetle_saturn_cdimagecache" '"enabled"'
     crudini --set "$BEETLE_SATURN_CONFIG_FILE" "" "beetle_saturn_midsync" '"enabled"'
     echo "$SHADER_CRT" > "${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.slangp"
 
-    echo -e "Applying configurations: ScummVM"
+    echo -e "Applying configurations: ScummVM > Adventure games"
     SCUMMVM_CONFIG_FILE="${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm.ini"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "themepath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/theme"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "extrapath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra"
@@ -480,6 +488,42 @@ function apply_configurations() {
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "fullscreen" "true"
     crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "soundfont" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra/Roland_SC-55.sf2"
     echo "$SHADER_CRT" > "${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.slangp"
+
+    echo -e "Applying configurations: PUAE > Amiga"
+    PUAE_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/PUAE"
+    PUAE_CONFIG_FILE="${PUAE_CONFIG_DIR}/PUAE.opt"
+    crudini --set "$PUAE_CONFIG_FILE" "" "puae_cd_speed" '"0"'
+    crudini --set "$PUAE_CONFIG_FILE" "" "puae_floppy_speed" '"0"'
+    crudini --set "$PUAE_CONFIG_FILE" "" "puae_crop" '"auto"'
+    echo "$SHADER_CRT" > "${PUAE_CONFIG_DIR}/PUAE.slangp"
+
+    echo -e "Applying configurations: Flycast > Dreamcast"
+    FLYCAST_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Flycast"
+    FLYCAST_CONFIG_FILE="${FLYCAST_CONFIG_DIR}/Flycast.opt"
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_alpha_sorting" '"per-pixel (accurate)"'
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_anisotropic_filtering" '"16"'
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_custom_textures" '"enabled"'
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_internal_resolution" '"1920x1440"'
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_oit_abuffer_size" '"4GB"'
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_oit_layers" '"64"'
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_texupscale" '"4"'
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_texupscale_max_filtered_texture_size" '"1024"'
+    # echo "$SHADER_CRT" > "${FLYCAST_CONFIG_DIR}/Flycast.slangp"
+
+    echo -e "Applying configurations: Dolphin > GameCube, Wii"
+    DOLPHIN_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/dolphin-emu"
+    DOLPHIN_CONFIG_FILE="${DOLPHIN_CONFIG_DIR}/dolphin-emu.opt"
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_anti_aliasing" '"4x SSAA"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_bbox_enabled" '"enabled"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_cache_custom_textures" '"enabled"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_efb_scale" '"x3 (1920 x 1584)"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_force_texture_filtering" '"enabled"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_load_custom_textures" '"enabled"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_max_anisotropy" '"8x"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_mixer_rate" '"48000"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_shader_compilation_mode" '"a-sync UberShaders"'
+    crudini --set "$DOLPHIN_CONFIG_FILE" "" "dolphin_wait_for_shaders" '"enabled"'
+    # echo "$SHADER_CRT" > "${DOLPHIN_CONFIG_FILE}/dolphin-emu.slangp"
 }
 
 DIR="${BASH_SOURCE%/*}"

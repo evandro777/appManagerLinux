@@ -20,7 +20,7 @@ readonly GAMEMODE_SUDOERS_CONTENT=$(
     cat << EOF
 # sudoers for GameMode tuning (generated)
 # Allowed without password only for the specific commands required by gamemode.sh
-$USER ALL=(ALL) NOPASSWD: \\
+$USER ALL=(root) NOPASSWD: \\
     /usr/bin/cpupower idle-set --disable-by-latency *, \\
     /usr/bin/cpupower idle-set --enable-all, \\
     /usr/bin/powerprofilesctl set performance, \\
