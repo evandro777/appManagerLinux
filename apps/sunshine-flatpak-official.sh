@@ -31,9 +31,6 @@ function perform_install() {
     echo "Executing extra steps, according to: https://flathub.org/apps/dev.lizardbyte.app.Sunshine"
     flatpak run --command=additional-install.sh "$APPLICATION_ID"
 
-    echo "Applying config to avoid micro stuttering and screen tearing on host using flatpak"
-    flatpak override --user --socket=session-bus "$APPLICATION_ID"
-
     create_update_app_steam
 
     if command -v ufw &> /dev/null; then
@@ -52,6 +49,7 @@ function perform_install() {
     echo -e "${RED}password:${NC} sunshine"
 
     echo -e "${RED}To add steam as an application, use this as command:${NC} flatpak-spawn --host /usr/games/steam -gamepadui"
+    echo -e "${RED}Known bug:${NC} There are micro stuttering and screen tearing when the game is started for the first time. ${GREEN}The workaround is: Exit the game and start again.${NC}"
 
 }
 

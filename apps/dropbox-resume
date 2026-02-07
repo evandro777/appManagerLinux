@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Restart Dropbox after resume (only if it was running)
+# To test this script, without suspeding, execute: `sudo /lib/systemd/system-sleep/dropbox-resume post`
+
+if [ "$1" != "post" ]; then
+    echo "Not post-resume, exiting"
+    exit 0
+fi
+
+SESSION_ID=$(loginctl list-sessions --no-legend | awk '$5=="seat0"{print $1; exit}')
+[ -z "$SESSION_ID" ] && SESSION_ID=$(loginctl list-sessions --no-legend | awk '{print $1; exit}')
+
+echo "Chosen session: $SESSION_ID"
+
+USER_NAME=$(loginctl show-session "$SESSION_ID" -p Name --value)
+UID_NUM=$(id -u "$USER_NAME" 2>/dev/null)
+
+echo "User: $USER_NAME"
+echo "UID: $UID_NUM"
+
+if [ -z "$USER_NAME" ] || [ -z "$UID_NUM" ]; then
+    echo "Could not resolve user, exiting"
+    exit 0
+fi
+
+if ! pgrep -u "$UID_NUM" -f dropbox >/dev/null; then
+    echo "Dropbox NOT running for user, skipping restart"
+    exit 0
+fi
+
+echo "Dropbox detected, attempting stop..."
+
+pkill -u "$UID_NUM" -f dropbox
+
+for _ in {1..15}; do
+    pgrep -u "$UID_NUM" -f dropbox >/dev/null || break
+    sleep 0.2
+done
+
+echo "Attempting start..."
+
+RUNTIME="/run/user/$UID_NUM"
+
+runuser -u "$USER_NAME" -- \
+    env DISPLAY=:0 \
+        XDG_RUNTIME_DIR="$RUNTIME" \
+        DBUS_SESSION_BUS_ADDRESS="unix:path=$RUNTIME/bus" \
+        setsid dropbox start -i >/dev/null 2>&1 &
+

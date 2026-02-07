@@ -21,11 +21,14 @@ function perform_install() {
             printf "$line\n" >> "$file"
         fi
     fi
+    sudo cp dropbox-resume /lib/systemd/system-sleep/dropbox-resume
+    sudo chmod +x /lib/systemd/system-sleep/dropbox-resume
 }
 
 function perform_uninstall() {
     readonly APPLICATION_ID="nemo-dropbox dropbox"
     package_uninstall "$APPLICATION_ID"
+    sudo rm -f /lib/systemd/system-sleep/dropbox-resume
 }
 
 function perform_check() {
