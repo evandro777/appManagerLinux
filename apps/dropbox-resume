@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec > /tmp/dropbox-resume-output.log 2>&1
+
 # Restart Dropbox after resume (only if it was running)
 # To test this script, without suspeding, execute: `sudo /lib/systemd/system-sleep/dropbox-resume post`
 
@@ -15,23 +17,25 @@ echo "Chosen session: $SESSION_ID"
 
 USER_NAME=$(loginctl show-session "$SESSION_ID" -p Name --value)
 UID_NUM=$(id -u "$USER_NAME" 2>/dev/null)
+RUNTIME="/run/user/$UID_NUM"
 
 echo "User: $USER_NAME"
 echo "UID: $UID_NUM"
+echo "Runtime: $RUNTIME"
 
 if [ -z "$USER_NAME" ] || [ -z "$UID_NUM" ]; then
     echo "Could not resolve user, exiting"
     exit 0
 fi
 
-if ! pgrep -u "$UID_NUM" -f dropbox >/dev/null; then
-    echo "Dropbox NOT running for user, skipping restart"
-    exit 0
-fi
+#if ! pgrep -u "$UID_NUM" -f dropbox >/dev/null; then
+#    echo "Dropbox NOT running for user, skipping restart"
+#    exit 0
+#fi
 
 echo "Dropbox detected, attempting stop..."
 
-pkill -u "$UID_NUM" -f dropbox
+pkill -u "$UID_NUM" -f dropbox || true
 
 for _ in {1..15}; do
     pgrep -u "$UID_NUM" -f dropbox >/dev/null || break
@@ -40,11 +44,24 @@ done
 
 echo "Attempting start..."
 
-RUNTIME="/run/user/$UID_NUM"
+# Try to create a user scope via user-systemd (must run as that user with XDG_RUNTIME_DIR)
+# If that works, the dropbox process will be owned by user systemd and survive hook exit.
+systemd-run \
+    --unit=dropbox-resume-$UID_NUM \
+    --uid="$UID_NUM" \
+    --property=KillMode=none \
+    --property=CollectMode=inactive \
+    --no-block \
+    /bin/bash -c "
+        export DISPLAY=:0
+        export XDG_RUNTIME_DIR='$RUNTIME'
+        export DBUS_SESSION_BUS_ADDRESS='unix:path=$RUNTIME/bus'
+        exec /usr/bin/dropbox start -i
+    " && {
 
-runuser -u "$USER_NAME" -- \
-    env DISPLAY=:0 \
-        XDG_RUNTIME_DIR="$RUNTIME" \
-        DBUS_SESSION_BUS_ADDRESS="unix:path=$RUNTIME/bus" \
-        setsid dropbox start -i >/dev/null 2>&1 &
+    echo "Started via systemd-run --user --scope"
+    exit 0
+}
+
+exit 0
 
