@@ -28,15 +28,19 @@ if [ -z "$USER_NAME" ] || [ -z "$UID_NUM" ]; then
     exit 0
 fi
 
-#if ! pgrep -u "$UID_NUM" -f dropbox >/dev/null; then
-#    echo "Dropbox NOT running for user, skipping restart"
-#    exit 0
-#fi
+if ! pgrep -u "$UID_NUM" -f dropbox >/dev/null; then
+    echo "Dropbox NOT running for user, skipping restart"
+    exit 0
+fi
 
 echo "Dropbox detected, attempting stop..."
 
 pkill -u "$UID_NUM" -f dropbox || true
 
+echo "Waiting network..."
+sleep 15
+
+echo "Check if dropbox was killed"
 for _ in {1..15}; do
     pgrep -u "$UID_NUM" -f dropbox >/dev/null || break
     sleep 0.2
