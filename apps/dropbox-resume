@@ -37,9 +37,6 @@ echo "Dropbox detected, attempting stop..."
 
 pkill -u "$UID_NUM" -f dropbox || true
 
-echo "Waiting network..."
-sleep 15
-
 echo "Check if dropbox was killed"
 for _ in {1..15}; do
     pgrep -u "$UID_NUM" -f dropbox >/dev/null || break
@@ -51,12 +48,12 @@ echo "Attempting start..."
 # Try to create a user scope via user-systemd (must run as that user with XDG_RUNTIME_DIR)
 # If that works, the dropbox process will be owned by user systemd and survive hook exit.
 systemd-run \
-    --unit=dropbox-resume-$UID_NUM \
     --uid="$UID_NUM" \
     --property=KillMode=none \
     --property=CollectMode=inactive \
     --no-block \
     /bin/bash -c "
+        sleep 10 &&
         export DISPLAY=:0
         export XDG_RUNTIME_DIR='$RUNTIME'
         export DBUS_SESSION_BUS_ADDRESS='unix:path=$RUNTIME/bus'
