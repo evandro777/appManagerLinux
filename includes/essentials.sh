@@ -60,16 +60,16 @@ readonly BGI_PURPLE="\033[10;95m" # Purple
 readonly BGI_CYAN="\033[0;106m"   # Cyan
 readonly BGI_WHITE="\033[0;107m"  # White
 
-#Insert or update settings. Alternative to crudini, which insert spaces between equal, example: " = "
-#Example: set_property "${HOME}/.config/autostart/mintwelcome.desktop" "X-GNOME-Autostart-enabled" false
-#Result: X-GNOME-Autostart-enabled=false
-#$1: file
-#$2: property
-#$3: value
+# Insert or update settings. Alternative to crudini, which insert spaces between equal, example: " = "
+# Example: set_property "${HOME}/.config/autostart/mintwelcome.desktop" "X-GNOME-Autostart-enabled" false
+# Result: X-GNOME-Autostart-enabled=false
+# $1: file
+# $2: property
+# $3: value
 function set_property() {
     local file_location="${1}"
-    local property="${2}"
-    local value="${property}=${3}"
+    local property="${2}="
+    local value="${property}${3}"
 
     if ! grep -q "${property}" "${file_location}"; then
         # Check if the file can be edited directly or needs sudo
@@ -84,19 +84,19 @@ function set_property() {
         # Update with or without sudo depending on the permission
         if [ -w "${file_location}" ]; then
             # Update without sudo
-            sed -i s/"${property}".*$/"${value}"/ "${file_location}"
+            sed -i "s|${property}.*$|${value}|" "${file_location}"
         else
-            # Update with sudo
-            sudo sed -i s/"${property}".*$/"${value}"/ "${file_location}"
+            # echo Update with sudo
+            sudo sed -i "s/${property}.*$|${value}|" "${file_location}"
         fi
     fi
 }
 
-#Remove settings
-#Example: remove_property "${HOME}/.config/autostart/mintwelcome.desktop" "X-GNOME-Autostart-enabled"
-#Result: Remove line which contains X-GNOME-Autostart-enabled=
-#$1: file
-#$2: property
+# Remove settings
+# Example: remove_property "${HOME}/.config/autostart/mintwelcome.desktop" "X-GNOME-Autostart-enabled"
+# Result: Remove line which contains X-GNOME-Autostart-enabled=
+# $1: file
+# $2: property
 function remove_property() {
     local file_location="${1}"
     local property="${2}="
@@ -113,10 +113,10 @@ function remove_property() {
     fi
 }
 
-#Ps.: Force remove white spaces " = ", happens when creating a new file, when editing a file that already doesn't have, it isn't needed
-#Force remove white spaces " = " between key and value
-#Example: trim_properties "${HOME}/.config/autostart/mintwelcome.desktop"
-#$1: file
+# Ps.: Force remove white spaces " = ", happens when creating a new file, when editing a file that already doesn't have, it isn't needed
+# Force remove white spaces " = " between key and value
+# Example: trim_properties "${HOME}/.config/autostart/mintwelcome.desktop"
+# $1: file
 function trim_properties() {
     local file_location="${1}"
 
@@ -191,7 +191,7 @@ function package_uninstall() {
 function flatpak_is_installed() {
     local flatpak_name=$1
 
-    if flatpak list | grep -q "$flatpak_name"; then
+    if flatpak info "$flatpak_name" &>/dev/null; then
         echo 1 # Flatpak is installed
     else
         echo 0 # Flatpak is not installed
@@ -210,19 +210,19 @@ function flatpak_uninstall() {
     eval "flatpak uninstall -y --noninteractive --delete-data $*"
 }
 
-#Return a list of video mime types
-#Example: get_video_mime_types
+# Return a list of video mime types
+# Example: get_video_mime_types
 function get_video_mime_types() {
     grep < /usr/share/applications/defaults.list "video/\|x-content/video-" | sed 's/=.*$//g'
 }
 
-#Set preferred apps
-#Example:
-#	videoMimeTypes=$(cat /usr/share/applications/defaults.list | grep "video/\|x-content/video-" | sed 's/=.*celluloid_player.*$//g')
-#	SetPreferredVideoApp $video_mime_types smplayer
-#$1: array of mime_types
-#$2: app name
-#$3: file location
+# Set preferred apps
+# Example:
+# 	videoMimeTypes=$(cat /usr/share/applications/defaults.list | grep "video/\|x-content/video-" | sed 's/=.*celluloid_player.*$//g')
+# 	SetPreferredVideoApp $video_mime_types smplayer
+# $1: array of mime_types
+# $2: app name
+# $3: file location
 function set_preferred_app() {
     local mime_types="${1}"
     local app_name="${2}"
@@ -280,7 +280,7 @@ function get_keybinding_last_id() {
 }
 
 # Return string if keybinding is found
-#$1: keybinding (example: <Super>Print)
+# $1: keybinding (example: <Super>Print)
 function keybinding_exists() {
     local key_binding="$1"
     local return=$(dconf dump /org/cinnamon/desktop/keybindings/ | grep "${key_binding}")

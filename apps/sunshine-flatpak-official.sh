@@ -2,6 +2,8 @@
 
 readonly APPLICATION_NAME="Sunshine GameStream (server for Moonlight) [official Flatpak]"
 readonly APPLICATION_ID="dev.lizardbyte.app.Sunshine"
+readonly APPLICATION_DESKTOP_FILE_ROOT="/var/lib/flatpak/app/dev.lizardbyte.app.Sunshine/current/active/export/share/applications/dev.lizardbyte.app.Sunshine.desktop"
+readonly APPLICATION_DESKTOP_FILE_USER="$HOME/.local/share/applications/dev.lizardbyte.app.Sunshine.desktop"
 readonly APPLICATION_CONFIG_DIR="$HOME/.var/app/$APPLICATION_ID/config/sunshine"
 readonly SUNSHINE_APPS_FILE="$APPLICATION_CONFIG_DIR/apps.json"
 readonly SUNSHINE_JSON_CONFIG=$(
@@ -44,6 +46,12 @@ function perform_install() {
         sudo ufw status | grep "Sunshine: All"
     fi
 
+
+    echo "Changing desktop shortcut to avoid opening sunshine webpage when starts. Default behavior in other packages"
+    cp "$APPLICATION_DESKTOP_FILE_ROOT" "$APPLICATION_DESKTOP_FILE_USER"
+    set_property "$APPLICATION_DESKTOP_FILE_USER" "Exec" "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=/app/bin/sunshine dev.lizardbyte.app.Sunshine"
+    # Default is: set_property "$APPLICATION_DESKTOP_FILE" "Exec" "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=sunshine.sh dev.lizardbyte.app.Sunshine"
+
     echo -e "${RED}First login${NC} access https://localhost:47990/"
     echo -e "${RED}user:${NC} sunshine"
     echo -e "${RED}password:${NC} sunshine"
@@ -62,6 +70,7 @@ function perform_uninstall() {
             yes | sudo ufw delete "$rule"
         done
     fi
+    rm "$APPLICATION_DESKTOP_FILE_USER"
 }
 
 function perform_check() {

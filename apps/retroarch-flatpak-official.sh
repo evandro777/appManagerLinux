@@ -107,7 +107,7 @@ function update_cores() {
         # Arcade & Konami M2 & Neo Geo [MVS - Multi Video System (arcade), CD, HNG-64]
         "mame"
         "fbneo"
-        "mame2003_plus"
+        # "mame2003_plus"
 
         # Nintendo > SNES
         "snes9x"
@@ -228,15 +228,15 @@ function update_cores() {
     echo -e "Installing core system (bios) files"
 
     echo -e "Source for (bios) files from:"
-    echo -e "libretro: https://github.com/Abdess/retroarch_system/tree/libretro"
-    echo -e "PS1 & PS2 bios: https://github.com/Abdess/retroarch_system/tree/Other"
-    echo -e "Retroarch system: https://github.com/Abdess/retroarch_system/tree/RetroArch"
+    echo -e "libretro: https://github.com/evandro777/retroarch_system/tree/libretro"
+    echo -e "PS1 & PS2 bios: https://github.com/evandro777/retroarch_system/tree/Other"
+    echo -e "Retroarch system: https://github.com/evandro777/retroarch_system/tree/RetroArch"
     echo -e "Trying to download bios files..."
 
     patch_temp_folder="/tmp/retroarch_system/"
-    # git clone --depth=1 --branch RetroArch https://github.com/Abdess/retroarch_system.git "${patch_temp_folder}"
+    # git clone --depth=1 --branch RetroArch https://github.com/evandro777/retroarch_system.git "${patch_temp_folder}"
     # mv -f "${patch_temp_folder}system/"* "${RETROARCH_CONFIG_SYSTEM_DIR}/" 2> /dev/null
-    git clone --depth=1 https://github.com/Abdess/retroarch_system.git "${patch_temp_folder}"
+    git clone --depth=1 https://github.com/evandro777/retroarch_system.git "${patch_temp_folder}"
 
     declare -A mapping=(
         ["3DO Company, The - 3DO"]=""
@@ -247,6 +247,7 @@ function update_cores() {
         ["Nintendo - Famicom Disk System"]=""
         ["Commodore - Amiga"]=""
         ["SNK - NeoGeo CD"]="neocd/"
+        ["Sega - Dreamcast"]="dc/"
     )
 
     for downloaded_core_path in "${!mapping[@]}"; do
@@ -256,10 +257,11 @@ function update_cores() {
 
     # Core system files for specific cores
     CORES_SYSTEM_LIST=(
-        "MAME 2003-Plus"
+        "FinalBurn Neo (hiscore)"
         "Dolphin"
         "PPSSPP"
         "ScummVM"
+        "Dolphin"
     )
 
     IFS=$'\n' # Internal Field Separator > Change the default (space) to new line separator
@@ -272,13 +274,24 @@ function update_cores() {
 
     # ScummVM extras plus
     RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR="${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra"
-    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/CM32L_CONTROL.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/CM32L_CONTROL.ROM"
-    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/CM32L_PCM.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/CM32L_PCM.ROM"
-    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/MT32_CONTROL.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/MT32_CONTROL.ROM"
-    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/MT32_PCM.ROM" "https://github.com/Abdess/retroarch_system/raw/refs/heads/RetroArch/system/MT32_PCM.ROM"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/CM32L_CONTROL.ROM" "https://github.com/evandro777/retroarch_system/raw/refs/heads/RetroArch/system/CM32L_CONTROL.ROM"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/CM32L_PCM.ROM" "https://github.com/evandro777/retroarch_system/raw/refs/heads/RetroArch/system/CM32L_PCM.ROM"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/MT32_CONTROL.ROM" "https://github.com/evandro777/retroarch_system/raw/refs/heads/RetroArch/system/MT32_CONTROL.ROM"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_SCUMMVM_DIR}/MT32_PCM.ROM" "https://github.com/evandro777/retroarch_system/raw/refs/heads/RetroArch/system/MT32_PCM.ROM"
 
     # New ps1 bios from psp
-    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}/PSXONPSP660.bin" "https://github.com/Abdess/retroarch_system/raw/refs/heads/Other/Sony%20-%20PlayStation/PSXONPSP660.BIN"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DIR}/PSXONPSP660.bin" "https://github.com/evandro777/retroarch_system/raw/refs/heads/Other/Sony%20-%20PlayStation/PSXONPSP660.BIN"
+
+    # Dreamcast extras bios
+    RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR="${RETROARCH_CONFIG_SYSTEM_DIR}/dc"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/naomi.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/libretro/Arcade/naomi.zip"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/hod2bios.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/libretro/Arcade/hod2bios.zip"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/f355dlx.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/libretro/Arcade/f355dlx.zip"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/f355bios.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/libretro/Arcade/f355bios.zip"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/airlbios.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/libretro/Arcade/airlbios.zip"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/awbios.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/libretro/Arcade/awbios.zip"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/naomi2.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/RetroArch/roms/naomi2.zip"
+    wget --no-verbose --output-document="${RETROARCH_CONFIG_SYSTEM_DREAMCAST_DIR}/segasp.zip" "https://github.com/evandro777/retroarch_system/raw/refs/heads/RetroArch/roms/segasp.zip"
 
     echo -e "Core systems download and extraction completed!"
 
@@ -300,6 +313,7 @@ function apply_configurations() {
     crudini --set "$RETROARCH_CONFIG_FILE" "" "input_exit_emulator" '"nul"'          # Remove ESC as exit emulator > conflicts with ScummVM
     crudini --set "$RETROARCH_CONFIG_FILE" "" "menu_swap_ok_cancel_buttons" '"true"' # OK button: A | Cancel button: B
     crudini --set "$RETROARCH_CONFIG_FILE" "" "fps_show" '"true"'
+    crudini --set "$RETROARCH_CONFIG_FILE" "" "input_auto_mouse_grab" '"true"' # Auto capture mouse > fixes mouse on scummvm not reaching the end of the screen
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_driver" '"vulkan"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_adaptive_vsync" '"true"'
     crudini --set "$RETROARCH_CONFIG_FILE" "" "video_frame_delay_auto" '"true"'  # Reduce input lag
@@ -316,38 +330,38 @@ function apply_configurations() {
 
     echo -e "Applying configurations: Mupen64Plus-Next > Nintendo 64"
     MUPEN64PLUS_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Mupen64Plus-Next"
-    MUPEN64PLUS_CONFIG_DIR="${GENESIS_PLUS_CONFIG_DIR}/Mupen64Plus-Next.opt"
+    MUPEN64PLUS_CONFIG_FILE="${MUPEN64PLUS_CONFIG_DIR}/Mupen64Plus-Next.opt"
     # Main
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-cpucore" '"cached_interpreter"'
-#    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-rsp-plugin" '"parallel"' # hle: default. parallel: bug in some games > Resident Evil 2)
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-rdp-plugin" '"gliden64"' # gliden64: default
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-cpucore" '"cached_interpreter"'
+#    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-rsp-plugin" '"parallel"' # hle: default. parallel: bug in some games > Resident Evil 2)
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-rdp-plugin" '"gliden64"' # gliden64: default
 
     # GLideN64
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-169screensize" '"1920x1080"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-43screensize" '"1920x1440"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-BackgroundMode" '"Stripped"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-CorrectTexrectCoords" '"Auto"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyAuxToRDRAM" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyColorToRDRAM" '"TripleBuffer"'
-#    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableCopyDepthToRDRAM" '"FromMem"' # software: default. FromMem: bug in some games (Super Smash Bros.)
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableEnhancedHighResStorage" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableEnhancedTextureStorage" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableHWLighting" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableInaccurateTextureCoordinates" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableLODEmulation" '"False"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableNativeResFactor" '"4"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-EnableTexCoordBounds" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-FrameDuping" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-FXAA" '"1"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-MultiSampling" '"4"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-txHiresEnable" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-txHiresFullAlphaChannel" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-169screensize" '"1920x1080"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-43screensize" '"1920x1440"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-BackgroundMode" '"Stripped"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-CorrectTexrectCoords" '"Auto"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableCopyAuxToRDRAM" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableCopyColorToRDRAM" '"TripleBuffer"'
+#    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableCopyDepthToRDRAM" '"FromMem"' # software: default. FromMem: bug in some games (Super Smash Bros.)
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableEnhancedHighResStorage" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableEnhancedTextureStorage" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableHWLighting" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableInaccurateTextureCoordinates" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableLODEmulation" '"False"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableNativeResFactor" '"4"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-EnableTexCoordBounds" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-FrameDuping" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-FXAA" '"1"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-MultiSampling" '"4"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-txHiresEnable" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-txHiresFullAlphaChannel" '"True"'
 
     # ParaLLEI-RDP
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-downscaling" '"1/4"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-super-sampled-read-back" '"True"'
-    crudini --set "$MUPEN64PLUS_CONFIG_DIR" "" "mupen64plus-parallel-rdp-upscaling" '"4x"'
-    echo "$SHADER_CRT" > "${GENESIS_PLUS_CONFIG_DIR}/Mupen64Plus-Next.slangp"
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-parallel-rdp-downscaling" '"1/4"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-parallel-rdp-super-sampled-read-back" '"True"'
+    crudini --set "$MUPEN64PLUS_CONFIG_FILE" "" "mupen64plus-parallel-rdp-upscaling" '"4x"'
+    echo "$SHADER_CRT" > "${MUPEN64PLUS_CONFIG_DIR}/Mupen64Plus-Next.slangp"
 
     echo -e "Applying configurations: Genesis Plus GX > Mega Drive, Mega-CD, Master System, Game Gear, SG-1000"
     GENESIS_PLUS_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Genesis Plus GX"
@@ -471,23 +485,27 @@ function apply_configurations() {
     echo "$SHADER_CRT" > "${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.slangp"
 
     echo -e "Applying configurations: ScummVM > Adventure games"
-    SCUMMVM_CONFIG_FILE="${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm.ini"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "themepath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/theme"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "extrapath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gui_theme" "scummmodern"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gui_scale" "125"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "music_driver" "auto"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "native_mt32" "false"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "opl_driver" "nuked"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "gm_device" "fluidsynth"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "fluidsynth_misc_interpolation" "7th"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "multi_midi" "true"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "mt32_device" "mt32"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "speech_mute" "false"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "subtitles" "true"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "fullscreen" "true"
-    crudini --set "$SCUMMVM_CONFIG_FILE" "scummvm" "soundfont" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra/Roland_SC-55.sf2"
-    echo "$SHADER_CRT" > "${BEETLE_SATURN_CONFIG_DIR}/Beetle Saturn.slangp"
+    SCUMMVM_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/ScummVM"
+    SCUMMVM_CONFIG_FILE="${SCUMMVM_CONFIG_DIR}/ScummVM.opt"
+    # crudini --set "$SCUMMVM_CONFIG_FILE" "" "scummvm_framerate" '"60 Hz"' # Sometimes fixes audio issues, hiccups, crackling, stuttering
+    crudini --set "$SCUMMVM_CONFIG_FILE" "" "scummvm_gui_h_res" '"1080"'
+    SCUMMVM_CONFIG_INI_FILE="${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm.ini"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "themepath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/theme"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "extrapath" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "gui_theme" "scummmodern"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "gui_scale" "125"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "music_driver" "auto"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "native_mt32" "false"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "opl_driver" "nuked"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "gm_device" "fluidsynth"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "fluidsynth_misc_interpolation" "7th"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "multi_midi" "true"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "mt32_device" "mt32"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "speech_mute" "false"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "subtitles" "true"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "fullscreen" "true"
+    crudini --set "$SCUMMVM_CONFIG_INI_FILE" "scummvm" "soundfont" "${RETROARCH_CONFIG_SYSTEM_DIR}/scummvm/extra/Roland_SC-55.sf2"
+    echo "$SHADER_CRT" > "${SCUMMVM_CONFIG_DIR}/ScummVM.slangp"
 
     echo -e "Applying configurations: PUAE > Amiga"
     PUAE_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/PUAE"
@@ -500,6 +518,7 @@ function apply_configurations() {
     echo -e "Applying configurations: Flycast > Dreamcast"
     FLYCAST_CONFIG_DIR="${APPLICATION_CONFIG_DIR}/config/Flycast"
     FLYCAST_CONFIG_FILE="${FLYCAST_CONFIG_DIR}/Flycast.opt"
+    crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_allow_service_buttons" '"enabled"'
     crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_alpha_sorting" '"per-pixel (accurate)"'
     crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_anisotropic_filtering" '"16"'
     crudini --set "$FLYCAST_CONFIG_FILE" "" "reicast_custom_textures" '"enabled"'
