@@ -29,6 +29,12 @@ function perform_install() {
     echo 'Adding plugins git, colored-man-pages and command-not-found'
     sed -i 's/^plugins=(.*$/plugins=(git colored-man-pages command-not-found)/g' ~/.zshrc
 
+    # Check if COMBINING_CHARS option is already set (ignoring commented lines)
+    if ! grep -Eq "^[[:space:]]*setopt[[:space:]]+(.*[[:space:]])?COMBINING_CHARS([[:space:]]|$)" "${HOME}/.zshrc"; then
+        echo '# Adding setopt COMBINING_CHARS: Helps fix display and tab-completion issues when working with accented words'
+        echo 'setopt COMBINING_CHARS' >> "${HOME}/.zshrc"
+    fi
+
     # Copy file if not exists to create a default theme
     cp --no-clobber .p10k.zsh "${HOME}/.p10k.zsh" && echo "Default theme applied to OhMyZsh PowerLevel10k"
 

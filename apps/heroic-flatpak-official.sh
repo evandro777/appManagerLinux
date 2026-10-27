@@ -40,8 +40,11 @@ function perform_check() {
     heroic_is_installed=$(flatpak_is_installed "$APPLICATION_ID")
     gamescope_is_installed=$(flatpak_is_installed "$GAMESCOPE_ID")
     mangohud_is_installed=$(flatpak_is_installed "$MANGOHUD_ID")
-    [[ "$heroic_is_installed" == "0" || "$gamescope_is_installed" == "0" || "$mangohud_is_installed" == "0" ]] && echo "0"
-    echo "1"
+    if [[ "$heroic_is_installed" -eq 0 || "$gamescope_is_installed" -eq 0 || "$mangohud_is_installed" -eq 0 ]]; then
+        echo 0
+    else
+        echo 1
+    fi
 }
 
 function apply_settings() {

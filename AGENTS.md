@@ -18,6 +18,12 @@ It is centered on shell scripts, dialog menus, application install modules, and 
 - The repo uses `dialog` for interactive selection and stores selections temporarily for batch execution.
 - New app support usually means adding metadata to `apps.sh` and a corresponding script in `apps/`.
 
+## Adding app modules
+
+- Make each app script executable and register both its script path and category in `apps.sh`.
+- Follow a nearby module's pattern and source `includes/header_packages.sh` for the shared CLI contract; apt modules should use the shared package helpers.
+- Keep install actions repeatable: create or update configuration without duplicating entries, and make `check` report whether the module's managed state is applied.
+
 ## AI agent guidance
 
 - Focus on Bash script maintenance, app install workflows, and Linux Mint/Cinnamon automation.

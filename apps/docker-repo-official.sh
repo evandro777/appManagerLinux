@@ -48,6 +48,10 @@ function perform_install() {
     package_update
     package_install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+    echo "Disabling autostart for faster startup."
+    echo "Keeping 'docker.socket' enabled, it will startup automatically docker service when needed. But doesn't work on docker-compose with --restart=always or unless-stopped"
+    sudo systemctl disable --now docker.service containerd.service
+
     echo -e "${ORANGE}Docker: execute docker without sudo${NC}"
     sudo usermod -aG docker "${USER}"
 }

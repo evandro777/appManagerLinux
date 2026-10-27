@@ -11,6 +11,9 @@ echo -e "${YELLOW}Installing Microsoft fonts${NC}"
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 sudo apt-get install -y -q ttf-mscorefonts-installer
 
+echo -e "${YELLOW}Installing Fonts with Ligatures: JetBrains Mono and Fira Code${NC}"
+sudo apt-get install -y -q fonts-jetbrains-mono fonts-firacode
+
 echo -e "${YELLOW}Installing Crudini (manipulate .ini files)${NC}"
 sudo apt-get install -y -q crudini
 
@@ -86,7 +89,7 @@ fi
 
 echo -e "${GREEN}Faster startup > GRUB${NC}"
 GRUB_CONFIG_LOCATION=/etc/default/grub
-set_property "$GRUB_CONFIG_LOCATION" "GRUB_TIMEOUT" 3
+set_property "$GRUB_CONFIG_LOCATION" "GRUB_TIMEOUT" 1
 # Usually GRUB_RECORDFAIL_TIMEOUT does not exist, so crudini create it near the other property. But crudini creates with spaces between " = "
 sudo crudini --set "$GRUB_CONFIG_LOCATION" "" "GRUB_RECORDFAIL_TIMEOUT" 3
 set_property "$GRUB_CONFIG_LOCATION" "GRUB_RECORDFAIL_TIMEOUT" 1 # Fix the spaces that crudini created
@@ -95,3 +98,6 @@ sudo update-grub
 
 echo -e "${GREEN}Faster startup > Disable NetworkManager-wait-online${NC}"
 sudo systemctl disable NetworkManager-wait-online.service
+
+echo - e "${GREEN}Faster startup > Disable ubuntu-advantage (the Ubuntu Pro client)"
+sudo systemctl disable --now ubuntu-advantage.service ua-reboot-cmds.service

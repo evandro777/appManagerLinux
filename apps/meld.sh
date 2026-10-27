@@ -13,6 +13,8 @@ function perform_install() {
     dconf write /org/gnome/meld/show-line-numbers true
     dconf write /org/gnome/meld/prefer-dark-theme true
     dconf write /org/gnome/meld/highlight-syntax true
+    dconf write /org/gnome/meld/use-system-font false
+    dconf write /org/gnome/meld/custom-font "'JetBrains Mono 11'"
     dconf write /org/gnome/meld/style-scheme "'dracula'"
 }
 

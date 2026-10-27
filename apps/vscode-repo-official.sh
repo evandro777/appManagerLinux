@@ -11,7 +11,7 @@ readonly APPLICATION_CUSTOM_JSON_CONFIG=$(
 {
     "editor.renderWhitespace": "all",
     "editor.minimap.enabled": false,
-    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'Noto Color Emoji', 'monospace', 'Droid Sans Fallback'",
+    "editor.fontFamily": "'JetBrains Mono', 'Fira Code', 'Droid Sans Mono', 'Noto Color Emoji', 'monospace', 'Droid Sans Fallback'",
     "terminal.integrated.fontFamily": "'MesloLGS NF'",
     "editor.fontLigatures": true,
     "editor.lineHeight": 24,
@@ -28,7 +28,12 @@ readonly APPLICATION_CUSTOM_JSON_KEYBINDING=$(
 {
     "key": "ctrl+shift+alt+d",
     "command": "editor.action.copyLinesDownAction",
-    "when": "editorTextFocus"
+    "when": "editorTextFocus && !editorReadonly"
+},
+{
+    "key": "ctrl+shift+alt+u",
+    "command": "editor.action.copyLinesUpAction",
+    "when": "editorTextFocus && !editorReadonly"
 }
 EOF
 )
@@ -43,8 +48,8 @@ function perform_install() {
     package_update
     package_install apt-transport-https "$APPLICATION_ID"
 
-    # FIRA CODE (FONT WITH LIGATURES)
-    sudo apt-get install -y -q fonts-firacode
+    echo -e "Installing fonts with ligatures: JetBrains Mono and Fira Code${NC}"
+    sudo apt-get install -y -q fonts-jetbrains-mono fonts-firacode
 
     # Settings:
     echo -e "Applying settings to VS Code${NC}"

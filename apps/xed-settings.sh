@@ -21,6 +21,8 @@ function perform_install() {
     gsettings set org.x.editor.preferences.editor draw-whitespace-leading true
     gsettings set org.x.editor.preferences.editor draw-whitespace-trailing true
     gsettings set org.x.editor.preferences.editor prefer-dark-theme true
+    gsettings set org.x.editor.preferences.editor use-default-font false
+    gsettings set org.x.editor.preferences.editor editor-font 'JetBrains Mono 11'
     gsettings set org.x.editor.preferences.editor scheme "dracula"
     gsettings set org.x.editor.plugins active-plugins '["sort", "modelines", "filebrowser", "wordcompletion", "textsize", "taglist", "docinfo", "time", "spell"]'
 }

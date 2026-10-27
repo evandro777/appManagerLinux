@@ -28,7 +28,8 @@ if [ $# -eq 0 ]; then
     # No parameters provided, ask for action
 
     # Check if the package is installed
-    if [ "$(perform_check)" -eq 1 ]; then
+    check_result="$(perform_check)"
+    if [ "$check_result" -eq 1 ]; then
         # Package is installed, ask if the user wants to uninstall
         echo -e -n "Do you want to ${RED}uninstall${NC} $APPLICATION_NAME? (Y/N): "
         read -r answer
@@ -39,7 +40,7 @@ if [ $# -eq 0 ]; then
             echo "No action taken. Exiting."
             exit 1
         fi
-    elif [ "$(perform_check)" -eq 0 ] || [ "$(perform_check)" -eq 2 ]; then
+    elif [ "$check_result" -eq 0 ] || [ "$check_result" -eq 2 ]; then
         # Package is not installed, ask if the user wants to install
         echo -e -n "Do you want to ${GREEN}install${NC} $APPLICATION_NAME? (Y/N): "
         read -r answer
